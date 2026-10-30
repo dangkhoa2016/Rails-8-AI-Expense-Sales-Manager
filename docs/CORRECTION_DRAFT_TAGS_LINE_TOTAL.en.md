@@ -29,3 +29,9 @@ Both the replacement edit form and detail page show an unmistakable **Correction
 ## Review and evidence
 
 Use test migrations and integration/browser tests before applying the migration to a preview database. Verify cross-workspace isolation, immutable cancelled copies, cancellation/restart behavior, total locking, last-item deletion, multi-Tag selection, and the source comparison. Archive backups and audit logs before changes. The demo environment is not production accounting and AI GGUF vision inference is not enabled.
+
+## Original transaction quick-view modal (UI refinement)
+
+On a replacement correction draft's **Edit** and **Detail** screens, both **Open locked original** and **Original transaction (immutable)** open the same read-only native dialog without navigating away. The modal displays the original's confirmed status, amount/date/type, description, localized Tags, context, complete line-item list, linked evidence and recorded revision reasons. The evidence links open a **separate tab**; the unsaved replacement form remains untouched. Users close the modal explicitly using the centered X or Close details button; backdrop clicks and Escape do not dismiss it. Focus returns to the original trigger. The modal is responsive on narrow screens.
+
+The **Discard this draft** submit button uses a conspicuous red destructive style; the reason and explicit confirmation remain required. Transaction Tag selection remains available, but the redundant **Manage Tags** link is removed from the transaction form (the global Tags navigation is unchanged). These UI changes do not add accounting writes, change correction states, or relax tenant authorization.

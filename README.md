@@ -200,3 +200,5 @@ Create both Money in and Money out at **`/finance/transactions/new`**, selecting
 ## Correction draft cancellation, locked totals and transaction Tags
 
 Pending correction copies can be **discarded with a mandatory reason**, with both the original financial record and cancellation history preserved. Draft totals are read-only and calculated from human-authored item amounts; new app-created drafts require at least one item to confirm, while historical legacy amounts are preserved. Transactions now support multiple workspace-scoped Tags, just like individual items, and replacement drafts clearly identify and compare themselves against their locked originals. See [complete policy and constraints](docs/CORRECTION_DRAFT_TAGS_LINE_TOTAL.en.md).
+
+The correction draft now offers a read-only original-transaction popup on both edit and detail screens, preserving unsaved fields. Discard is distinctly red, and the redundant Manage Tags link was removed from the transaction form.
