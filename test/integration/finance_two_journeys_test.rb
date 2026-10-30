@@ -8,45 +8,39 @@ class FinanceTwoJourneysTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
-  test "expense intake shows image-first mode with compact manual fallback" do
-    get new_finance_transaction_path(kind: "expense", locale: "vi")
+  test "single intake retains the upload-first expense layout with radio choices" do
+    get new_finance_transaction_path(locale: "vi")
     assert_response :success
-    assert_select "nav.finance-mode-switch a.finance-mode-link.is-active[href*='kind=expense']", count: 1
-    assert_select "h1", text: "Ghi nhận khoản chi"
+    assert_select "h1", text: "Tạo giao dịch thu hoặc chi"
+    assert_select "nav.finance-mode-switch", count: 0
+    assert_select "fieldset.finance-kind-radios input[type=radio][name=intake_kind]", count: 2
+    assert_select "fieldset.finance-kind-radios input[value=expense][checked]", count: 1
+    assert_select "fieldset.finance-kind-radios input[value=income]", count: 1
+    assert_select "div.intake-layout", count: 1
     assert_select "form[action='#{from_receipt_finance_transactions_path}'] input[name='receipt[kind]'][value='expense']"
-    assert_select "form[action='#{from_receipt_finance_transactions_path}'] input[name='receipt[image]']"
-    assert_select "details.intake-manual", count: 1
-    assert_select "details.intake-manual[open]", count: 0
     assert_select "form[action='#{finance_transactions_path}'] input[name='finance_transaction[kind]'][value='expense']"
-    assert_select "form[action='#{finance_transactions_path}'] input[name='finance_transaction[amount]']"
-    assert_select "form[action='#{finance_transactions_path}'] details.entry-optional-fields select[name='finance_transaction[category]']"
-    assert_select "input[name='finance_transaction[context_attributes][location_text]']", count: 0
+    assert_select "form[action='#{finance_transactions_path}'] input[name='entry_mode'][value='']"
+    assert_select "details.intake-manual", count: 1
+    assert_select "form[data-controller='receipt-upload']", count: 1
+    assert_select "details.income-evidence-panel", count: 0
   end
 
-  test "income intake prioritizes amount source date, optional category and proof, no expense upload-first" do
+  test "legacy kind income URL uses exact same intake layout with income selected" do
     get new_finance_transaction_path(kind: "income", locale: "vi")
     assert_response :success
-    assert_select "h1", text: "Ghi nhận khoản thu"
-    assert_select "nav.finance-mode-switch a.finance-mode-link.is-active[href*='kind=income']", count: 1
+    assert_select "h1", text: "Tạo giao dịch thu hoặc chi"
+    assert_select "div.intake-layout", count: 1
+    assert_select "fieldset.finance-kind-radios input[value=income][checked]", count: 1
+    assert_select "form[action='#{from_receipt_finance_transactions_path}'] input[name='receipt[kind]'][value='income']"
     assert_select "form[action='#{finance_transactions_path}'] input[name='finance_transaction[kind]'][value='income']"
     assert_select "form[action='#{finance_transactions_path}'] input[name='entry_mode'][value='quick_income']"
-    assert_select "form[action='#{finance_transactions_path}'] input[name='finance_transaction[amount]'][required]"
-    assert_select "form[action='#{finance_transactions_path}'] input[name='finance_transaction[description]'][required]"
-    assert_select "form[action='#{finance_transactions_path}'] input[name='finance_transaction[transaction_date]'][required]"
-    assert_select "details.income-evidence-panel[open]", count: 1
-    assert_select "details.income-evidence-panel form[action='#{from_receipt_finance_transactions_path}'] input[name='receipt[kind]'][value='income']"
-    assert_select "details.income-evidence-panel label[for='receipt_image']", count: 1
-    assert_select "details.entry-optional-fields select[name='finance_transaction[category]']"
-    assert_select "details.intake-manual", count: 0
-    assert_select "form[data-controller='receipt-upload']", count: 1
-    assert_includes response.body, "Bộ đọc ảnh GGUF chưa kết nối"
+    assert_select "form[action='#{finance_transactions_path}'] input[name='finance_transaction[amount]']"
+    assert_select "details.intake-manual", count: 1
 
     get new_finance_transaction_path(kind: "income", locale: "en")
     assert_response :success
-    assert_select "h1", text: "Record income"
-    assert_select "nav.finance-mode-switch a.finance-mode-link.is-active[href*='kind=income']", count: 1
-    assert_includes response.body, "Amount received"
-    assert_includes response.body, "Received from / reason"
+    assert_select "h1", text: "Create an income or expense transaction"
+    assert_select "fieldset.finance-kind-radios input[value=income][checked]", count: 1
   end
 
   test "valid income quick entry creates unconfirmed draft and redirects to income-specific review" do
@@ -93,8 +87,8 @@ class FinanceTwoJourneysTest < ActionDispatch::IntegrationTest
         post finance_transactions_path,params:{entry_mode:"quick_income",
           finance_transaction: {kind:"income"}.merge(data)}
         assert_response :unprocessable_entity
-        assert_select "h1", text: "Record income"
-        assert_select "details.income-evidence-panel[open]", count: 1
+        assert_select "h1", text: "Create an income or expense transaction"
+        assert_select "details.intake-manual[open]", count: 1
       end
     end
   end

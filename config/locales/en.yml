@@ -531,6 +531,55 @@ en:
       income_amount_required: Enter a positive received amount.
       income_date_required: Enter the actual date received.
       income_source_required: Describe the source of income.
+    unified_intake:
+      title: Create an income or expense transaction
+      subtitle: Choose Money in or Money out, then upload evidence or enter the transaction manually in the same layout.
+      select_kind: Transaction type
+      upload_title: Upload income or expense evidence
+      upload_badge: Evidence first
+      drop_title: Drop evidence image here
+      upload_button: Upload and continue
+      manual_title: No image? Enter a transaction manually
+      manual_help: Enter the amount, purpose and verified details, then save an editable draft.
+      purpose: Transaction purpose or source
+      purpose_placeholder: 'E.g. customer payment, consulting service, office supplies'
+      step_next: 'Next: review the evidence'
+      assistant_heading: Review evidence and transaction fields
+      assistant_help: Original images and SHA256 evidence are preserved. GGUF inference is not connected. Only a person confirms transactions.
+    revisions:
+      reason: Reason for change
+      reason_placeholder: 'E.g. The transaction date was entered incorrectly; updating it after checking the receipt.'
+      reason_help: Required, 10–2000 characters. Each meaningful edit records an immutable version with before/after values, timestamp and actor.
+      reason_required: Enter a reason for this change (10–2000 characters) to create a revision.
+      stale: The transaction was edited elsewhere. Reload it before saving.
+      history_title: Transaction revision history
+      empty: No saved edit versions since revision tracking was enabled. Earlier audit history is retained.
+      version: 'Version %{number}'
+      changes: 'View %{count} changed groups'
+      before: Before
+      after: After
+      fields:
+        transaction: Transaction details
+        context: Context / location
+        line_items: Item breakdown
+        correction: Correction link
+      labels:
+        kind: Transaction type
+        transaction_date: Transaction date
+        amount: Amount (VND)
+        description: Description
+        category: Category
+        status: Status
+        purchase_details: Details
+        occurred_time: Time
+        location_text: Location
+      actions:
+        draft_edited: Draft edited
+        correction_requested: Correction requested
+        correction_confirmed: Replacement confirmed
+      start_correction: Correct a confirmed transaction
+      confirmed_help: Confirmed financial records cannot be overwritten. Explain why to create an editable replacement draft, then confirm it separately. The original is preserved.
+      create_correction: Create correction draft
     quick_item:
       name_placeholder: E.g. coffee, paper supplies
       total: Line total (VND)

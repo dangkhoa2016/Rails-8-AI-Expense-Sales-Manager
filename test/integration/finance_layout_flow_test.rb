@@ -17,7 +17,7 @@ class FinanceLayoutFlowTest < ActionDispatch::IntegrationTest
     assert_select "details.intake-manual", count: 1
     assert_select "input[name='finance_transaction[amount]']", count: 1
     assert_select "input[name*='line_items_attributes']", count: 0
-    assert_includes response.body, "Tạo khoản chi từ hóa đơn"
+    assert_includes response.body, "Tải ảnh chứng từ thu hoặc chi"
   end
 
   test "save draft then detail shows compact item preview and expandable audit" do
@@ -51,7 +51,7 @@ class FinanceLayoutFlowTest < ActionDispatch::IntegrationTest
     get edit_finance_transaction_path(tx,locale:"vi")
     assert_response :success
     assert_select "select[name='finance_transaction[category]'] option[value='food'][selected]"
-    patch finance_transaction_path(tx), params:{finance_transaction:{
+    patch finance_transaction_path(tx), params:{revision_reason: "The amount and transaction day need correction.",finance_transaction:{
       amount: "45000", description: "Updated", category:"food",
       transaction_date:"2026-10-29"
     }}

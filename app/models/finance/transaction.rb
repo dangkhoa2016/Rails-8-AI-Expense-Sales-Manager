@@ -6,6 +6,8 @@ module Finance
     has_many :document_versions, class_name: 'Finance::DocumentVersion', foreign_key: :transaction_id, inverse_of: :finance_transaction, dependent: :restrict_with_exception
     has_many :field_suggestions, class_name: 'Finance::FieldSuggestion', foreign_key: :transaction_id, dependent: :restrict_with_exception
     has_many :audit_events, class_name: 'Finance::AuditEvent', foreign_key: :transaction_id, dependent: :restrict_with_exception
+    has_many :revisions, class_name: "Finance::TransactionRevision", foreign_key: :transaction_id,
+      inverse_of: :finance_transaction, dependent: :restrict_with_exception
     belongs_to :active_document_version, class_name: 'Finance::DocumentVersion', optional: true
     has_one :context, class_name: "Finance::TransactionContext", foreign_key: :transaction_id,
       inverse_of: :finance_transaction, dependent: :restrict_with_exception

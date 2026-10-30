@@ -37,7 +37,7 @@ class FinanceContextTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Da Nang"
     assert_includes response.body, "Chi tiết mua sắm và thanh toán"
 
-    patch finance_transaction_path(tx), params: { finance_transaction: {
+    patch finance_transaction_path(tx), params: { revision_reason: "Correct the time and place on the draft.", finance_transaction: {
       context_attributes: { purchase_details: "Bread, for breakfast", occurred_time: "08:17",
                             location_text: "Another demo location" }
     } }

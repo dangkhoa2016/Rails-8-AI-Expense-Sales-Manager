@@ -43,10 +43,20 @@ module Finance
           )
         end
 
+        before_revision = Finance::RecordTransactionRevision.snapshot(source)
         correction = Finance::Correction.create!(
           original_transaction: source, replacement_transaction: replacement,
           workspace_id: source.workspace_id, requested_by: actor,
           reason: reason, status: "draft"
+        )
+        Finance::RecordTransactionRevision.call(
+          transaction: source, actor: actor, reason: reason, action: "correction_requested",
+          before_state: before_revision,
+          after_state: before_revision.merge("correction" => {
+            "correction_id" => correction.id,
+            "replacement_transaction_id" => replacement.id,
+            "status" => "draft"
+          })
         )
         Finance::AuditEvent.create!(
           finance_transaction: source, workspace_id: source.workspace_id, actor_id: actor.id,

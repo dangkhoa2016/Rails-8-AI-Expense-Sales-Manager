@@ -3,17 +3,18 @@
     <div class="panel intake-upload-panel">
       <div class="intake-method-heading">
         <span class="intake-method-number">01</span>
-        <div><h2><%= ui("new_ux.expense_upload_title") %></h2>
+        <div><h2><%= ui("unified_intake.upload_title") %></h2>
           <p class="form-hint"><%= ui("intake.upload_help") %></p></div>
-        <span class="status-pill is-confirmed"><%= ui("new_ux.expense_primary_badge") %></span>
+        <span class="status-pill is-confirmed"><%= ui("unified_intake.upload_badge") %></span>
       </div>
       <%= form_with url: from_receipt_finance_transactions_path, method: :post,
         multipart: true, scope: :receipt, data: {controller: "receipt-upload"} do |f| %>
-        <%= f.hidden_field :kind, value: "expense" %>
+        <%= f.hidden_field :kind, value: @transaction.kind,
+          data: {finance_kind_selector_target: "kind"} %>
         <div class="receipt-dropzone" data-receipt-upload-target="zone"
           data-action="dragenter->receipt-upload#dragEnter dragover->receipt-upload#dragOver dragleave->receipt-upload#dragLeave drop->receipt-upload#drop">
           <div class="receipt-upload-icon" aria-hidden="true">▧</div>
-          <strong><%= ui("intake.drop_title") %></strong>
+          <strong><%= ui("unified_intake.drop_title") %></strong>
           <p class="form-hint"><%= ui("intake.drop_help") %></p>
           <%= f.label :image, ui("intake.choose_file"), class: "btn btn-secondary" %>
           <%= f.file_field :image, accept: "image/jpeg,image/png,image/webp", required: true,
@@ -26,33 +27,38 @@
           <span data-receipt-upload-target="filename"></span>
         </div>
         <div class="intake-submit">
-          <div><strong><%= ui("new_ux.expense_step_next") %></strong>
+          <div><strong><%= ui("unified_intake.step_next") %></strong>
             <p class="form-hint"><%= ui("intake.no_ai_yet") %></p></div>
-          <%= f.submit ui("intake.upload_button"), class: "btn btn-primary",
+          <%= f.submit ui("unified_intake.upload_button"), class: "btn btn-primary",
             data: {receipt_upload_target: "submit"} %>
         </div>
       <% end %>
     </div>
     <details class="panel intake-manual" <%= "open" if @transaction.errors.any? %>>
       <summary><span class="intake-method-number">02</span>
-        <span><strong><%= ui("new_ux.expense_manual_title") %></strong>
-          <small><%= ui("new_ux.expense_manual_help") %></small></span>
+        <span><strong><%= ui("unified_intake.manual_title") %></strong>
+          <small><%= ui("unified_intake.manual_help") %></small></span>
         <span aria-hidden="true">⌄</span></summary>
       <% if @transaction.errors.any? %>
         <div role="alert" class="flash alert"><%= @transaction.errors.full_messages.to_sentence %></div>
       <% end %>
       <%= form_with model: @transaction, scope: :finance_transaction,
           url: finance_transactions_path, method: :post do |f| %>
-        <%= f.hidden_field :kind, value: "expense" %>
+        <%= f.hidden_field :kind, value: @transaction.kind,
+          data: {finance_kind_selector_target: "kind"} %>
+        <%= hidden_field_tag :entry_mode, (@transaction.kind == "income" ? "quick_income" : ""),
+          data: {finance_kind_selector_target: "entryMode"} %>
         <div class="form-field entry-amount">
           <%= f.label :amount, ui("shared.amount"), class: "form-label" %>
           <%= f.number_field :amount, min: 0, step: 1, inputmode: "numeric", placeholder: "30000" %>
         </div>
         <div class="form-field">
-          <%= f.label :description, ui("new_ux.expense_purpose"), class: "form-label" %>
-          <%= f.text_area :description, rows: 2, placeholder: ui("new_ux.expense_purpose_placeholder") %>
+          <%= f.label :description, ui("unified_intake.purpose"), class: "form-label" %>
+          <%= f.text_area :description, rows: 2, placeholder: ui("unified_intake.purpose_placeholder") %>
         </div>
-        <details class="entry-optional-fields">
+        <details class="entry-optional-fields"
+          data-finance-kind-selector-target="dateOptions"
+          <%= "open" if @transaction.kind == "income" || @transaction.errors.any? %>>
           <summary><%= ui("new_ux.extra_fields") %></summary>
           <div class="fields-grid">
             <div class="form-field">
@@ -77,8 +83,8 @@
   <aside class="intake-aside">
     <section class="panel ux-assist-panel">
       <span class="eyebrow"><%= ui("new_ux.assistant_title") %></span>
-      <h2><%= ui("new_ux.expense_assistant_heading") %></h2>
-      <p class="form-hint"><%= ui("new_ux.expense_assistant_help") %></p>
+      <h2><%= ui("unified_intake.assistant_heading") %></h2>
+      <p class="form-hint"><%= ui("unified_intake.assistant_help") %></p>
       <div class="security-info"><%= ui("intake.safety") %></div>
     </section>
   </aside>

@@ -54,7 +54,7 @@ class FinanceCorrectionFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "100.000" # Vietnamese locale saved
 
-    patch finance_transaction_path(replacement), params: {finance_transaction: {
+    patch finance_transaction_path(replacement), params: {revision_reason: "Correct amount, date and details after review.",finance_transaction: {
       amount: "120000", transaction_date: "2026-10-27",
       description: "Corrected office purchase"
     }}

@@ -661,3 +661,45 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
     min-height:36px;white-space:normal;
   }
 }
+
+/* One finance intake form with mutually exclusive accessible kind selection. */
+.unified-intake-shell{min-width:0}
+.finance-kind-radios{
+  display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px;
+  border:1px solid #d9e5f1;border-radius:14px;padding:14px 16px;
+  background:#fff;
+}
+.finance-kind-radios legend{font-weight:750;color:#274963;padding:0 6px}
+.finance-kind-option{
+  display:flex;align-items:center;gap:10px;min-height:44px;
+  padding:9px 18px;border-radius:10px;border:1px solid #d9e5f1;
+  background:#f7faff;font-weight:750;cursor:pointer;
+}
+.finance-kind-option:has(input:checked){
+  border-color:#2467b6;background:#e9f2fe;color:#13549e;
+}
+.finance-kind-option input{accent-color:#2467b6;width:18px;height:18px;margin:0}
+.finance-kind-option:focus-within{outline:2px solid #8dbde9;outline-offset:2px}
+@media(max-width:540px){
+  .finance-kind-radios{padding:12px}
+  .finance-kind-option{flex:1 1 120px;justify-content:center}
+}
+/* Finance version history is readable on narrow screens and preserves diffs. */
+.transaction-revision-reason textarea{width:100%;max-width:100%;box-sizing:border-box}
+.transaction-revision-history .revision-changes{margin-top:10px}
+.transaction-revision-history .revision-change{padding:10px 0;border-top:1px solid #edf2f7}
+.transaction-revision-history .revision-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.transaction-revision-history .revision-pair>div{min-width:0}
+.transaction-revision-history .revision-pair span{font-size:.73rem;font-weight:750;color:#58728b}
+.transaction-revision-history pre{
+  max-height:250px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;
+  font-size:.74rem;background:#f4f8fc;padding:10px;border:1px solid #e1eaf2;border-radius:9px
+}
+@media(max-width:630px){.transaction-revision-history .revision-pair{grid-template-columns:1fr}}
+.transaction-revision-history .revision-field-change{padding:8px 0;border-bottom:1px dashed #e4ecf3}
+.transaction-revision-history .revision-field-change:last-child{border-bottom:0}
+.transaction-revision-history .revision-field-change>strong{font-size:.78rem;color:#315a78}
+.transaction-revision-history .revision-pair p{
+  margin:3px 0 0;overflow-wrap:anywhere;font-size:.83rem;
+  border:1px solid #e1eaf2;background:#f4f8fc;border-radius:8px;padding:8px;
+}
