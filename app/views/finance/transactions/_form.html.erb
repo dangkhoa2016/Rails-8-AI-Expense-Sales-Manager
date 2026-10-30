@@ -1,4 +1,5 @@
 <% content_for :title, @transaction.persisted? ? ui("form.title.edit", id: @transaction.id) : ui("form.title.create") %>
+<div data-controller="original-transaction-modal">
 <div class="page-heading transaction-form-heading">
   <div><span class="eyebrow"><%= ui("form.eyebrow") %></span>
     <h1><%= @transaction.persisted? ? ui("form.title.edit", id: @transaction.id) : ui("form.title.create") %></h1>
@@ -119,6 +120,16 @@
     <% end %>
   </div>
   <aside class="transaction-entry-aside">
+    <% if @comparison_source %>
+      <section class="panel correction-original-sidebar">
+        <h2><%= ui("correction.source") %></h2>
+        <p class="form-hint"><%= ui("original_modal.readonly") %></p>
+        <%= button_tag ui("correction.source"), type: "button",
+          class: "btn btn-secondary", data: {
+            action: "original-transaction-modal#open"
+          } %>
+      </section>
+    <% end %>
     <section class="panel">
       <span class="eyebrow"><%= ui("entry.guide_label") %></span>
       <h2><%= ui("entry.guide_title") %></h2>
@@ -130,4 +141,6 @@
       <p class="form-hint"><%= ui("entry.privacy") %></p>
     </section>
   </aside>
+</div>
+<%= render "finance/transactions/original_transaction_modal" %>
 </div>

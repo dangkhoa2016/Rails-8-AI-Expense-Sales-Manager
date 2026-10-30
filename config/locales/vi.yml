@@ -578,6 +578,12 @@ vi:
       start_correction: Sửa giao dịch đã xác nhận
       confirmed_help: Không thể ghi đè giao dịch đã chốt. Nhập lý do để tạo bản nháp thay thế, sau đó sửa và xác nhận riêng. Giao dịch gốc vẫn được giữ.
       create_correction: Tạo bản nháp điều chỉnh
+    original_modal:
+      title: 'Giao dịch gốc #%{id} (bất biến)'
+      readonly: Chỉ xem. Giao dịch đã xác nhận này không thể bị thay đổi từ bản nháp đang sửa.
+      close: Đóng chi tiết
+      evidence_new_tab: Chứng từ mở trong tab mới, không thay đổi bản nháp hiện tại.
+      no_evidence: Giao dịch này chưa có chứng từ đính kèm.
     correction_drafts:
       copy_badge: BẢN NHÁP ĐIỀU CHỈNH
       copy_title: Đây là bản sao của giao dịch đã xác nhận

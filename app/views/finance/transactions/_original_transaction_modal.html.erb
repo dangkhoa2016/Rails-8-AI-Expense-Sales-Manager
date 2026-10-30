@@ -1,0 +1,123 @@
+<% if @comparison_source %>
+  <% source = @comparison_source %>
+  <dialog class="original-transaction-dialog"
+    data-original-transaction-modal-target="dialog"
+    data-action="cancel->original-transaction-modal#preventImplicitClose close->original-transaction-modal#restoreFocus"
+    aria-labelledby="original-transaction-modal-title-<%= source.id %>"
+    aria-describedby="original-transaction-modal-help-<%= source.id %>">
+    <div class="original-transaction-modal-content">
+      <div class="original-transaction-modal-header">
+        <div>
+          <span class="status-pill is-confirmed"><%= ui("shared.confirmed") %></span>
+          <h2 id="original-transaction-modal-title-<%= source.id %>">
+            <%= ui("original_modal.title", id: source.id) %>
+          </h2>
+          <p id="original-transaction-modal-help-<%= source.id %>" class="form-hint">
+            <%= ui("original_modal.readonly") %>
+          </p>
+        </div>
+        <button type="button" class="original-transaction-modal-close"
+          aria-label="<%= ui("original_modal.close") %>"
+          data-action="original-transaction-modal#close">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="original-transaction-modal-summary">
+        <div><small><%= ui("shared.amount") %></small>
+          <strong><%= money_vnd(source.amount) %></strong></div>
+        <div><small><%= ui("shared.date") %></small>
+          <strong><%= human_day(source.transaction_date) %></strong></div>
+        <div><small><%= ui("shared.type") %></small>
+          <strong><%= ui("shared.#{source.kind}") %></strong></div>
+        <div><small><%= ui("shared.description") %></small>
+          <strong><%= source.description.presence || "—" %></strong></div>
+        <div><small><%= ui("transaction_tags.title") %></small>
+          <strong><% source_tags = source.tags.order(:key).to_a %>
+            <%= source_tags.any? ? source_tags.map(&:label).join(" · ") : category_label(source.category) %>
+          </strong></div>
+      </div>
+
+      <% if source.context.present? %>
+        <section class="original-transaction-modal-section">
+          <h3><%= ui("detail.context.title") %></h3>
+          <dl class="record-dl">
+            <div><dt><%= ui("detail.context.details") %></dt>
+              <dd><%= source.context.purchase_details.presence || "—" %></dd></div>
+            <div><dt><%= ui("detail.context.time") %></dt>
+              <dd><%= source.context.occurred_time&.strftime("%H:%M") || "—" %></dd></div>
+            <div><dt><%= ui("detail.context.location") %></dt>
+              <dd><%= source.context.location_text.presence || "—" %></dd></div>
+          </dl>
+        </section>
+      <% end %>
+
+      <details class="original-transaction-modal-section original-transaction-modal-items" open>
+        <summary><strong><%= ui("detail.items.title") %> · <%= source.line_items.count %></strong></summary>
+        <% if source.line_items.exists? %>
+          <div class="original-transaction-modal-item-scroll">
+            <% source.line_items.includes(:tags).order(:position, :id).each do |item| %>
+              <div class="original-transaction-modal-item">
+                <div>
+                  <strong><%= item.description %></strong>
+                  <small><%= item.tags.any? ? item.tags.map(&:label).join(" · ") : category_label(item.category) %>
+                    <% if item.quantity.present? %>
+                      · <%= ui("m6.quantity") %>: <%= item.quantity.to_s("F") %>
+                    <% end %>
+                    <% if item.occurred_time %> · <%= item.occurred_time.strftime("%H:%M") %><% end %>
+                    <% if item.location_text.present? %> · <%= item.location_text %><% end %>
+                  </small>
+                </div>
+                <strong class="original-transaction-modal-item-amount"><%= money_vnd(item.amount) %></strong>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="form-hint"><%= ui("detail.items.empty") %></p>
+        <% end %>
+      </details>
+
+      <details class="original-transaction-modal-section">
+        <summary><strong><%= ui("detail.documents.title") %> · <%= source.document_versions.count %></strong></summary>
+        <% if source.document_versions.exists? %>
+          <ol class="original-transaction-modal-evidence">
+            <% source.document_versions.order(version_number: :desc).each do |version| %>
+              <li>
+                <%= link_to ui("detail.image.version", number: version.version_number),
+                  finance_transaction_document_version_path(source, version),
+                  target: "_blank", rel: "noopener noreferrer", class: "text-action" %>
+                <small>SHA256: <code><%= version.sha256 %></code></small>
+              </li>
+            <% end %>
+          </ol>
+          <p class="form-hint"><%= ui("original_modal.evidence_new_tab") %></p>
+        <% else %>
+          <p class="form-hint"><%= ui("original_modal.no_evidence") %></p>
+        <% end %>
+      </details>
+
+      <details class="original-transaction-modal-section">
+        <summary><strong><%= ui("revisions.history_title") %> · <%= source.revisions.count %></strong></summary>
+        <% source.revisions.includes(:actor).order(version_number: :desc).each do |revision| %>
+          <div class="original-transaction-modal-revision">
+            <strong><%= ui("revisions.version", number: revision.version_number) %> ·
+              <%= ui("revisions.actions.#{revision.action}") %></strong>
+            <small><%= revision.created_at.in_time_zone("Asia/Ho_Chi_Minh").strftime("%d/%m/%Y %H:%M:%S %Z") %>
+              · <%= revision.actor.email_address %></small>
+            <p><%= revision.reason %></p>
+          </div>
+        <% end %>
+      </details>
+
+      <div class="original-transaction-modal-footer">
+        <button type="button" class="btn btn-secondary" data-action="original-transaction-modal#close">
+          <%= ui("original_modal.close") %>
+        </button>
+      </div>
+    </div>
+  </dialog>
+<% end %>

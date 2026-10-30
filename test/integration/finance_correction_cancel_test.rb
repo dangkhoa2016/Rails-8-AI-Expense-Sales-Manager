@@ -93,7 +93,15 @@ class FinanceCorrectionCancelTest < ActionDispatch::IntegrationTest
     draft=@source.reload.correction_as_original.replacement_transaction
     get edit_finance_transaction_path(draft,locale:"vi")
     assert_response :success
-    assert_select "#correction-origin a[href='#{finance_transaction_path(@source)}']"
+    assert_select "#correction-origin button[data-action='original-transaction-modal#open']", count: 1
+    assert_select ".correction-original-sidebar button[data-action='original-transaction-modal#open']", count: 1
+    assert_select "dialog.original-transaction-dialog[data-original-transaction-modal-target='dialog']", count: 1
+    assert_select "#original-transaction-modal-title-#{@source.id}", text: /Giao dịch gốc/
+    assert_select "dialog.original-transaction-dialog .original-transaction-modal-item", count: 2
+    assert_select "dialog.original-transaction-dialog form", count: 0
+    assert_select "dialog.original-transaction-dialog a[href='#{finance_transaction_path(@source)}']", count: 0
+    assert_select "input[type=submit].btn-danger", count: 1
+    assert_select "fieldset.transaction-tag-picker a[href='#{finance_tags_path}']", count: 0
     assert_includes response.body, "Chưa có khác biệt"
     item=draft.line_items.order(:position).first
     patch finance_transaction_line_item_path(draft,item),params:{line_item:{
@@ -101,6 +109,8 @@ class FinanceCorrectionCancelTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     get finance_transaction_path(draft,locale:"vi")
     assert_response :success
+    assert_select "button[data-action='original-transaction-modal#open']", minimum: 2
+    assert_select "dialog.original-transaction-dialog", count: 1
     assert_includes response.body, "Corrected bread item"
     assert_includes response.body, "So sánh với giao dịch gốc"
     assert_equal original_amount,@source.reload.amount

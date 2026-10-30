@@ -16,8 +16,10 @@
     <% else %>
       <p class="form-hint"><%= ui("correction_drafts.edit_only_copy") %></p>
     <% end %>
-    <p><%= link_to ui("correction_drafts.open_original"),
-      finance_transaction_path(@comparison_source), class: "btn btn-secondary" %></p>
+    <p><%= button_tag ui("correction_drafts.open_original"),
+      type: "button", class: "btn btn-secondary", data: {
+        action: "original-transaction-modal#open"
+      } %></p>
     <div class="correction-comparison-summary">
       <div><small><%= ui("correction_drafts.original") %></small>
         <strong>#<%= @comparison_source.id %> · <%= money_vnd(@comparison_source.amount) %></strong>
