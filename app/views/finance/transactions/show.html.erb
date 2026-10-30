@@ -30,7 +30,7 @@
     <p><%= ui("correction_drafts.cancelled_help") %></p>
     <% if @comparison_source %>
       <%= button_tag ui("correction_drafts.open_original"),
-        type: "button", class: "btn btn-secondary", data: {
+        type: "button", class: "btn btn-secondary original-modal-trigger", data: {
           action: "original-transaction-modal#open"
         } %>
     <% end %>
@@ -170,7 +170,7 @@
         <% if @correction_incoming %>
           <p><%= @correction_incoming.reason %></p>
           <%= button_tag ui("correction.source"), type: "button",
-            class: "btn btn-secondary", data: {
+            class: "btn btn-secondary original-modal-trigger", data: {
               action: "original-transaction-modal#open"
             } %>
         <% end %>
