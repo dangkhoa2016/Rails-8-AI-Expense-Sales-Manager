@@ -168,7 +168,7 @@ BEGIN
 
   IF TG_OP <> 'DELETE' THEN
     SELECT workspace_id INTO tag_workspace
-    FROM finance_categories WHERE id = NEW.category_id;
+    FROM finance_tags WHERE id = NEW.tag_id;
     IF tag_workspace IS DISTINCT FROM item_workspace THEN
       RAISE EXCEPTION 'Cross-workspace line tags are forbidden';
     END IF;
@@ -240,7 +240,7 @@ BEGIN
     RAISE EXCEPTION 'Transaction tag links are immutable; delete and insert instead';
   END IF;
   IF TG_OP = 'INSERT' THEN
-    SELECT workspace_id INTO tag_workspace FROM finance_categories WHERE id = NEW.category_id;
+    SELECT workspace_id INTO tag_workspace FROM finance_tags WHERE id = NEW.tag_id;
     IF tag_workspace IS DISTINCT FROM parent_workspace THEN
       RAISE EXCEPTION 'Transaction tag must belong to same workspace';
     END IF;
@@ -397,43 +397,6 @@ CREATE SEQUENCE public.finance_audit_events_id_seq
 --
 
 ALTER SEQUENCE public.finance_audit_events_id_seq OWNED BY public.finance_audit_events.id;
-
-
---
--- Name: finance_categories; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.finance_categories (
-    id bigint NOT NULL,
-    workspace_id bigint NOT NULL,
-    key character varying(50) NOT NULL,
-    name_en character varying(120) NOT NULL,
-    name_vi character varying(120) NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    CONSTRAINT finance_categories_nonempty_names CHECK (((char_length(btrim((name_en)::text)) > 0) AND (char_length(btrim((name_vi)::text)) > 0))),
-    CONSTRAINT finance_categories_safe_key CHECK (((key)::text ~ '^[a-z][a-z0-9_]{1,49}$'::text))
-);
-
-
---
--- Name: finance_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.finance_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: finance_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.finance_categories_id_seq OWNED BY public.finance_categories.id;
 
 
 --
@@ -633,7 +596,7 @@ ALTER SEQUENCE public.finance_line_import_batches_id_seq OWNED BY public.finance
 CREATE TABLE public.finance_line_item_tags (
     id bigint NOT NULL,
     line_item_id bigint NOT NULL,
-    category_id bigint NOT NULL,
+    tag_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -673,7 +636,6 @@ CREATE TABLE public.finance_line_items (
     updated_at timestamp(6) without time zone NOT NULL,
     quantity numeric(12,3),
     unit_price numeric(20,2),
-    category character varying(100),
     occurred_on date,
     occurred_time time without time zone,
     location_text character varying(400),
@@ -701,6 +663,43 @@ CREATE SEQUENCE public.finance_line_items_id_seq
 --
 
 ALTER SEQUENCE public.finance_line_items_id_seq OWNED BY public.finance_line_items.id;
+
+
+--
+-- Name: finance_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.finance_tags (
+    id bigint NOT NULL,
+    workspace_id bigint NOT NULL,
+    key character varying(50) NOT NULL,
+    name_en character varying(120) NOT NULL,
+    name_vi character varying(120) NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT finance_categories_nonempty_names CHECK (((char_length(btrim((name_en)::text)) > 0) AND (char_length(btrim((name_vi)::text)) > 0))),
+    CONSTRAINT finance_categories_safe_key CHECK (((key)::text ~ '^[a-z][a-z0-9_]{1,49}$'::text))
+);
+
+
+--
+-- Name: finance_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.finance_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: finance_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.finance_tags_id_seq OWNED BY public.finance_tags.id;
 
 
 --
@@ -789,7 +788,7 @@ ALTER SEQUENCE public.finance_transaction_revisions_id_seq OWNED BY public.finan
 CREATE TABLE public.finance_transaction_tags (
     id bigint NOT NULL,
     transaction_id bigint NOT NULL,
-    category_id bigint NOT NULL,
+    tag_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -827,7 +826,6 @@ CREATE TABLE public.finance_transactions (
     currency_code character varying DEFAULT 'VND'::character varying NOT NULL,
     amount numeric(20,2),
     description text,
-    category character varying,
     entry_source character varying DEFAULT 'manual'::character varying NOT NULL,
     active_document_version_id bigint,
     created_by_id bigint NOT NULL,
@@ -999,13 +997,6 @@ ALTER TABLE ONLY public.finance_audit_events ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- Name: finance_categories id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.finance_categories ALTER COLUMN id SET DEFAULT nextval('public.finance_categories_id_seq'::regclass);
-
-
---
 -- Name: finance_corrections id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1052,6 +1043,13 @@ ALTER TABLE ONLY public.finance_line_item_tags ALTER COLUMN id SET DEFAULT nextv
 --
 
 ALTER TABLE ONLY public.finance_line_items ALTER COLUMN id SET DEFAULT nextval('public.finance_line_items_id_seq'::regclass);
+
+
+--
+-- Name: finance_tags id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_tags ALTER COLUMN id SET DEFAULT nextval('public.finance_tags_id_seq'::regclass);
 
 
 --
@@ -1144,14 +1142,6 @@ ALTER TABLE ONLY public.finance_audit_events
 
 
 --
--- Name: finance_categories finance_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.finance_categories
-    ADD CONSTRAINT finance_categories_pkey PRIMARY KEY (id);
-
-
---
 -- Name: finance_corrections finance_corrections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1205,6 +1195,14 @@ ALTER TABLE ONLY public.finance_line_item_tags
 
 ALTER TABLE ONLY public.finance_line_items
     ADD CONSTRAINT finance_line_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: finance_tags finance_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_tags
+    ADD CONSTRAINT finance_tags_pkey PRIMARY KEY (id);
 
 
 --
@@ -1272,13 +1270,6 @@ ALTER TABLE ONLY public.workspaces
 
 
 --
--- Name: idx_finance_categories_tenant_key; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX idx_finance_categories_tenant_key ON public.finance_categories USING btree (workspace_id, key);
-
-
---
 -- Name: idx_finance_correction_original; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1307,10 +1298,17 @@ CREATE UNIQUE INDEX idx_finance_line_import_replay ON public.finance_line_import
 
 
 --
--- Name: idx_finance_line_item_tags_unique; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_finance_line_item_tags_unique_by_tag; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX idx_finance_line_item_tags_unique ON public.finance_line_item_tags USING btree (line_item_id, category_id);
+CREATE UNIQUE INDEX idx_finance_line_item_tags_unique_by_tag ON public.finance_line_item_tags USING btree (line_item_id, tag_id);
+
+
+--
+-- Name: idx_finance_tags_tenant_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_finance_tags_tenant_key ON public.finance_tags USING btree (workspace_id, key);
 
 
 --
@@ -1335,10 +1333,10 @@ CREATE INDEX idx_finance_transaction_revision_workspace_time ON public.finance_t
 
 
 --
--- Name: idx_finance_transaction_tags_unique; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_finance_transaction_tags_unique_by_tag; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX idx_finance_transaction_tags_unique ON public.finance_transaction_tags USING btree (transaction_id, category_id);
+CREATE UNIQUE INDEX idx_finance_transaction_tags_unique_by_tag ON public.finance_transaction_tags USING btree (transaction_id, tag_id);
 
 
 --
@@ -1398,13 +1396,6 @@ CREATE INDEX index_finance_audit_events_on_workspace_id_and_created_at ON public
 
 
 --
--- Name: index_finance_categories_on_workspace_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_finance_categories_on_workspace_id ON public.finance_categories USING btree (workspace_id);
-
-
---
 -- Name: index_finance_extraction_runs_on_document_version_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1433,13 +1424,6 @@ CREATE INDEX index_finance_line_import_batches_on_transaction_id ON public.finan
 
 
 --
--- Name: index_finance_line_item_tags_on_category_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_finance_line_item_tags_on_category_id ON public.finance_line_item_tags USING btree (category_id);
-
-
---
 -- Name: index_finance_line_item_tags_on_line_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1447,10 +1431,24 @@ CREATE INDEX index_finance_line_item_tags_on_line_item_id ON public.finance_line
 
 
 --
+-- Name: index_finance_line_item_tags_on_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finance_line_item_tags_on_tag_id ON public.finance_line_item_tags USING btree (tag_id);
+
+
+--
 -- Name: index_finance_line_items_on_transaction_id_and_position; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_finance_line_items_on_transaction_id_and_position ON public.finance_line_items USING btree (transaction_id, "position");
+
+
+--
+-- Name: index_finance_tags_on_workspace_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finance_tags_on_workspace_id ON public.finance_tags USING btree (workspace_id);
 
 
 --
@@ -1482,10 +1480,10 @@ CREATE INDEX index_finance_transaction_revisions_on_workspace_id ON public.finan
 
 
 --
--- Name: index_finance_transaction_tags_on_category_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_finance_transaction_tags_on_tag_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_finance_transaction_tags_on_category_id ON public.finance_transaction_tags USING btree (category_id);
+CREATE INDEX index_finance_transaction_tags_on_tag_id ON public.finance_transaction_tags USING btree (tag_id);
 
 
 --
@@ -1715,7 +1713,7 @@ ALTER TABLE ONLY public.finance_corrections
 --
 
 ALTER TABLE ONLY public.finance_line_item_tags
-    ADD CONSTRAINT fk_rails_7c6c9c7a09 FOREIGN KEY (category_id) REFERENCES public.finance_categories(id);
+    ADD CONSTRAINT fk_rails_7c6c9c7a09 FOREIGN KEY (tag_id) REFERENCES public.finance_tags(id);
 
 
 --
@@ -1755,7 +1753,7 @@ ALTER TABLE ONLY public.finance_corrections
 --
 
 ALTER TABLE ONLY public.finance_transaction_tags
-    ADD CONSTRAINT fk_rails_b42314e058 FOREIGN KEY (category_id) REFERENCES public.finance_categories(id);
+    ADD CONSTRAINT fk_rails_b42314e058 FOREIGN KEY (tag_id) REFERENCES public.finance_tags(id);
 
 
 --
@@ -1799,10 +1797,10 @@ ALTER TABLE ONLY public.finance_line_items
 
 
 --
--- Name: finance_categories fk_rails_e0aae8adf0; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: finance_tags fk_rails_e0aae8adf0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.finance_categories
+ALTER TABLE ONLY public.finance_tags
     ADD CONSTRAINT fk_rails_e0aae8adf0 FOREIGN KEY (workspace_id) REFERENCES public.workspaces(id);
 
 
@@ -1845,6 +1843,7 @@ ALTER TABLE ONLY public.finance_field_suggestions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261030200500'),
 ('20261030175000'),
 ('20261030142000'),
 ('20261030110000'),

@@ -5,7 +5,7 @@
     <span class="eyebrow"><%= ui("detail.eyebrow") %></span>
     <h1><%= @transaction.description.presence || ui("detail.title", id: @transaction.id) %></h1>
     <p class="subheading">#<%= @transaction.id %> · <%= human_day(@transaction.transaction_date) %>
-      · <%= category_label(@transaction.category) %></p>
+      · <%= tags_label(@transaction.tags) %></p>
   </div>
   <div class="heading-actions">
     <% if @transaction.draft? %>
@@ -53,7 +53,7 @@
     <div><span><%= ui("shared.date") %></span><strong><%= human_day(@transaction.transaction_date) %></strong></div>
     <div><span><%= ui("transaction_tags.title") %></span><strong>
       <% tags = @transaction.tags.order(:key).to_a %>
-      <%= tags.any? ? tags.map(&:label).join(" · ") : category_label(@transaction.category) %>
+      <%= tags_label(@transaction.tags) %>
     </strong></div>
     <div><span><%= ui("m6.count") %></span><strong><%= @line_items_count %></strong></div>
     <div><span><%= ui("m6.difference") %></span><strong><%= money_vnd(@line_items_delta) %></strong></div>
@@ -84,7 +84,7 @@
                   <% if tags.any? %>
                     <%= tags.map(&:label).join(" · ") %>
                   <% else %>
-                    <%= category_label(line.category) %>
+                    <%= tags_label(line.tags) %>
                   <% end %>
                   <% if @transaction.transaction_date %> · <%= human_day(@transaction.transaction_date) %><% end %>
                   <% if line.occurred_time %> · <%= line.occurred_time.strftime("%H:%M") %><% end %>

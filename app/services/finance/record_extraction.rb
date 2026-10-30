@@ -38,7 +38,7 @@ module Finance
           end
           { 'transaction_amount_vnd' => 'transaction_amount_vnd',
             'transaction_description' => 'transaction_description',
-            'transaction_category' => 'transaction_category' }.each do |json_key, field_key|
+            'transaction_tags' => 'transaction_tags' }.each do |json_key, field_key|
             propose(tx, run, field_key, raw_output[json_key])
           end
           Array(raw_output['line_items']).each_with_index do |item, i|

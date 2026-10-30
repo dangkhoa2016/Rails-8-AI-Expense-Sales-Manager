@@ -46,14 +46,15 @@ samples = [
 
 added = 0
 skipped = 0
-samples.each do |date, kind, amount, category, description|
+Finance::Tag.bootstrap!(workspace.id)
+samples.each do |date, kind, amount, tag_key, description|
   day = Date.iso8601(date)
   existing = Finance::Transaction.for_workspace(workspace.id).find_by(
     kind: kind, transaction_date: day, description: description
   )
   if existing
     raise "Conflicting existing sample: #{description}" unless
-      existing.confirmed? && existing.amount == BigDecimal(amount) && existing.category == category
+      existing.confirmed? && existing.amount == BigDecimal(amount) && existing.tags.exists?(key: tag_key)
     skipped += 1
     next
   end
@@ -61,9 +62,12 @@ samples.each do |date, kind, amount, category, description|
   tx = Finance::Transaction.create!(
     workspace_id: workspace.id, created_by_id: user.id, status: "draft",
     entry_source: "manual", currency_code: "VND", kind: kind,
-    amount: BigDecimal(amount), category: category, description: description,
+    amount: BigDecimal(amount), description: description,
     transaction_date: day
   )
+  selected_tag = Finance::Tag.for_workspace(workspace.id).find_by!(key: tag_key)
+  Finance::TransactionTagging.apply!(transaction: tx, actor: user,
+    tag_ids: [selected_tag.id], new_names: "")
   Finance::ConfirmTransaction.call(transaction: tx, actor: user, reviewed: true)
   added += 1
 end

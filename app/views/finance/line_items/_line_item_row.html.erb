@@ -9,7 +9,7 @@
           <span class="inline-tag-pill"><%= tag.label %></span>
         <% end %>
       <% else %>
-        <%= category_label(item.category) %>
+        <%= tags_label(item.tags) %>
       <% end %>
       <% if item.quantity.present? %> · <%= item.quantity %> × <%= item.unit_price ? money_vnd(item.unit_price) : "—" %><% end %>
     </small>

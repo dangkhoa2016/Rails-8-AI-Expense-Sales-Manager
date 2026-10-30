@@ -9,9 +9,9 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
       created_by_id: @user.id, description: "Responsive example",
       transaction_date: Date.new(2026, 10, 30), amount: 200_000
     )
-    Finance::Category.bootstrap!(@workspace.id)
-    @food = @workspace.finance_categories.find_by!(key: "food")
-    @office = @workspace.finance_categories.find_by!(key: "office")
+    Finance::Tag.bootstrap!(@workspace.id)
+    @food = @workspace.finance_tags.find_by!(key: "food")
+    @office = @workspace.finance_tags.find_by!(key: "office")
     25.times do |i|
       item = @transaction.line_items.create!(
         position: i, description: "Item #{i + 1} — long purchase label",
@@ -23,8 +23,8 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
       # Simulate grandfathered legacy items with no independently recorded date.
       item.update_columns(occurred_on: nil) if i.odd?
       if i == 0
-        item.line_item_tags.create!(category: @food)
-        item.line_item_tags.create!(category: @office)
+        item.line_item_tags.create!(tag: @food)
+        item.line_item_tags.create!(tag: @office)
       end
     end
     post session_path, params: {

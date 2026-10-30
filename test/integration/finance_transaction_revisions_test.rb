@@ -81,7 +81,7 @@ class FinanceTransactionRevisionsTest < ActionDispatch::IntegrationTest
     assert_difference "Finance::TransactionRevision.count", 1 do
       patch finance_transaction_path(@draft), params: {
         revision_reason: "Update the verified purchase description and category.",
-        finance_transaction: {description: "Second revision", category: "office"}}
+        finance_transaction: {description: "Second revision"}}
       assert_response :redirect
     end
     assert_equal [1,2], @draft.revisions.order(:version_number).pluck(:version_number)
@@ -92,7 +92,7 @@ class FinanceTransactionRevisionsTest < ActionDispatch::IntegrationTest
     assert_no_difference "Finance::TransactionRevision.count" do
       patch finance_transaction_path(@draft), params: {
         revision_reason: "Rechecked all values and confirmed they remain correct.",
-        finance_transaction: {description: "Second revision", category: "office"}}
+        finance_transaction: {description: "Second revision"}}
       assert_response :redirect
     end
   end

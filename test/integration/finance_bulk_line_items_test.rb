@@ -66,7 +66,7 @@ class FinanceBulkLineItemsTest < ActionDispatch::IntegrationTest
   end
 
   test "bad row rolls back everything, including import batch and audit" do
-    bad = "description,amount,quantity,unit_price,category\nGood,12000,1,12000,food\nBad,12.456,1,10,food\n"
+    bad = "description,amount,quantity,unit_price,tags\nGood,12000,1,12000,food\nBad,12.456,1,10,food\n"
     assert_no_difference "Finance::LineItem.count" do
       assert_no_difference "Finance::LineImportBatch.count" do
         post import_finance_transaction_line_items_path(@transaction), params: {file: upload(bad)}
@@ -85,16 +85,17 @@ class FinanceBulkLineItemsTest < ActionDispatch::IntegrationTest
 
   test "manual item CRUD synchronizes draft parent and preserves empty manual total" do
     post finance_transaction_line_items_path(@transaction), params: {line_item: {
-      description: "Bánh mì ngọt", amount: "30000", quantity: "2", unit_price: "15000", category: "food", position: "9999"
+      description: "Bánh mì ngọt", amount: "30000", quantity: "2", unit_price: "15000",
+      position: "9999", tag_selection: "1", new_tags: "food"
     }}
     assert_response :redirect
     item = @transaction.line_items.sole
     assert_equal 0, item.position
     assert_equal BigDecimal("2"), item.quantity
     assert_equal BigDecimal("15000"), item.unit_price
-    assert_equal "food", item.category
+    assert_equal "food", item.tags.first&.key
     patch finance_transaction_line_item_path(@transaction, item), params: {line_item: {
-      description: "Bánh mì", amount: "30000", category: "food"
+      description: "Bánh mì", amount: "30000"
     }}
     assert_response :redirect
     assert_equal "Bánh mì", item.reload.description
@@ -106,7 +107,7 @@ class FinanceBulkLineItemsTest < ActionDispatch::IntegrationTest
 
   test "nested draft uses parent date even if old clients submit item dates" do
     entries = 75.times.each_with_object({}) do |i, hash|
-      hash[i.to_s] = {position: i, description: "Item #{i+1}", amount: "500", category: "office", occurred_on: "2026-10-20"}
+      hash[i.to_s] = {position: i, description: "Item #{i+1}", amount: "500", occurred_on: "2026-10-20"}
     end
     assert_difference "Finance::LineItem.count", 75 do
       post finance_transactions_path, params: {finance_transaction: {
@@ -179,7 +180,7 @@ class FinanceBulkLineItemsTest < ActionDispatch::IntegrationTest
 
   def sample_csv(count)
     CSV.generate do |csv|
-      csv << %w[description amount quantity unit_price category]
+      csv << %w[description amount quantity unit_price tags]
       count.times do |i|
         csv << ["Sample item #{i+1}", "1000", "1", "1000", "office"]
       end

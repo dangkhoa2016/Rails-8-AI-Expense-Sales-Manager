@@ -21,29 +21,15 @@ module ApplicationHelper
     I18n.locale == :vi ? date.strftime("%m/%Y") : date.strftime("%B %Y")
   end
 
-  def category_catalog
-    return {} unless respond_to?(:current_workspace) && current_workspace
-    @category_catalog ||= Finance::Category.for_workspace(current_workspace.id)
-      .map { |category| [category.key, category] }.to_h
+  def tags_label(tags)
+    labels = tags.map(&:label)
+    labels.any? ? labels.join(" · ") : ui("tags.none")
   end
 
-  def category_label(value)
-    return ui("reports.category.uncategorized") if value.blank?
-    return category_catalog[value].label if category_catalog.key?(value)
-    key = "finance.category.#{value}"
-    I18n.exists?(key, I18n.locale) ? I18n.t(key) : value
-  end
-
-  def category_options(selected: nil)
-    return [] unless current_workspace
-    Finance::Category.bootstrap!(current_workspace.id)
-    @category_catalog = nil
-    categories = Finance::Category.for_workspace(current_workspace.id).active
-      .order(:key).map { |category| [category.label, category.key] }
-    if selected.present? && categories.none? { |entry| entry.last == selected }
-      categories << [category_label(selected), selected]
-    end
-    categories
+  def tag_label(key)
+    return ui("tags.none") if key.blank?
+    tag = Finance::Tag.for_workspace(current_workspace.id).find_by(key: key)
+    tag&.label || key
   end
 
   def locale_switch_url(target)

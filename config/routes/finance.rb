@@ -1,9 +1,7 @@
 # Add inside Rails.application.routes.draw do ... end; do not replace existing routes.
 namespace :finance do
-  # Public-facing tag URL, backed by the existing localized Category model.
-  resources :tags, controller: :categories, only: %i[index create edit update destroy]
-  # Backward-compatible legacy paths for bookmarks and integrations.
-  resources :categories, only: %i[index create edit update destroy]
+  # Public Tags endpoint backed only by Finance::Tag.
+  resources :tags, only: %i[index create edit update destroy]
   resources :transactions, only: %i[index new create show edit update] do
     collection { post :from_receipt }
     member do

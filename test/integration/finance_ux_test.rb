@@ -38,7 +38,7 @@ class FinanceUxTest < ActionDispatch::IntegrationTest
     owner_expense = @owner_workspace.finance_transactions.create!(
       kind: "expense", status: "draft", currency_code: "VND", entry_source: "manual",
       created_by_id: @owner.id, transaction_date: Date.new(2026, 10, 10),
-      amount: BigDecimal("34000"), category: "office", description: "Owner demo expense")
+      amount: BigDecimal("34000"), description: "Owner demo expense")
     Finance::ConfirmTransaction.call(transaction: owner_expense, actor: @owner, reviewed: true)
     @owner_workspace.finance_transactions.create!(
       kind: "expense", status: "draft", currency_code: "VND", entry_source: "manual",
@@ -56,7 +56,7 @@ class FinanceUxTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "9,900,000"
     refute_includes response.body, "8,888,888"
     assert_select ".trend-col", count: 6
-    assert_select ".category-row", count: 1
+    assert_select ".tag-row", count: 1
 
     get finance_reports_export_path(month: "2026-10", locale: "vi")
     assert_response :success

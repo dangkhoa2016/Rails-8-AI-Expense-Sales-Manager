@@ -24,12 +24,12 @@ assert.match(row,/data-label="<%= ui\("m6.short_place"\) %>"/)
 assert.match(row,/data: \{ turbo_frame: "line_item_modal" \}/)
 console.log("RESPONSIVE_LINE_ITEMS_LAYOUT_STATIC_PASS")
 
-const tags = fs.readFileSync("app/views/finance/categories/index.html.erb", "utf8")
-assert.match(css, /@media\(max-width:960px\)\{\s*\.category-layout \.tag-list-scroll/)
-assert.match(css, /\.category-layout \.tag-list-table tbody>tr\{\s*display:grid/)
+const tags = fs.readFileSync("app/views/finance/tags/index.html.erb", "utf8")
+assert.match(css, /@media\(max-width:960px\)\{\s*\.tag-layout \.tag-list-scroll/)
+assert.match(css, /\.tag-layout \.tag-list-table tbody>tr\{\s*display:grid/)
 assert.match(tags, /class="table-scroll tag-list-scroll"/)
 assert.match(tags, /class="data-table tag-list-table"/)
-for (const key of ["categories.key","categories.name_vi","categories.name_en","categories.status","shared.actions"]) {
+for (const key of ["tags.key","tags.name_vi","tags.name_en","tags.status","shared.actions"]) {
   assert.ok(tags.includes('data-label="<%= ui("'+key+'") %>"'))
 }
 console.log("RESPONSIVE_TAG_CARDS_STATIC_PASS")

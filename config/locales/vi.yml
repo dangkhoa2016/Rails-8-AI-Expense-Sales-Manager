@@ -29,7 +29,7 @@ vi:
       date: Ngày thu/chi
       description: Nội dung
       amount: Số tiền
-      category: Danh mục
+      tag: Tags
       status: Trạng thái
       type: Loại
       evidence: Chứng từ
@@ -94,8 +94,8 @@ vi:
         subtitle: Tổng thu và chi đã xác nhận theo tháng (VND)
         empty: Chưa có giao dịch xác nhận trong giai đoạn này.
       breakdown:
-        title: Cơ cấu chi theo danh mục
-        subtitle: Tỷ trọng danh mục chi trong tháng được chọn.
+        title: Cơ cấu chi theo Tag chính
+        subtitle: Tỷ trọng Tags chi trong tháng được chọn.
         empty: Tháng này chưa có khoản chi đã xác nhận.
       daily:
         title: Phát sinh theo ngày
@@ -111,7 +111,7 @@ vi:
         positive: Thặng dư
         negative: Thâm hụt
         zero: Cân bằng
-      category:
+      tag:
         uncategorized: Chưa phân loại
       legend:
         income: Thu
@@ -282,7 +282,7 @@ vi:
       password_reset: Đã đặt lại mật khẩu.
       password_mismatch: Mật khẩu xác nhận không khớp.
       password_invalid: Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.
-    category:
+    tag:
       office: Văn phòng
       sales: Bán hàng
       transport: Di chuyển
@@ -299,7 +299,7 @@ vi:
       difference: Chênh lệch (giao dịch − các dòng)
       reconciliation: Khi thêm, sửa, xóa hoặc nhập dòng chi tiết trong bản nháp, hệ thống tự đồng bộ số tiền giao dịch theo tổng các dòng nếu còn dòng. Bạn vẫn có thể chỉnh số tiền giao dịch để phản ánh thuế hoặc giảm giá; hãy đối chiếu lại trước khi xác nhận.
       import_title: Nhập hàng loạt khoản chi từ CSV
-      import_help: CSV UTF-8 cần description,amount; các cột quantity,unit_price,category,occurred_time,location_text là tùy chọn. Ngày lấy từ giao dịch; CSV cũ có occurred_on chỉ hợp lệ khi trùng ngày giao dịch. Không chạy OCR.
+      import_help: CSV UTF-8 cần description,amount; các cột quantity,unit_price,tags,occurred_time,location_text là tùy chọn. Ngày lấy từ giao dịch; CSV cũ có occurred_on chỉ hợp lệ khi trùng ngày giao dịch. Không chạy OCR.
       import_limit: Tối đa 500 dòng mỗi tệp và mỗi giao dịch, tối đa 512 KiB. Dòng sai sẽ hủy toàn bộ lượt nhập.
         Tải lại cùng tệp không tạo dữ liệu trùng.
       csv_label: Chọn tệp CSV
@@ -321,7 +321,7 @@ vi:
       remove_row: Xóa dòng
       bulk_hint: Với hóa đơn dài, lưu nháp rồi mở trang quản lý khoản chi để nhập/chỉnh 100+ dòng mà không phải
         tải một form quá lớn.
-      items_report: Phân bổ danh mục theo khoản chi tiết đã xác nhận
+      items_report: Phân bổ theo Tag chính của khoản chi tiết đã xác nhận
       items_report_hint: Các dòng chi tiết được báo cáo riêng với tổng giao dịch để tránh đếm hai lần. Chênh lệch
         có thể do thuế, giảm giá hoặc thiếu dòng.
       no_items_report: Tháng này chưa có các dòng chi tiết đã xác nhận.
@@ -385,7 +385,8 @@ vi:
       evidence: Ảnh hóa đơn và lịch sử AI thuộc về hồ sơ gốc, không chuyển hoặc ghi đè chứng từ.
       revised: Đã được thay thế
       review: Chỉnh sửa bản nháp thay thế
-    categories:
+    tags:
+      none: Chưa gắn Tag
       title: Quản lý Tags
       nav: Tags
       eyebrow: THƯ VIỆN TAGS
@@ -393,7 +394,7 @@ vi:
       list: Danh sách Tags
       history_note: Tags đã lưu trữ vẫn gắn với các khoản chi trong lịch sử.
       back: Trở lại giao dịch
-      key: Mã danh mục cố định
+      key: Mã Tag cố định
       key_help: Chỉ chữ thường không dấu, số và dấu gạch dưới; không đổi mã sau khi tạo.
       name_vi: Tên tag tiếng Việt
       name_en: Tên tag tiếng Anh
@@ -406,12 +407,12 @@ vi:
       edit: Sửa tag
       update: Lưu tag
       delete: Xóa / lưu trữ
-      delete_confirm: Xóa danh mục? Danh mục đã dùng sẽ được lưu trữ để giữ lịch sử.
-      created: Đã tạo danh mục.
-      updated: Đã cập nhật danh mục.
-      deleted: Đã xóa danh mục chưa dùng.
-      archived: Danh mục đã dùng được lưu trữ; lịch sử được bảo toàn.
-      select: Chọn danh mục (tùy chọn)
+      delete_confirm: Xóa Tags? Tags đã dùng sẽ được lưu trữ để giữ lịch sử.
+      created: Đã tạo Tag.
+      updated: Đã cập nhật Tag.
+      deleted: Đã xóa Tag chưa dùng.
+      archived: Tag đã dùng được lưu trữ; lịch sử được bảo toàn.
+      select: Chọn Tags (tùy chọn)
       manage: Quản lý Tags
     entry:
       optional: Thông tin tùy chọn
@@ -502,7 +503,7 @@ vi:
       extra_fields: Thông tin khác (tùy chọn)
       income_quick_eyebrow: NHẬP NHANH
       income_quick_title: Bạn vừa nhận được tiền?
-      income_quick_help: Chỉ ba trường chính. Có thể bổ sung danh mục và chứng từ sau.
+      income_quick_help: Chỉ ba trường chính. Có thể bổ sung Tags và chứng từ sau.
       income_amount: Số tiền đã nhận
       income_from: Nguồn thu hoặc nội dung
       income_from_hint: 'Ví dụ: bán hàng, phí tư vấn'
@@ -565,7 +566,7 @@ vi:
         transaction_date: Ngày giao dịch
         amount: Số tiền (VND)
         description: Nội dung
-        category: Danh mục
+        tag: Tags
         status: Trạng thái
         purchase_details: Chi tiết giao dịch
         occurred_time: Giờ
@@ -647,11 +648,11 @@ vi:
       date_required: Vui lòng xác nhận ngày của giao dịch trước khi chốt.
   activerecord:
     attributes:
-      finance/category:
+      finance/tag:
         key: Mã Tag
     errors:
       models:
-        finance/category:
+        finance/tag:
           attributes:
             key:
               taken: đã tồn tại trong không gian này

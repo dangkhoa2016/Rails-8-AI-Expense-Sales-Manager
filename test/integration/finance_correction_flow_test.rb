@@ -10,13 +10,12 @@ class FinanceCorrectionFlowTest < ActionDispatch::IntegrationTest
     @original = @workspace.finance_transactions.create!(
       created_by_id: @owner.id, kind: "expense", status: "draft",
       currency_code: "VND", entry_source: "manual",
-      transaction_date: Date.new(2026, 10, 26), description: "Original purchase",
-      category: "office", amount: 100_000
+      transaction_date: Date.new(2026, 10, 26), description: "Original purchase", amount: 100_000
     )
     3.times do |i|
       @original.line_items.create!(
         position: i, description: "Original item #{i+1}",
-        amount: 20_000, category: "office", entry_source: "manual", occurred_on: Date.new(2026, 10, 26)
+        amount: 20_000, entry_source: "manual", occurred_on: Date.new(2026, 10, 26)
       )
     end
     @original.create_context!(
@@ -61,7 +60,7 @@ class FinanceCorrectionFlowTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     item = replacement.line_items.order(:position).first
     patch finance_transaction_line_item_path(replacement, item), params: {
-      line_item: {description: "Corrected line item", amount: "40000", category: "office"}
+      line_item: {description: "Corrected line item", amount: "40000"}
     }
     assert_response :redirect
     assert_equal "Original item 1", @original.line_items.order(:position).first.description

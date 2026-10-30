@@ -23,7 +23,7 @@ class FinanceLayoutFlowTest < ActionDispatch::IntegrationTest
   test "save draft then detail shows compact item preview and expandable audit" do
     post finance_transactions_path, params: {finance_transaction: {
       kind: "expense", transaction_date: "2026-10-30", amount: "87000",
-      description: "Test quick expense", category: "food"
+      description: "Test quick expense"
     }}
     assert_response :redirect
     tx = @workspace.finance_transactions.order(:id).last
@@ -47,12 +47,15 @@ class FinanceLayoutFlowTest < ActionDispatch::IntegrationTest
     tx = @workspace.finance_transactions.create!(
       kind: "expense", status: "draft", entry_source: "manual", currency_code: "VND",
       created_by_id: @user.id, transaction_date: Date.new(2026,10,30),
-      amount: 30000, category: "food", description: "Initial")
+      amount: 30000, description: "Initial")
+    Finance::Tag.bootstrap!(@workspace.id)
+    food = @workspace.finance_tags.find_by!(key: "food")
+    Finance::TransactionTagging.apply!(transaction: tx, actor: @user, tag_ids: [food.id], new_names: "")
     get edit_finance_transaction_path(tx,locale:"vi")
     assert_response :success
     assert_select "fieldset.transaction-tag-picker input[name='transaction_tag_ids[]'][checked]", count: 1
     patch finance_transaction_path(tx), params:{revision_reason: "The amount and transaction day need correction.",finance_transaction:{
-      amount: "45000", description: "Updated", category:"food",
+      amount: "45000", description: "Updated",
       transaction_date:"2026-10-29"
     }}
     assert_response :redirect

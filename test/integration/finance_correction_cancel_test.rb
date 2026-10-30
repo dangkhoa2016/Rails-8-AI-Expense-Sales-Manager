@@ -4,9 +4,9 @@ class FinanceCorrectionCancelTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.create!(email_address: "correction-cancel-test@example.test", password: "StrongPassword2026!")
     @ws = @user.workspaces.create!(name: "Cancel Test Workspace")
-    Finance::Category.bootstrap!(@ws.id)
-    @food = @ws.finance_categories.find_by!(key: "food")
-    @office = @ws.finance_categories.find_by!(key: "office")
+    Finance::Tag.bootstrap!(@ws.id)
+    @food = @ws.finance_tags.find_by!(key: "food")
+    @office = @ws.finance_tags.find_by!(key: "office")
     @source = @ws.finance_transactions.create!(
       created_by_id: @user.id, kind: "expense", status: "draft",
       currency_code: "VND", entry_source: "manual",

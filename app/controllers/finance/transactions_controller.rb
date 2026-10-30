@@ -57,7 +57,7 @@ module Finance
     end
 
     def create
-      attrs = transaction_params.except(:category)
+      attrs = transaction_params
       first_amount = attrs.delete(:amount)
       attrs[:kind] = 'expense' unless %w[income expense].include?(attrs[:kind])
       @transaction = finance_scope.new(attrs)
@@ -150,7 +150,7 @@ module Finance
 
     def update
       require_draft!
-      attrs = transaction_params.except(:kind, :category)
+      attrs = transaction_params.except(:kind)
       attrs.delete(:amount) if @transaction.line_total_managed? || @transaction.line_items.exists?
       reason = params[:revision_reason].to_s.strip
       if !reason.length.between?(10, 2000)
@@ -241,21 +241,17 @@ module Finance
     end
 
     def prepare_transaction_tags!
-      Finance::Category.bootstrap!(@finance_workspace.id)
+      Finance::Tag.bootstrap!(@finance_workspace.id)
       selected = if params[:transaction_tag_selection].to_s == "1"
         Array(params[:transaction_tag_ids]).map(&:to_s)
       else
         @transaction.tags.pluck(:id).map(&:to_s)
       end
-      if selected.empty? && @transaction.category.present? && params[:transaction_tag_selection].to_s != "1"
-        legacy = Finance::Category.for_workspace(@finance_workspace.id).find_by(key: @transaction.category)
-        selected << legacy.id.to_s if legacy
-      end
       @selected_transaction_tag_ids = selected
       @new_transaction_tag_names = params[:transaction_new_tags].to_s
-      @available_transaction_tags = Finance::Category.for_workspace(@finance_workspace.id)
+      @available_transaction_tags = Finance::Tag.for_workspace(@finance_workspace.id)
         .where(active: true).or(
-          Finance::Category.for_workspace(@finance_workspace.id).where(id: selected)
+          Finance::Tag.for_workspace(@finance_workspace.id).where(id: selected)
         ).order(:key).to_a
     end
 
@@ -266,9 +262,9 @@ module Finance
 
     def transaction_params
       params.require(:finance_transaction).permit(
-        :kind, :transaction_date, :amount, :description, :category,
+        :kind, :transaction_date, :amount, :description,
         context_attributes: %i[purchase_details occurred_time location_text],
-        line_items_attributes: %i[id position description amount quantity unit_price category occurred_time location_text _destroy]
+        line_items_attributes: %i[id position description amount quantity unit_price occurred_time location_text _destroy]
       )
     end
 

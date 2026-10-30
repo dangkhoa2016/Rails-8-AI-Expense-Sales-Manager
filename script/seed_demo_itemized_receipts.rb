@@ -25,11 +25,11 @@ cases = [
 results = []
 cases.each do |count, date, description, clock, location, additional|
   rows = count.times.map do |i|
-    label, category = products[i % products.length]
+    label, tag_key = products[i % products.length]
     quantity = i % 3 + 1
     unit = 5_000 + (i % 9) * 2_000
     amount = quantity * unit
-    [format("Demo %03d — %s", i + 1, label), amount, quantity, unit, category]
+    [format("Demo %03d — %s", i + 1, label), amount, quantity, unit, tag_key]
   end
   sum = rows.sum { |row| row[1] }
   total = BigDecimal(sum.to_s) + BigDecimal(additional)
@@ -45,7 +45,7 @@ cases.each do |count, date, description, clock, location, additional|
   end
 
   csv = CSV.generate do |sheet|
-    sheet << %w[description amount quantity unit_price category]
+    sheet << %w[description amount quantity unit_price tags]
     rows.each { |row| sheet << row }
   end
   tx = nil
@@ -54,7 +54,7 @@ cases.each do |count, date, description, clock, location, additional|
       kind: "expense", status: "draft", currency_code: "VND",
       entry_source: "manual", created_by_id: user.id,
       transaction_date: Date.iso8601(date), amount: total,
-      description: description, category: "demo_itemized"
+      description: description
     )
     tx.create_context!(recorded_by: user, source: "demo_seed",
       purchase_details: "Synthetic example with #{count} independent item lines; no real receipt or merchant.",

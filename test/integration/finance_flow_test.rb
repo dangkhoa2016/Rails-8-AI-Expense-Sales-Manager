@@ -90,7 +90,7 @@ class FinanceFlowTest < ActionDispatch::IntegrationTest
     assert_difference "Finance::Transaction.count", 1 do
       post finance_transactions_path, params: { finance_transaction: {
         kind: "expense", transaction_date: "2026-10-27",
-        description: "Office supplies", amount: "43500", category: "office"
+        description: "Office supplies", amount: "43500"
       } }
       assert_response :redirect
     end
