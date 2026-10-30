@@ -583,6 +583,12 @@ en:
       start_correction: Correct a confirmed transaction
       confirmed_help: Confirmed financial records cannot be overwritten. Explain why to create an editable replacement draft, then confirm it separately. The original is preserved.
       create_correction: Create correction draft
+    original_modal:
+      title: 'Locked original transaction #%{id}'
+      readonly: Read-only. This confirmed transaction cannot be changed from the current correction draft.
+      close: Close details
+      evidence_new_tab: Evidence opens in a separate tab without leaving the draft.
+      no_evidence: No evidence documents are attached to this transaction.
     correction_drafts:
       copy_badge: CORRECTION DRAFT
       copy_title: This is an editable copy of a confirmed transaction

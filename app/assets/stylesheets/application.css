@@ -727,3 +727,86 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
   .comparison-diff-row span{padding:7px;border:1px solid #f2e6d5;background:white;border-radius:7px}
 }
 .correction-origin-reason{border-left:3px solid #d9a755;padding-left:10px;overflow-wrap:anywhere}
+
+/* Destructive correction action must not inherit the global blue submit color. */
+.btn-danger, input[type="submit"].btn-danger, button.btn-danger {
+  background:#b42318;color:#fff;border:1px solid #942017;
+  box-shadow:none;
+}
+.btn-danger:hover, input[type="submit"].btn-danger:hover, button.btn-danger:hover {
+  background:#8f1c15;color:#fff;border-color:#74170f;
+}
+.btn-danger:focus-visible, input[type="submit"].btn-danger:focus-visible {
+  outline:3px solid #ef9b95;outline-offset:3px;
+}
+
+/* Authenticated, read-only original transaction view without page navigation. */
+.original-transaction-dialog {
+  width:min(880px,calc(100vw - 28px));max-height:min(90dvh,920px);
+  margin:auto;padding:0;border:1px solid #c9d7e4;border-radius:17px;
+  box-shadow:0 24px 90px #0e1e38a3;background:#fff;color:#1b3045;
+  overscroll-behavior:contain;
+}
+.original-transaction-dialog::backdrop {
+  background:rgba(9,20,37,.7);backdrop-filter:blur(2px);
+}
+.original-transaction-modal-content {
+  max-height:89dvh;overflow-y:auto;overscroll-behavior:contain;
+  padding:24px 26px 16px;
+}
+.original-transaction-modal-header {
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:14px;border-bottom:1px solid #e1e8f0;padding-bottom:14px;margin-bottom:16px;
+}
+.original-transaction-modal-header h2{margin:10px 0 6px;font-size:1.32rem}
+.original-transaction-modal-header .form-hint{margin:0}
+.original-transaction-modal-close {
+  display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;
+  padding:0;border:1px solid #d5e2ed;border-radius:10px;
+  background:#f4f8fd;color:#35536e;cursor:pointer;
+}
+.original-transaction-modal-close svg{display:block;pointer-events:none}
+.original-transaction-modal-close:hover{background:#e6f0fc;color:#16477b}
+.original-transaction-modal-close:focus-visible{outline:3px solid #8cb9e8;outline-offset:2px}
+.original-transaction-modal-summary {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;margin-bottom:19px;
+}
+.original-transaction-modal-summary>div {
+  display:flex;flex-direction:column;gap:4px;min-width:0;
+  border:1px solid #dce7f1;border-radius:10px;padding:12px;
+  background:#f7faff;overflow-wrap:anywhere;
+}
+.original-transaction-modal-summary small,
+.original-transaction-modal-item small,
+.original-transaction-modal-revision small{color:#657d93}
+.original-transaction-modal-summary strong{font-size:.94rem}
+.original-transaction-modal-section {
+  border-top:1px solid #e3ebf1;padding:14px 0;
+  margin:0;min-width:0;
+}
+.original-transaction-modal-section h3{margin:0 0 10px;font-size:1rem}
+.original-transaction-modal-section>summary{cursor:pointer;padding:7px 0;font-size:.94rem}
+.original-transaction-modal-item-scroll {max-height:370px;overflow-y:auto;overscroll-behavior:contain}
+.original-transaction-modal-item {
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:10px 0;border-bottom:1px solid #edf1f5;min-width:0;
+}
+.original-transaction-modal-item>div{display:flex;flex-direction:column;gap:5px;min-width:0;overflow-wrap:anywhere}
+.original-transaction-modal-item-amount{white-space:nowrap;flex:0 0 auto}
+.original-transaction-modal-evidence{padding-left:22px}
+.original-transaction-modal-evidence li{padding:5px 0;overflow-wrap:anywhere}
+.original-transaction-modal-evidence small{display:block;overflow-wrap:anywhere}
+.original-transaction-modal-revision{padding:9px 0;border-bottom:1px solid #edf1f5}
+.original-transaction-modal-revision small{display:block;margin:5px 0}
+.original-transaction-modal-revision p{margin:5px 0;overflow-wrap:anywhere}
+.original-transaction-modal-footer {
+  position:sticky;bottom:-16px;display:flex;justify-content:flex-end;
+  padding:14px 0;background:#fff;border-top:1px solid #e2eaf1;
+}
+@media(max-width:590px){
+  .original-transaction-modal-content{padding:16px 15px 12px;max-height:89dvh}
+  .original-transaction-modal-summary{grid-template-columns:1fr}
+  .original-transaction-modal-item{align-items:flex-start}
+  .original-transaction-modal-footer{bottom:-12px}
+}
