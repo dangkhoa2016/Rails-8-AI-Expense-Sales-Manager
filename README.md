@@ -52,3 +52,15 @@ cloudflared tunnel --no-autoupdate --url http://127.0.0.1:3078
 ```
 
 Create a dedicated non-production preview account and use *synthetic* data only. Quick Tunnel URLs are temporary and not authentication. Production deployments must configure their own security and host policy. The GGUF inference adapter remains disabled in this preview.
+
+
+## Dashboard, reports and language support
+
+- Responsive finance workspace dashboard with four KPIs, transaction search, type/status filters and pagination.
+- Expanded reports: previous-month comparisons, six-month trend, expense category shares, daily activity, recent confirmed entries and verified CSV export.
+- English and Vietnamese interface switching with Rails I18n and a signed locale cookie. UI translations are stored in separate locale files; underlying financial data and CSV remain unchanged.
+- Step-by-step in-app guide for manual input, evidence versioning, review and human confirmation.
+
+**Details:** [Finance UX and reporting (English)](docs/UX_REPORTING.en.md).
+
+The current Cloudflare preview remains limited to synthetic sample data; GGUF live inference is still disabled. The application does not claim production accounting compliance.

@@ -52,3 +52,15 @@ cloudflared tunnel --no-autoupdate --url http://127.0.0.1:3078
 ```
 
 Chỉ sử dụng tài khoản demo riêng và dữ liệu tổng hợp giả lập. Link Quick Tunnel có thể đổi và không thay thế cơ chế xác thực. Triển khai production phải có bảo vệ host, phân quyền và hạ tầng riêng. Adapter GGUF inference chưa được bật trong bản demo này.
+
+
+## Tổng quan, báo cáo và đa ngôn ngữ
+
+- Dashboard tương thích máy tính và thiết bị di động, có bốn chỉ số tài chính, tìm kiếm, bộ lọc trạng thái/loại giao dịch và phân trang.
+- Báo cáo có so sánh tháng trước, xu hướng sáu tháng, tỷ trọng danh mục chi, phát sinh theo ngày, danh sách giao dịch đã xác nhận và xuất CSV.
+- Chuyển ngôn ngữ tiếng Anh / tiếng Việt bằng Rails I18n và signed cookie. Hai bộ dịch được lưu riêng; dữ liệu tài chính và CSV không đổi.
+- Trang hướng dẫn từng bước về nhập thủ công, lưu phiên bản ảnh, kiểm duyệt AI và xác nhận giao dịch.
+
+**Chi tiết:** [Giao diện và báo cáo thu chi (Tiếng Việt)](docs/UX_REPORTING.vi.md).
+
+Bản demo Cloudflare hiện tại chỉ sử dụng dữ liệu giả lập. AI GGUF chưa được bật; ứng dụng chưa tuyên bố đạt chuẩn kế toán production.
