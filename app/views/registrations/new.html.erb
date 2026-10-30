@@ -1,3 +1,8 @@
+<% if ENV["FINANCE_DEMO_PREVIEW"] == "1" %>
+  <h1>Demo registration is disabled</h1>
+  <p>Use the temporary demo credentials shared privately with you.</p>
+  <%= link_to "Sign in", new_session_path %>
+<% else %>
 <main class="container">
   <h1>Create account</h1>
   <p>Each account starts with a private workspace. Financial records are visible only to their authorized owner.</p>
@@ -10,3 +15,4 @@
   <% end %>
   <%= link_to "Sign in", new_session_path %>
 </main>
+<% end %>

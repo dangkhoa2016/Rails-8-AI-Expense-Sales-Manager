@@ -7,6 +7,9 @@ class RegistrationsController < ApplicationController
   end
 
   def create
+    # Disable public self-registration while an unauthenticated Cloudflare Quick Tunnel is active.
+    return head :forbidden if ENV["FINANCE_DEMO_PREVIEW"] == "1"
+
     unless Rails.env.development? || Rails.env.test? || ENV["ENABLE_SIGNUP"] == "true"
       return head :forbidden
     end

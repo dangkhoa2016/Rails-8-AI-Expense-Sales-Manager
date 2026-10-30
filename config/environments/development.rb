@@ -6,6 +6,13 @@ Rails.application.configure do
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true
 
+  if ENV["FINANCE_DEMO_PREVIEW"] == "1"
+    # Quick Tunnel preview; host allowlisting is confined to the preview process.
+    config.hosts << /\A[a-z0-9-]+\.trycloudflare\.com\z/
+    config.consider_all_requests_local = false
+  end
+
+
   # Do not eager load code on boot.
   config.eager_load = false
 

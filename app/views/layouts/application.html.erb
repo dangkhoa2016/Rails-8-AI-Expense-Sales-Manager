@@ -1,28 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "Rails App" %></title>
+    <meta charset="utf-8">
+    <title><%= content_for(:title) || "Expense & Sales Manager" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Rails App">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#101f30">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
   </head>
-
   <body>
-    <%= yield %>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="app-brand" href="<%= root_path %>" aria-label="Expense and Sales Manager home">
+          <span class="brand-mark">↗</span>
+          <span>Expense <span class="brand-highlight">&</span> Sales <small>Rails 8 · AI Assisted</small></span>
+        </a>
+        <nav class="topnav" aria-label="Primary navigation">
+          <% if authenticated? %>
+            <%= link_to "Transactions", finance_transactions_path, class: request.path.start_with?("/finance/transactions") || request.path == root_path ? "nav-link current" : "nav-link" %>
+            <%= link_to "Reports", finance_reports_path, class: request.path.start_with?("/finance/reports") ? "nav-link current" : "nav-link" %>
+            <%= link_to "+ New expense", new_finance_transaction_path(kind: "expense"), class: "nav-new" %>
+            <%= button_to "Sign out", session_path, method: :delete, class: "nav-signout" %>
+          <% else %>
+            <%= link_to "Sign in", new_session_path, class: "nav-link current" %>
+            <% unless ENV["FINANCE_DEMO_PREVIEW"] == "1" %>
+              <%= link_to "Create account", new_registration_path, class: "nav-new" %>
+            <% end %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+    <main class="content-shell">
+      <% if authenticated? && current_workspace %>
+        <div class="workspace-context"><span class="dot"></span> <%= current_workspace.name %> <span class="context-note">/ Secure finance workspace</span></div>
+      <% end %>
+      <% if flash[:notice].present? %><div class="flash notice" role="status"><%= flash[:notice] %></div><% end %>
+      <% if flash[:alert].present? %><div class="flash alert" role="alert"><%= flash[:alert] %></div><% end %>
+      <%= yield %>
+    </main>
+    <footer class="app-footer">
+      <span>Expense & Sales Manager · Rails 8</span>
+      <span><%= ENV["FINANCE_DEMO_PREVIEW"] == "1" ? "Temporary demo · Use sample data only" : "Human-verified finance records" %></span>
+    </footer>
   </body>
 </html>
