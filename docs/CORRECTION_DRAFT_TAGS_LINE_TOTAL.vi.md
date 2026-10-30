@@ -24,7 +24,7 @@ Các form sửa và kiểm tra transaction dùng bộ chọn **nhiều Tags** t�
 
 ## Đánh dấu bản sao và so sánh với bản gốc
 
-Form sửa và trang chi tiết bản thay thế đều có cảnh báo **“Đây là bản sao của giao dịch đã xác nhận”**, liên kết mở bản gốc và khu vực so sánh bản gốc–bản thay thế. Danh sách khác biệt gồm ngày, tiền, mô tả, nhóm phân loại chính, Tags và các khoản chi tiết; với hóa đơn 100 dòng, chỉ các dòng có khác biệt được hiển thị trong phần mở rộng. So sánh cập nhật theo bản nháp hiện tại. Bản gốc luôn chỉ đọc; bản sao chưa làm thay đổi báo cáo cho tới lúc xác nhận riêng.
+Form sửa và trang chi tiết bản thay thế đều có cảnh báo **“Đây là bản sao của giao dịch đã xác nhận”**, liên kết mở bản gốc và khu vực so sánh bản gốc–bản thay thế. Danh sách khác biệt gồm ngày, tiền, mô tả, nhóm phân loại chính, Tags và các khoản chi tiết; với hóa đơn 100 dòng, chỉ các dòng có khác biệt được hiển thị trong modal khi bấm nút số khoản thay đổi. So sánh cập nhật theo bản nháp hiện tại. Bản gốc luôn chỉ đọc; bản sao chưa làm thay đổi báo cáo cho tới lúc xác nhận riêng.
 
 ## Kiểm chứng và bằng chứng
 
@@ -43,3 +43,10 @@ Khối so sánh giao dịch điều chỉnh hiện xác định tiêu đề, nh�
 Hai nút xem giao dịch gốc và nút **“Đóng chi tiết”** trong modal được sửa CSS riêng: nền trắng, chữ xanh đậm, căn giữa, vùng nhấn tối thiểu 44px, hover/focus rõ ràng và responsive trên điện thoại. Không phụ thuộc kiểu button xanh toàn cục. Đóng modal không đổi URL hoặc làm mất nội dung form hiện tại.
 
 Đây chỉ là thay đổi UI/ngôn ngữ: không tạo migration, không sửa transaction, correction, lịch sử, và không thêm OCR/AI inference.
+
+
+## Modal riêng cho các khoản chi tiết khác bản gốc
+
+Trong trang sửa hoặc chi tiết giao dịch điều chỉnh, dòng **“N khoản chi tiết khác bản gốc”** là một nút mở modal riêng. Modal hiển thị **chỉ những line items khác biệt**, có đối chiếu giá trị ở bản gốc và bản thay thế, làm nổi bật trường đã sửa; dữ liệu chỉ đọc. Người dùng có thể đóng chủ động bằng nút X hoặc **Đóng chi tiết**; Escape không đóng ngoài ý muốn. Khi đóng, trang hiện tại và các thay đổi chưa lưu ở form vẫn được giữ nguyên.
+
+Đã **bỏ tiêu đề tổng hợp “So sánh với giao dịch gốc · N thay đổi”** ở đầu trang nhằm tránh lặp với sidebar. Những khác biệt về số tiền, nội dung, Tags… vẫn được trình bày ngắn gọn ngay dưới tóm tắt bản gốc và bản thay thế. Modal phù hợp màn hình nhỏ và có vùng cuộn độc lập; không có thao tác cập nhật dữ liệu tài chính.

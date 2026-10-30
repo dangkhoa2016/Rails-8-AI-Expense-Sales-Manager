@@ -24,7 +24,7 @@ The transaction edit and review forms now show the same workspace-scoped multi-s
 
 ## Correction origin and comparison
 
-Both the replacement edit form and detail page show an unmistakable **Correction draft — copy of locked original** banner, a link to the source and an original-versus-replacement summary. The expanded comparison lists changed date, amount, description, primary classification, Tags and item details; a 100-item correction remains navigable via a collapsed list of only the differing items. The summary updates as the replacement is edited. The original remains read-only and the replacement affects reporting only after explicit confirmation.
+Both the replacement edit form and detail page show an unmistakable **Correction draft — copy of locked original** banner, a link to the source and an original-versus-replacement summary. The expanded comparison lists changed date, amount, description, primary classification, Tags and item details; a 100-item correction remains manageable through a dedicated modal displaying only the changed items. The summary updates as the replacement is edited. The original remains read-only and the replacement affects reporting only after explicit confirmation.
 
 ## Review and evidence
 
@@ -43,3 +43,10 @@ The correction comparison banner now derives its heading, status badge and descr
 The original transaction modal's **Close details** action and the original-source trigger buttons use locally scoped neutral button styles: white background, dark-blue text, visibly centered labels, a minimum 44px hit area, an explicit hover/focus indicator and responsive width. This avoids accidental inheritance from generic blue button styling. Closing the modal still keeps the current transaction URL and form state intact.
 
 These are read-only UI and language changes; no migration, transaction mutation, correction lifecycle change or AI/OCR extraction was introduced.
+
+
+## Changed line items: dedicated read-only modal
+
+On a correction's edit and detail pages, the **“N item differences”** control opens a dedicated native modal showing **only changed items**, with original/replacement values side-by-side and altered fields highlighted. It does not navigate or modify accounting records. Users explicitly close using the X or **Close details** control; Escape does not silently dismiss it. The modal scrolls independently on narrow viewports and preserves the current form state.
+
+The redundant **“Compare with original · N changes”** aggregate heading is removed from the top section, while compact field-level differences (amount, description and Tags, when changed) remain visible. The correction sidebar remains intact. This is a presentation-only change without migration, financial writes or automated image extraction.

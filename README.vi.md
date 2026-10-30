@@ -204,3 +204,5 @@ Có thể **hủy bản nháp điều chỉnh chưa xác nhận** khi nhập lý
 Màn hình bản nháp điều chỉnh có modal chỉ đọc để xem giao dịch gốc ngay tại chỗ, không mất nội dung chưa lưu. Nút hủy bản nháp có màu đỏ và form transaction không còn link Quản lý Tags dư thừa.
 
 Thông báo giao dịch điều chỉnh phản ánh đúng ba trạng thái nháp/đã xác nhận/đã hủy; các nút xem giao dịch gốc và “Đóng chi tiết” có CSS trung tính, căn giữa và responsive.
+
+Các khoản chi tiết khác giao dịch gốc hiện mở trong modal chỉ đọc; đã bỏ tiêu đề tổng hợp so sánh bị lặp, vẫn giữ những trường trước/sau thực sự thay đổi.
