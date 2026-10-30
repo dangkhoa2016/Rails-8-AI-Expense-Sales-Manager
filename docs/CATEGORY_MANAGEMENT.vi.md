@@ -2,7 +2,7 @@
 
 ## Mục đích và bảo toàn dữ liệu
 
-Ứng dụng có trang **Quản lý danh mục** tại `/finance/categories`, hỗ trợ tạo, xem danh sách, sửa, xóa hoặc lưu trữ. Mỗi danh mục có **mã cố định**, **tên tiếng Việt** và **tên tiếng Anh** riêng. Danh mục chỉ thuộc một workspace; không được đọc/sửa từ workspace khác.
+Ứng dụng có trang **Quản lý danh mục** tại `/finance/tags`, hỗ trợ tạo, xem danh sách, sửa, xóa hoặc lưu trữ. Mỗi danh mục có **mã cố định**, **tên tiếng Việt** và **tên tiếng Anh** riêng. Danh mục chỉ thuộc một workspace; không được đọc/sửa từ workspace khác.
 
 Các cột `finance_transactions.category` và `finance_line_items.category` vẫn giữ nguyên **mã chuỗi** trước đây. Nhờ vậy không sửa giao dịch đã xác nhận, không thay báo cáo hoặc giá trị CSV. Khi đổi ngôn ngữ giao diện, hệ thống đổi **nhãn hiển thị** nhưng giữ mã lưu trong DB. Form giao dịch và modal thêm/sửa khoản chi có danh sách chọn danh mục. Mã danh mục cũ được đăng ký tự động trong catalog của workspace, không viết lại dữ liệu lịch sử. Nếu mã cũ chưa có bản dịch, tên tạm thời giống nhau ở hai ngôn ngữ, chờ người dùng điều chỉnh.
 
@@ -25,4 +25,9 @@ Tính năng này không bổ sung kế toán thuế hoặc thay đổi công th�
 
 ## Chuyển sang mô hình nhiều Tags
 
-Từ M11, giao diện menu và trang quản lý dùng tên **Tags**, trong khi bảng `finance_categories` và URL `/finance/categories` vẫn giữ để tương thích. Mỗi **line item** được chọn nhiều tags hoặc tạo tags mới ngay trong modal Thêm/Sửa. Báo cáo theo danh mục chính cấp giao dịch vẫn dùng một mã để không cộng trùng tiền. Xem [quy trình nhập khoản nhanh và nhiều Tags](QUICK_ITEM_TAGS.vi.md).
+Từ M11, giao diện menu và trang quản lý dùng tên **Tags**, trong khi bảng `finance_categories` và URL `/finance/tags` vẫn giữ để tương thích. Mỗi **line item** được chọn nhiều tags hoặc tạo tags mới ngay trong modal Thêm/Sửa. Báo cáo theo danh mục chính cấp giao dịch vẫn dùng một mã để không cộng trùng tiền. Xem [quy trình nhập khoản nhanh và nhiều Tags](QUICK_ITEM_TAGS.vi.md).
+
+
+Đường dẫn cũ /finance/categories vẫn hoạt động để tương thích liên kết và client đã triển khai; bảng dữ liệu giữ nguyên.
+
+Trên màn hình đến 960px, thư viện Tags chuyển sang thẻ responsive có nhãn rõ ràng thay vì cắt bảng năm cột; mỗi thẻ vẫn có mã, tên tiếng Việt/Anh, trạng thái và thao tác Sửa/Xóa.

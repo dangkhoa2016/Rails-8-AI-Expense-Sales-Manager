@@ -4,7 +4,7 @@
 
 Một giao dịch thu/chi có thể chứa **0–500 dòng khoản chi tiết**, không phải 500 bút toán tài chính độc lập. Số tiền và ngày trong giao dịch cha được người dùng xác nhận; mỗi dòng có tên hàng, thành tiền và các trường tùy chọn như số lượng, đơn giá, danh mục. Giờ và địa điểm vẫn là tùy chọn ở cấp giao dịch.
 
-**Không tự suy tổng tiền giao dịch** từ tổng các dòng hoặc từ ảnh hóa đơn. Tổng các dòng chỉ được so sánh với số tiền cha; chênh lệch có thể do thuế, khuyến mãi, phí hoặc dòng chưa đọc được. Báo cáo thu/chi chỉ tính **một lần** mỗi giao dịch đã xác nhận. Bảng phân bổ danh mục theo dòng được hiển thị riêng và có chênh lệch với tổng chi đã chốt; không cộng dòng lần thứ hai vào báo cáo chính.
+**Không suy tổng tiền từ ảnh hóa đơn**. Sau thay đổi các dòng trong bản nháp, hệ thống đồng bộ tổng nháp có audit; confirmed bất biến. Tổng các dòng chỉ được so sánh với số tiền cha; chênh lệch có thể do thuế, khuyến mãi, phí hoặc dòng chưa đọc được. Báo cáo thu/chi chỉ tính **một lần** mỗi giao dịch đã xác nhận. Bảng phân bổ danh mục theo dòng được hiển thị riêng và có chênh lệch với tổng chi đã chốt; không cộng dòng lần thứ hai vào báo cáo chính.
 
 ## Nhập tay và import CSV
 
@@ -18,7 +18,7 @@ Bánh mì ngọt,30000,2,15000,food
 Giấy in A4,85000,1,85000,office
 ```
 
-Hai cột bắt buộc là `description` và `amount`; các cột `quantity`, `unit_price`, `category` là tùy chọn. Không nhận cột lạ hoặc cột trùng. Số lượng (nếu có) phải dương; đơn giá và thành tiền không âm; thành tiền có tối đa hai chữ số thập phân; tên khoản không rỗng và tối đa 500 ký tự. Giới hạn mỗi tệp 512 KiB và 500 dòng, đồng thời mỗi giao dịch có tối đa 500 dòng. CSV dùng dấu chấm thập phân để máy đọc ổn định.
+Hai cột bắt buộc là `description`, `amount`; các cột `quantity`, `unit_price`, `category`, `occurred_time`, `location_text` là tùy chọn. Ngày lấy từ transaction. CSV cũ có cột `occurred_on` chỉ được nhập nếu ngày có giá trị trùng ngày giao dịch. Không nhận cột lạ hoặc cột trùng. Số lượng (nếu có) phải dương; đơn giá và thành tiền không âm; thành tiền có tối đa hai chữ số thập phân; tên khoản không rỗng và tối đa 500 ký tự. Giới hạn mỗi tệp 512 KiB và 500 dòng, đồng thời mỗi giao dịch có tối đa 500 dòng. CSV dùng dấu chấm thập phân để máy đọc ổn định.
 
 Hệ thống kiểm tra **toàn bộ** CSV trước khi ghi. Tất cả dòng, SHA256 của lượt import và audit được lưu nguyên tử dưới transaction lock; lỗi sẽ rollback toàn bộ. Nhập lại **chính xác cùng byte CSV** không tạo dữ liệu trùng. Chỉ tài khoản có quyền trong workspace mới được import khi giao dịch còn nháp.
 
@@ -49,6 +49,6 @@ ruby tests/test_input_policy.rb
 
 ## Modal thêm từng khoản và thanh công cụ gọn
 
-Trang danh sách nay dùng thanh công cụ nhỏ thay vì hiển thị thường trực form **Thêm một khoản chi**. Nhấn **+ Thêm một khoản chi** để mở modal Hotwire/Turbo Frame, gồm tên hàng, thành tiền, số lượng, đơn giá, danh mục, ngày/giờ/địa điểm tùy chọn của dòng. Import CSV được thu vào mục mở rộng khi cần; liên kết xem đề xuất AI vẫn giữ riêng.
+Trang danh sách nay dùng thanh công cụ nhỏ thay vì hiển thị thường trực form **Thêm một khoản chi**. Nhấn **+ Thêm một khoản chi** để mở modal Hotwire/Turbo Frame, gồm tên hàng, thành tiền, số lượng, đơn giá, danh mục, ngày dùng chung của giao dịch (chỉ hiển thị) và giờ/địa điểm riêng tùy chọn. Import CSV được thu vào mục mở rộng khi cần; liên kết xem đề xuất AI vẫn giữ riêng.
 
-Khi thêm thành công, Turbo Streams cập nhật danh sách có phân trang, số lượng, tổng dòng và chênh lệch; đóng modal, hiển thị thông báo mà không tải lại toàn trang. Nếu dòng mới thuộc trang tiếp theo, hệ thống cung cấp liên kết mở đúng trang, không nhồi quá 25 dòng vào bảng hiện tại. Dữ liệu sai giữ modal mở và giữ giá trị đã nhập. Giao dịch đã xác nhận hoặc workspace không được phép không thể thêm dòng. Tổng tiền của giao dịch cha không tự thay đổi.
+Khi thêm thành công, Turbo Streams cập nhật danh sách có phân trang, số lượng, tổng dòng và chênh lệch; đóng modal, hiển thị thông báo mà không tải lại toàn trang. Nếu dòng mới thuộc trang tiếp theo, hệ thống cung cấp liên kết mở đúng trang, không nhồi quá 25 dòng vào bảng hiện tại. Dữ liệu sai giữ modal mở và giữ giá trị đã nhập. Giao dịch đã xác nhận hoặc workspace không được phép không thể thêm dòng. Tổng tiền bản nháp được đồng bộ từ tổng các dòng còn lại; confirmed bất biến.

@@ -6,15 +6,15 @@ The expense and income experiences are intentionally different, while sharing ty
 
 ## Money out — expenses
 
-Open `/finance/transactions/new?kind=expense` (or the Money out tab). The primary action is **upload a receipt**. The original JPEG/PNG/WEBP is stored as a versioned, SHA256-verified document, and an amount-free, date-free draft is created before any field is accepted. The expense review page displays the actual image and only date, amount, description and an optional category. The remaining receipt items are managed through the existing per-item Turbo dialogs with independent optional date/time/location.
+Open `/finance/transactions/new?kind=expense` (or the Money out tab). The primary action is **upload a receipt**. The original JPEG/PNG/WEBP is stored as a versioned, SHA256-verified document, and an amount-free, date-free draft is created before any field is accepted. The expense review page displays the actual image and only date, amount, description and an optional category. The remaining receipt items are managed through the existing per-item Turbo dialogs with the shared transaction date and optional per-item time/location.
 
 If the user has no image, a collapsed **quick manual expense** alternative asks for the amount and purpose. Actual date and category are in an optional disclosure. The accounting date and positive amount are still required before final confirmation.
 
 ## Money in — income
 
-Open `/finance/transactions/new?kind=income` (or the Money in tab). The primary card is **quick income**: amount received, description/source and actual date. All three must be valid for this quick-entry action; no inferred date or amount is inserted. Category is optional and collapsed. A secondary disclosure allows creating an image-first income draft when the user only has evidence and not yet verified amounts. Evidence can also be attached **to an existing income draft** from the income review screen, without generating a second transaction.
+Open `/finance/transactions/new?kind=income` (or the Money in tab). The primary card is **quick income**: amount received, description/source and actual date. All three must be valid for this quick-entry action; no inferred date or amount is inserted. Category is optional and collapsed. An expanded proof-image upload panel displays the file picker and drop zone by default, using the same upload pipeline as expenses. This creates an empty income draft without inferring an amount or date. Evidence can also be attached **to an existing income draft** from the income review screen, without generating a second transaction.
 
-The income review page centers on amount, source and date; item breakdown is optional. The accounting amount is never silently recalculated from items.
+The income review page centers on amount, source and date; item breakdown is optional. Draft line-item changes synchronize the draft transaction amount to the remaining lines, with audit; the user may still override and reconcile before confirmation.
 
 ## Context and AI
 

@@ -31,6 +31,12 @@ Mặc định tính năng đăng ký chỉ bật ở môi trường development/
 
 Chạy bin/rails test và ruby tests/test_input_policy.rb. GitHub Actions chạy lại cả hai bộ kiểm thử với PostgreSQL.
 
+## Ngày từng khoản, Tags và tổng tiền nháp
+
+Ngày chi/thu của line item bắt buộc phải được kiểm tra. Tổng tiền draft đồng bộ theo các dòng khi người dùng thêm/sửa/xóa/import; confirmed giữ nguyên. URL Tags: /finance/tags. Phần upload ảnh của khoản thu hiển thị sẵn.
+
+Xem [quy tắc ngày và tổng nháp](docs/FINANCE_ITEM_DATE_TOTAL.vi.md).
+
 ## An toàn và bằng chứng
 
 Người dùng chỉ được xem dữ liệu và ảnh thuộc workspace đã phân quyền. Mỗi ảnh là một phiên bản độc lập; kết quả AI và lịch sử audit được lưu giữ. Có thể thêm ảnh sau khi chốt mà không tự thay đổi giao dịch đã xác nhận.
@@ -75,3 +81,112 @@ FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_reporting.rb
 ```
 
 Script tự từ chối môi trường production và yêu cầu đúng tài khoản/workspace demo có sẵn. Chỉ chạy thủ công, không gọi từ seed mặc định. Mọi giá trị đều do chúng ta tạo để kiểm thử, không phải lịch sử tài chính thật.
+
+
+## Chi tiết thu chi và địa điểm tùy chọn
+
+Người dùng vẫn phải nhập **ngày phát sinh giao dịch** trước khi xác nhận. **Giờ trong ngày và địa điểm được phép để trống**; ứng dụng không tự suy từ EXIF, lúc tải ảnh hoặc kết quả OCR không chắc chắn. Mỗi bản nháp cũng có trường giải thích cụ thể mua hoặc thanh toán cho việc gì.
+
+Phần mô tả bổ sung nằm trong bảng riêng, gắn với người tạo và nguồn dữ liệu. Khi còn nháp, có thể chỉnh sửa; sau khi đã chốt, PostgreSQL ngăn sửa/xóa. Việc thêm thông tin giải thích không làm đổi số tiền hoặc ngày thu/chi ban đầu.
+
+Script seed tùy chọn cho môi trường development bổ sung thông tin vào các giao dịch **giả lập** đã xác nhận mà không viết lại sổ cái, đồng thời tạo ví dụ mua bánh mì ngọt **30.000 VND ngày 26/04/2026 lúc 08:12**. Một số mẫu cố tình để trống giờ/địa điểm để kiểm tra trường tùy chọn.
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails runner script/enrich_demo_transaction_contexts.rb
+```
+
+Xem [tài liệu chi tiết khoản thu chi (Tiếng Việt)](docs/TRANSACTION_CONTEXT.vi.md). CSV có thêm cột nội dung chi tiết, giờ và địa điểm. Báo cáo vẫn chỉ dựa trên các khoản tiền đã xác nhận.
+
+
+## Hóa đơn nhiều dòng và nhập hàng loạt (M6)
+
+Một giao dịch có thể chứa tối đa **500 dòng khoản chi tiết**, mỗi dòng có tên, thành tiền, số lượng/đơn giá/danh mục tùy chọn. Tổng tiền giao dịch vẫn phải **do người dùng xác nhận**; bản nháp đồng bộ số tiền từ tổng các dòng khi được thêm/sửa/xóa/import, nhưng tuyệt đối không suy từ OCR chưa được kiểm chứng.
+
+Với bản nháp ngắn, dùng nút **Thêm dòng mới** trên form. Với hóa đơn dài, mở **Xem và quản lý tất cả khoản chi** để duyệt, sửa hoặc xóa theo trang (25 dòng/trang). Hoặc nhập CSV UTF-8 với hai cột bắt buộc `description,amount` và các cột tùy chọn `quantity,unit_price,category,occurred_time,location_text`, tối đa 500 dòng/512 KiB. Hệ thống ghi nguyên tử, chống nhập trùng bằng SHA256 trong cùng giao dịch; CSV khác sẽ thêm mới, không tự thay dòng cũ.
+
+Có thể tải [CSV ví dụ 100 dòng](examples/receipt_lines_100.csv), hoặc seed bốn hóa đơn **giả lập** 5/20/50/100 dòng trong tài khoản demo development đã tạo sẵn:
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_itemized_receipts.rb
+```
+
+Báo cáo có thêm phân bổ danh mục theo dòng đã chốt và chênh lệch đối chiếu, nhưng không cộng lại các dòng vào tổng thu/chi lần thứ hai. Đề xuất AI có thể được xem và duyệt từng dòng trên trang riêng; **OCR GGUF thực tế chưa được bật** vì còn phải nghiệm thu chất lượng model.
+
+Xem [tài liệu M6 (Tiếng Việt)](docs/MULTI_LINE_RECEIPT.vi.md).
+
+
+## Điều chỉnh giao dịch đã xác nhận (M7)
+
+Khi phát hiện sai một dòng trong hóa đơn đã chốt, **không sửa giao dịch gốc**. Mở danh sách khoản chi rồi chọn **Sửa chi tiết khoản** trên dòng cần chỉnh. Modal yêu cầu lý do rồi tạo bản nháp thay thế. Ngày, số tiền, giờ/địa điểm tùy chọn và toàn bộ dòng chi tiết (kể cả hóa đơn 100 dòng) được sao chép để chỉnh sửa. Ảnh chứng từ gốc luôn nằm trong hồ sơ cũ, có liên kết để mở lại.
+
+Khi người dùng xác nhận bản thay thế, báo cáo và CSV chỉ tính **giao dịch đã chốt đang có hiệu lực**, không cộng cả bản cũ và mới. Mỗi lần điều chỉnh có nguồn gốc và lịch sử kiểm toán bất biến. Bản nháp điều chỉnh không ảnh hưởng tổng thu/chi. Đây là cơ chế thay thế hồ sơ, chưa phải bút toán đảo chuẩn theo quy định kế toán.
+
+Để xem ví dụ điều chỉnh hóa đơn 100 dòng trong development với dữ liệu hoàn toàn giả lập:
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_correction.rb
+```
+
+Tài liệu: [Quy trình điều chỉnh (Tiếng Việt)](docs/CORRECTION_WORKFLOW.vi.md). M7 chạy bằng CPU; adapter AI GGUF vẫn chưa bật.
+
+
+## Ngày chung của giao dịch, giờ và địa điểm tùy chọn theo khoản
+
+Mọi khoản chi tiết **dùng ngày của transaction**, chỉ giờ (HH:MM) và địa điểm mới có thể nhập riêng, đều tùy chọn. Form khoản chỉ hiển thị ngày chung, không có ô sửa ngày hoặc tự điền giờ hiện tại. Giao dịch nháp được phép thiếu ngày trong lúc nhập khoản nhưng cần xác nhận ngày trước khi chốt. Cột ngày riêng cũ được giữ để audit, không tự backfill hoặc sửa hồ sơ confirmed.
+
+Mở **danh sách khoản chi tiết** của bản nháp và nhấn **Sửa chi tiết khoản** ngay trên mỗi dòng để mở popup Turbo. Lưu thành công sẽ re-render đúng dòng vừa sửa cùng tổng đối chiếu, không refresh cả trang. Với khoản đã chốt, modal yêu cầu lý do rồi tạo bản nháp điều chỉnh có audit và chỉ cập nhật bản sao của dòng được chọn. Giao dịch gốc đã chốt không bị sửa. Nếu đã có correction thì trang dẫn đến bản thay thế. Ngày kế toán lấy trực tiếp từ transaction; số tiền nháp có dòng sẽ được đồng bộ sau khi thay đổi dòng, confirmed vẫn bất biến.
+
+CSV mới chỉ cần `description,amount`, có thể thêm `occurred_time` (HH:MM), `location_text`; cột `occurred_on` của CSV cũ chỉ hợp lệ khi trùng ngày giao dịch — xem [CSV mẫu 5 dòng](examples/receipt_lines_with_item_context.csv). Để tạo 5 khoản chi **giả lập, có thể sửa được** trong bản nháp demo development:
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_individual_item_contexts.rb
+```
+
+Tài liệu chi tiết: [Ngày giờ và địa điểm từng dòng (Tiếng Việt)](docs/ITEM_LEVEL_CONTEXT.vi.md).
+
+
+### Popup thêm khoản chi và thanh công cụ gọn
+
+Trong danh sách khoản chi của bản nháp, nút **+ Thêm một khoản chi** mở modal Turbo. Khi lưu thành công, hệ thống cập nhật bảng có phân trang và tổng đối chiếu, đóng popup, hiển thị thông báo mà không refresh toàn trang. Dữ liệu sai giữ form mở. Chức năng import CSV được thu vào mục mở rộng. Modal Sửa và nguyên tắc bất biến của giao dịch đã chốt không thay đổi. Xem [tài liệu hóa đơn nhiều dòng](docs/MULTI_LINE_RECEIPT.vi.md).
+
+
+## Quản lý danh mục song ngữ và giao diện giao dịch gọn hơn (M8)
+
+Menu **Danh mục** mở `/finance/categories`, có chức năng tạo/xem/sửa/xóa hoặc lưu trữ danh mục riêng cho workspace. Mỗi danh mục có mã cố định, tên tiếng Việt và tên tiếng Anh riêng; danh mục đã dùng sẽ lưu trữ thay vì xóa mất dữ liệu lịch sử. Các nhãn lưu trữ vẫn xuất hiện trong báo cáo và giao dịch đã chốt. Form tạo giao dịch và modal thêm/sửa khoản chi dùng ô chọn danh mục; mã lưu trong DB cũ không bị thay đổi.
+
+Form tạo giao dịch hiện ưu tiên loại thu/chi, ngày, số tiền, danh mục và mô tả; thông tin phụ nằm trong mục mở rộng. Lưu bản nháp rồi thêm các mặt hàng qua modal. Trang chi tiết nhấn mạnh số tiền và trạng thái, xem trước tối đa 5 khoản chi, có link đến danh sách đầy đủ; chứng từ, thông tin phụ và audit được thu gọn. Vẫn bắt buộc xác nhận thủ công và không thay đổi lịch sử tài chính đã chốt.
+
+Xem [quy trình quản lý danh mục và giao diện (Tiếng Việt)](docs/CATEGORY_MANAGEMENT.vi.md). Demo dùng dữ liệu giả lập trên CPU; model vision GGUF chưa bật.
+
+
+## Tải hóa đơn trước, kiểm tra rồi xác nhận (M9)
+
+Luồng **Chi tiền** nay ưu tiên **Tải ảnh hóa đơn**: chọn Thu/Chi, chọn hoặc thả ảnh JPEG/PNG/WEBP (tối đa 10 MB), sau đó nhấn **Tải ảnh và tiếp tục**. Hệ thống tạo ngay **bản nháp chưa xác nhận**, lưu ảnh gốc và bằng chứng SHA256 rồi mở màn hình kiểm tra. Không cần nhập ngày, tổng tiền hoặc từng khoản trước khi upload. Mục nhập thủ công được thu gọn cho trường hợp không có ảnh.
+
+Trang kiểm tra cho phép xem ảnh, nhập các trường đã xác minh và quản lý từng khoản bằng modal. **Adapter vision GGUF chưa được kết nối trong bản demo CPU**: upload không chạy inference hay tự chế số liệu. Đề xuất model đã lưu (nếu có) chỉ là gợi ý chưa xác nhận. Giao dịch luôn cần con người xác nhận riêng.
+
+Xem [quy trình tải hóa đơn và giới hạn AI (Tiếng Việt)](docs/RECEIPT_FIRST_WORKFLOW.vi.md).
+
+
+## Hai giao diện Chi tiền và Thu tiền (M10)
+
+Trang tạo giao dịch có **hai chế độ riêng**: **Chi tiền** (`kind=expense`) và **Thu tiền** (`kind=income`), mỗi chế độ có layout responsive và nhãn tiếng Việt/Anh phù hợp. Chi tiền ưu tiên upload hóa đơn; form nhập thủ công được thu gọn. Thu tiền ưu tiên **ba trường** số tiền đã nhận, nguồn thu và ngày phát sinh, còn danh mục và ảnh chứng từ là tùy chọn. Màn hình kiểm tra khoản thu cho phép đính kèm ảnh vào **bản nháp hiện tại** mà không tạo giao dịch trùng.
+
+Không yêu cầu các trường giờ, địa điểm và giải thích chung khi nhập mới. Ledger và dữ liệu lịch sử vẫn giữ nguyên; hai màn hình kiểm tra chỉ chỉnh sửa bản nháp và luôn cần xác nhận thủ công. Upload ảnh đã hoạt động nhưng **adapter inference GGUF chưa kết nối** trong demo CPU. Xem [tài liệu chuẩn hóa UI/UX thu chi (Tiếng Việt)](docs/FINANCE_DUAL_FLOW_UX.vi.md).
+
+
+## Popup thêm khoản chi nhanh, tính tiền tự động và nhiều Tags (M11)
+
+Popup khoản chi mặc định **số lượng 1** và hiển thị **ngày từ giao dịch đã lưu**, không tự điền ngày hoặc giờ hiện tại nếu chưa có. Ngày chỉ sửa ở transaction; giờ riêng trên từng khoản là tùy chọn, không phải kết quả AI đọc hóa đơn. Gõ số lượng hoặc đơn giá sẽ cập nhật thành tiền tức thì; Rails tính lại ở backend khi lưu. Nếu không có đơn giá vẫn có thể nhập thành tiền thủ công; tổng tiền giao dịch nháp có các dòng sẽ được đồng bộ từ các khoản sau khi lưu.
+
+Mỗi khoản có thể **chọn nhiều Tags** dưới dạng chip hoặc nhập tên mới cách nhau bằng dấu phẩy ngay trong modal. Việc tạo tag và lưu khoản nằm trong cùng transaction, giới hạn workspace và được trigger PostgreSQL bảo vệ khi giao dịch đã chốt. Trường danh mục cũ vẫn giữ làm **mã phân loại chính cho báo cáo**, tránh cộng trùng tiền; danh mục Tags quản lý nhãn EN/VI riêng. Xem [quy trình thêm khoản nhanh và nhiều Tags](docs/QUICK_ITEM_TAGS.vi.md).
+
+
+### Tinh chỉnh tương tác modal khoản chi (M11)
+
+Popup Thêm/Sửa khoản chi có biểu tượng SVG đóng được căn giữa, nút **Hủy** kiểu viền rõ ràng và **chỉ đóng khi người dùng chủ động thao tác**. Click ngoài popup hoặc bấm Escape không làm mất nội dung đang nhập; bấm × hoặc Hủy để đóng. Khi lưu thành công, Turbo Stream vẫn đóng popup và cập nhật dòng khoản chi/tổng đối chiếu. Checkbox kích hoạt trong sidebar Quản lý Tags có CSS riêng, không bị kéo rộng như ô nhập văn bản.
+
+
+### Thẻ khoản chi responsive cho màn hình nhỏ
+
+Danh sách khoản chi giữ bảng bảy cột trên desktop rộng, nhưng tự chuyển thành các thẻ gọn dưới 1.200px: tên khoản, số tiền, Tags, ngày/giờ/địa điểm và nút Sửa/Xóa đều hiển thị đầy đủ, không phải cuộn ngang. Mỗi khoản vẫn giữ một ID để Turbo Stream cập nhật đúng dòng; phân trang giữ nguyên. Xem [tài liệu khoản chi và Tags](docs/QUICK_ITEM_TAGS.vi.md).

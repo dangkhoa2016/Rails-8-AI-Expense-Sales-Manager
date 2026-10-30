@@ -2,7 +2,7 @@
 
 ## Purpose and data compatibility
 
-The application now has a Category Management page at `/finance/categories` with create, list, edit and delete/archive actions. Each category stores a **stable key** plus separately editable **English** and **Vietnamese** display names. Every category belongs to one workspace and cannot be accessed from another workspace.
+The application now has a Category Management page at `/finance/tags` with create, list, edit and delete/archive actions. Each category stores a **stable key** plus separately editable **English** and **Vietnamese** display names. Every category belongs to one workspace and cannot be accessed from another workspace.
 
 The original `finance_transactions.category` and `finance_line_items.category` fields remain stable text keys, preserving confirmed immutable transactions and existing monthly reports/CSV data. Only the displayed label changes with the interface language. The selected category key is submitted from a dropdown when users create/edit a transaction or add/edit a receipt line. Legacy keys are automatically registered as workspace-owned catalog entries, without rewriting historical records. Unrecognized legacy keys have a neutral same-name fallback in both languages until a user supplies translations.
 
@@ -25,4 +25,9 @@ This enhancement does not add tax accounting or change any financial calculation
 
 ## Multi-tag evolution
 
-From M11, the catalog is presented as **Tags** in navigation and management, while the original `finance_categories` database table and `/finance/categories` endpoint remain for compatibility. Receipt **line items** may now select multiple tags or create new ones within their own add/edit modal. Existing transaction-level primary category reports still use one key. See [Fast item and multi-tag workflow](QUICK_ITEM_TAGS.en.md).
+From M11, the catalog is presented as **Tags** in navigation and management, while the original `finance_categories` database table and `/finance/tags` endpoint remain for compatibility. Receipt **line items** may now select multiple tags or create new ones within their own add/edit modal. Existing transaction-level primary category reports still use one key. See [Fast item and multi-tag workflow](QUICK_ITEM_TAGS.en.md).
+
+
+The legacy /finance/categories route remains available for bookmarks and existing clients; the database remains unchanged.
+
+On screens up to 960px, the Tag catalog uses responsive labeled cards rather than a clipped five-column table; each card retains the key, Vietnamese and English names, status and Edit/Delete actions.

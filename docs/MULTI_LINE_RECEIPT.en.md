@@ -4,7 +4,7 @@
 
 One income/expense transaction can have **0–500 individual line items**. These are not 500 separate accounting postings. The parent `finance_transactions.amount` and `transaction_date` are human-confirmed accounting values; items are a breakdown (item description, amount, optional quantity/unit_price/category). Time/location remain optional transaction-level context.
 
-The parent amount is **never inferred** from item subtotals or from a receipt. The item breakdown total is compared with the parent amount; differences may represent VAT, discounts, fees or unreadable/missing items. Confirmed-ledger reports count each parent transaction **exactly once**. A separate item-category allocation report uses item subtotals only, shows its difference to the confirmed expense total, and never adds allocations again to income/expense totals.
+The parent amount is **never inferred from an image**; user-entered draft item changes synchronize the parent draft total with an audit trail. The item breakdown total is compared with the parent amount; differences may represent VAT, discounts, fees or unreadable/missing items. Confirmed-ledger reports count each parent transaction **exactly once**. A separate item-category allocation report uses item subtotals only, shows its difference to the confirmed expense total, and never adds allocations again to income/expense totals.
 
 ## Manual entry and bulk CSV
 
@@ -18,7 +18,7 @@ Sweet bread,30000,2,15000,food
 Printing paper A4,85000,1,85000,office
 ```
 
-Optional headers: quantity, unit_price, category. Other headers and duplicate headers are rejected. Requirements: positive quantity if present, nonnegative decimal unit price if present, amount with up to two decimals, positive or zero, description nonempty and at most 500 characters. Input limit: 512 KiB and 500 rows per CSV, with a maximum of 500 items per transaction. Decimal dots are required in CSV for machine readability.
+Required headers: description and amount. Optional headers: quantity, unit_price, category, occurred_time and location_text. The item date comes from the transaction. A legacy occurred_on column is accepted only when nonblank dates match the transaction day. Other headers and duplicate headers are rejected. Requirements: positive quantity if present, nonnegative decimal unit price if present, amount with up to two decimals, positive or zero, description nonempty and at most 500 characters. Input limit: 512 KiB and 500 rows per CSV, with a maximum of 500 items per transaction. Decimal dots are required in CSV for machine readability.
 
 The import validates the **entire** file first and writes the items, SHA256 import-batch record and audit event atomically under a transaction lock. Failure rolls back everything. Identical uploaded CSV bytes cannot import twice into the same transaction. CSV import is allowed only in an authenticated workspace **while the parent is a draft**.
 
@@ -49,6 +49,6 @@ ruby tests/test_input_policy.rb
 
 ## Compact add-item modal
 
-The item list now has a compact toolbar rather than a permanently visible single-item form. **+ Add a single item** opens a Hotwire/Turbo Frame dialog with all the familiar fields (description, amount, quantity, unit price, category, optional item date/time/place). The CSV import remains available inside a collapsed disclosure control; AI proposals remain a separate link.
+The item list now has a compact toolbar rather than a permanently visible single-item form. **+ Add a single item** opens a Hotwire/Turbo Frame dialog with all the familiar fields (description, amount, quantity, unit price, category, shared transaction date (read-only) and optional item time/place). The CSV import remains available inside a collapsed disclosure control; AI proposals remain a separate link.
 
-A successful Turbo Stream create updates the paginated item list, item-count/subtotal/reconciliation summary, closes the dialog and shows a confirmation without a full-page reload. If the newly added item falls on another page, a direct link to the last page is shown instead of overflowing the current 25-row table. Validation errors keep the modal open and preserve its fields. Confirmed transactions and other workspaces cannot add items. The parent accounting amount is never auto-adjusted.
+A successful Turbo Stream create updates the paginated item list, item-count/subtotal/reconciliation summary, closes the dialog and shows a confirmation without a full-page reload. If the newly added item falls on another page, a direct link to the last page is shown instead of overflowing the current 25-row table. Validation errors keep the modal open and preserve its fields. Confirmed transactions and other workspaces cannot add items. The draft parent amount synchronizes to remaining lines; confirmed entries remain immutable.
