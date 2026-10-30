@@ -1,5 +1,8 @@
 # Shared transaction date and audited draft totals
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## One accounting date
 
 A transaction owns **one date**, stored as `finance_transactions.transaction_date`. Every line item displays this date; the add/edit item modal does not offer an independent date field. A draft may have no date while details are being entered, but the transaction date must be provided before the user can confirm it. Optional `occurred_time` (HH:MM) and `location_text` remain per-item; neither is guessed or prefilled from the current clock.

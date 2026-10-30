@@ -1,5 +1,8 @@
 # Receipt-first intake and human review (M9)
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## User journey
 
 The Money out (expense) entry screen at `/finance/transactions/new` now begins with uploading a receipt photo (JPEG/PNG/WEBP, 10 MB maximum). The user selects expense or income, chooses the image from a device or drops it into the upload area, and presses **Upload & continue**. No date, amount, description, category, merchant or item is required before upload. A local browser-only preview shows the selected file; it never analyzes the photo.

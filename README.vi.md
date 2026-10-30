@@ -100,9 +100,9 @@ Xem [tài liệu chi tiết khoản thu chi (Tiếng Việt)](docs/TRANSACTION_C
 
 ## Hóa đơn nhiều dòng và nhập hàng loạt (M6)
 
-Một giao dịch có thể chứa tối đa **500 dòng khoản chi tiết**, mỗi dòng có tên, thành tiền, số lượng/đơn giá/danh mục tùy chọn. Tổng tiền giao dịch vẫn phải **do người dùng xác nhận**; bản nháp đồng bộ số tiền từ tổng các dòng khi được thêm/sửa/xóa/import, nhưng tuyệt đối không suy từ OCR chưa được kiểm chứng.
+Một giao dịch có thể chứa tối đa **500 dòng khoản chi tiết**, mỗi dòng có tên, thành tiền, số lượng/đơn giá/Tags tùy chọn. Tổng tiền giao dịch vẫn phải **do người dùng xác nhận**; bản nháp đồng bộ số tiền từ tổng các dòng khi được thêm/sửa/xóa/import, nhưng tuyệt đối không suy từ OCR chưa được kiểm chứng.
 
-Với bản nháp ngắn, dùng nút **Thêm dòng mới** trên form. Với hóa đơn dài, mở **Xem và quản lý tất cả khoản chi** để duyệt, sửa hoặc xóa theo trang (25 dòng/trang). Hoặc nhập CSV UTF-8 với hai cột bắt buộc `description,amount` và các cột tùy chọn `quantity,unit_price,category,occurred_time,location_text`, tối đa 500 dòng/512 KiB. Hệ thống ghi nguyên tử, chống nhập trùng bằng SHA256 trong cùng giao dịch; CSV khác sẽ thêm mới, không tự thay dòng cũ.
+Với bản nháp ngắn, dùng nút **Thêm dòng mới** trên form. Với hóa đơn dài, mở **Xem và quản lý tất cả khoản chi** để duyệt, sửa hoặc xóa theo trang (25 dòng/trang). Hoặc nhập CSV UTF-8 với hai cột bắt buộc `description,amount` và các cột tùy chọn `quantity,unit_price,tags,occurred_time,location_text`, tối đa 500 dòng/512 KiB. Hệ thống ghi nguyên tử, chống nhập trùng bằng SHA256 trong cùng giao dịch; CSV khác sẽ thêm mới, không tự thay dòng cũ.
 
 Có thể tải [CSV ví dụ 100 dòng](examples/receipt_lines_100.csv), hoặc seed bốn hóa đơn **giả lập** 5/20/50/100 dòng trong tài khoản demo development đã tạo sẵn:
 
@@ -110,7 +110,7 @@ Có thể tải [CSV ví dụ 100 dòng](examples/receipt_lines_100.csv), hoặc
 FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_itemized_receipts.rb
 ```
 
-Báo cáo có thêm phân bổ danh mục theo dòng đã chốt và chênh lệch đối chiếu, nhưng không cộng lại các dòng vào tổng thu/chi lần thứ hai. Đề xuất AI có thể được xem và duyệt từng dòng trên trang riêng; **OCR GGUF thực tế chưa được bật** vì còn phải nghiệm thu chất lượng model.
+Báo cáo có thêm phân bổ theo Tag chính của các dòng đã chốt và chênh lệch đối chiếu, nhưng không cộng lại các dòng vào tổng thu/chi lần thứ hai. Đề xuất AI có thể được xem và duyệt từng dòng trên trang riêng; **OCR GGUF thực tế chưa được bật** vì còn phải nghiệm thu chất lượng model.
 
 Xem [tài liệu M6 (Tiếng Việt)](docs/MULTI_LINE_RECEIPT.vi.md).
 
@@ -150,14 +150,11 @@ Tài liệu chi tiết: [Ngày giờ và địa điểm từng dòng (Tiếng Vi
 Trong danh sách khoản chi của bản nháp, nút **+ Thêm một khoản chi** mở modal Turbo. Khi lưu thành công, hệ thống cập nhật bảng có phân trang và tổng đối chiếu, đóng popup, hiển thị thông báo mà không refresh toàn trang. Dữ liệu sai giữ form mở. Chức năng import CSV được thu vào mục mở rộng. Modal Sửa và nguyên tắc bất biến của giao dịch đã chốt không thay đổi. Xem [tài liệu hóa đơn nhiều dòng](docs/MULTI_LINE_RECEIPT.vi.md).
 
 
-## Quản lý danh mục song ngữ và giao diện giao dịch gọn hơn (M8)
+## Quản lý Tags song ngữ và giao diện giao dịch thống nhất
 
-Menu **Danh mục** mở `/finance/categories`, có chức năng tạo/xem/sửa/xóa hoặc lưu trữ danh mục riêng cho workspace. Mỗi danh mục có mã cố định, tên tiếng Việt và tên tiếng Anh riêng; danh mục đã dùng sẽ lưu trữ thay vì xóa mất dữ liệu lịch sử. Các nhãn lưu trữ vẫn xuất hiện trong báo cáo và giao dịch đã chốt. Form tạo giao dịch và modal thêm/sửa khoản chi dùng ô chọn danh mục; mã lưu trong DB cũ không bị thay đổi.
+Menu **Tags** mở `/finance/tags`, cho phép quản lý nhãn riêng cho từng workspace với mã ổn định, tên tiếng Việt/tiếng Anh và trạng thái hoạt động/lưu trữ. Người dùng được gắn nhiều Tags cho transaction và từng `line_item`. Hệ thống **không còn bảng hoặc cột danh mục đơn**: dữ liệu lịch sử ở `finance_transactions.category` và `finance_line_items.category` được chuyển thành liên kết Tags có kiểm tra trước khi xóa cột; bảng danh mục cũ được đổi thành `finance_tags`. Báo cáo phân bổ theo **Tag đầu tiên** để mỗi số tiền chỉ được tính một lần, không nhân đôi vì nhiều nhãn.
 
-Form tạo giao dịch hiện ưu tiên loại thu/chi, ngày, số tiền, danh mục và mô tả; thông tin phụ nằm trong mục mở rộng. Lưu bản nháp rồi thêm các mặt hàng qua modal. Trang chi tiết nhấn mạnh số tiền và trạng thái, xem trước tối đa 5 khoản chi, có link đến danh sách đầy đủ; chứng từ, thông tin phụ và audit được thu gọn. Vẫn bắt buộc xác nhận thủ công và không thay đổi lịch sử tài chính đã chốt.
-
-Xem [quy trình quản lý danh mục và giao diện (Tiếng Việt)](docs/CATEGORY_MANAGEMENT.vi.md). Demo dùng dữ liệu giả lập trên CPU; model vision GGUF chưa bật.
-
+Màn hình tạo Thu/Chi dùng chung một bố cục ưu tiên chứng từ, có radio Thu tiền/Chi tiền; nhập số tiền thủ công sẽ tạo khoản chi tiết đầu tiên và tổng tiền transaction luôn chỉ đọc. Xem [đặc tả di chuyển sang Tags](docs/TAGS_ONLY_SCHEMA.vi.md) và [quản lý Tags](docs/TAGS_MANAGEMENT.vi.md).
 
 ## Tải hóa đơn trước, kiểm tra rồi xác nhận (M9)
 
@@ -179,7 +176,7 @@ Không yêu cầu các trường giờ, địa điểm và giải thích chung k
 
 Popup khoản chi mặc định **số lượng 1** và hiển thị **ngày từ giao dịch đã lưu**, không tự điền ngày hoặc giờ hiện tại nếu chưa có. Ngày chỉ sửa ở transaction; giờ riêng trên từng khoản là tùy chọn, không phải kết quả AI đọc hóa đơn. Gõ số lượng hoặc đơn giá sẽ cập nhật thành tiền tức thì; Rails tính lại ở backend khi lưu. Nếu không có đơn giá vẫn có thể nhập thành tiền thủ công; tổng tiền giao dịch nháp có các dòng sẽ được đồng bộ từ các khoản sau khi lưu.
 
-Mỗi khoản có thể **chọn nhiều Tags** dưới dạng chip hoặc nhập tên mới cách nhau bằng dấu phẩy ngay trong modal. Việc tạo tag và lưu khoản nằm trong cùng transaction, giới hạn workspace và được trigger PostgreSQL bảo vệ khi giao dịch đã chốt. Trường danh mục cũ vẫn giữ làm **mã phân loại chính cho báo cáo**, tránh cộng trùng tiền; danh mục Tags quản lý nhãn EN/VI riêng. Xem [quy trình thêm khoản nhanh và nhiều Tags](docs/QUICK_ITEM_TAGS.vi.md).
+Mỗi khoản có thể **chọn nhiều Tags** dưới dạng chip hoặc nhập tên mới cách nhau bằng dấu phẩy ngay trong modal. Việc tạo tag và lưu khoản nằm trong cùng transaction, giới hạn workspace và được trigger PostgreSQL bảo vệ khi giao dịch đã chốt. Không còn cột danh mục đơn: báo cáo dùng Tag đầu tiên cho mỗi khoản để tránh cộng trùng; nhãn Tags có tên VI/EN riêng. Xem [quy trình thêm khoản nhanh và nhiều Tags](docs/QUICK_ITEM_TAGS.vi.md).
 
 
 ### Tinh chỉnh tương tác modal khoản chi (M11)

@@ -1,5 +1,8 @@
 # Trải nghiệm và báo cáo tài chính — Tiếng Việt
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Quy trình thu chi
 
 Trang giao dịch hiển thị tổng thu, tổng chi đã xác nhận trong tháng, chênh lệch thu chi và số bản nháp. Bảng giao dịch có tìm kiếm theo nội dung, lọc trạng thái/loại và phân trang trong phạm vi workspace.
