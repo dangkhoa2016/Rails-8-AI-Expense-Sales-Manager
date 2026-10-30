@@ -20,7 +20,7 @@ class RegistrationsController < ApplicationController
       @user.workspaces.create!(name: "Personal Workspace")
     end
     start_new_session_for(@user)
-    redirect_to root_path, notice: "Account created."
+    redirect_to root_path, notice: I18n.t("finance.flash.account_created")
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
   end

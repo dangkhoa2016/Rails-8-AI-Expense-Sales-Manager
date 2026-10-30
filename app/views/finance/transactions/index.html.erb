@@ -1,22 +1,118 @@
-<h1>Income &amp; Expense Manager</h1>
-<nav>
-  <%= link_to 'New expense', new_finance_transaction_path(kind: 'expense') %> |
-  <%= link_to 'New income', new_finance_transaction_path(kind: 'income') %> |
-  <%= link_to 'Monthly report', finance_reports_path %>
-</nav>
-<p>Drafts are excluded from financial reports. Uploads and manual entries are both supported.</p>
-<table>
-  <thead><tr><th>Transaction</th><th>Date</th><th>Type</th><th>Amount</th><th>Status</th><th>Evidence</th></tr></thead>
-  <tbody>
-    <% @transactions.each do |tx| %>
-      <tr>
-        <td><%= link_to (tx.description.presence || "Draft ##{tx.id}"), finance_transaction_path(tx) %></td>
-        <td><%= tx.transaction_date&.iso8601 || 'Not entered' %></td>
-        <td><%= tx.kind %></td>
-        <td><%= tx.amount&.to_s('F') || 'Not entered' %> <%= tx.currency_code %></td>
-        <td><%= tx.status %></td>
-        <td><%= tx.document_versions.count %> image versions</td>
-      </tr>
+<% content_for :title, ui("dashboard.title") %>
+<div class="page-heading">
+  <div>
+    <span class="eyebrow"><%= ui("dashboard.eyebrow") %></span>
+    <h1><%= ui("dashboard.title") %></h1>
+    <p class="subheading"><%= ui("dashboard.subtitle") %></p>
+  </div>
+  <div class="heading-actions">
+    <%= link_to ui("dashboard.actions.income"), new_finance_transaction_path(kind: "income"), class: "btn btn-secondary" %>
+    <%= link_to "+ #{ui("dashboard.actions.expense")}", new_finance_transaction_path(kind: "expense"), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="kpi-grid">
+  <article class="kpi-card kpi-income">
+    <div class="kpi-icon">↗</div>
+    <p class="kpi-label"><%= ui("dashboard.kpi.income") %></p>
+    <strong class="kpi-value"><%= money_vnd(@month_income) %></strong>
+    <span class="kpi-foot"><%= human_month(Date.current) %></span>
+  </article>
+  <article class="kpi-card kpi-expense">
+    <div class="kpi-icon">↙</div>
+    <p class="kpi-label"><%= ui("dashboard.kpi.expense") %></p>
+    <strong class="kpi-value"><%= money_vnd(@month_expense) %></strong>
+    <span class="kpi-foot"><%= human_month(Date.current) %></span>
+  </article>
+  <article class="kpi-card kpi-net">
+    <div class="kpi-icon">≈</div>
+    <p class="kpi-label"><%= ui("dashboard.kpi.net") %></p>
+    <strong class="kpi-value"><%= money_vnd(@month_net) %></strong>
+    <span class="kpi-foot"><%= human_month(Date.current) %></span>
+  </article>
+  <article class="kpi-card kpi-drafts">
+    <div class="kpi-icon">◷</div>
+    <p class="kpi-label"><%= ui("dashboard.kpi.drafts") %></p>
+    <strong class="kpi-value"><%= @draft_count %></strong>
+    <span class="kpi-foot"><%= ui("shared.draft") %></span>
+  </article>
+</div>
+
+<div class="dashboard-main">
+  <section class="panel transactions-panel">
+    <div class="panel-heading">
+      <div>
+        <h2><%= ui("dashboard.table.title") %></h2>
+        <p><%= ui("dashboard.table.subtitle") %></p>
+      </div>
+      <%= link_to ui("dashboard.actions.report"), finance_reports_path, class: "text-action" %>
+    </div>
+    <%= form_with url: finance_transactions_path, method: :get, class: "filter-form", local: true do |f| %>
+      <div class="filter-field filter-search">
+        <%= f.label :q, ui("dashboard.filters.search") %>
+        <%= f.search_field :q, value: @query, placeholder: ui("dashboard.filters.placeholder"), maxlength: 80 %>
+      </div>
+      <div class="filter-field">
+        <%= f.label :status, ui("dashboard.filters.status") %>
+        <%= f.select :status, [[ui("shared.all"), ""], [ui("shared.draft"), "draft"], [ui("shared.confirmed"), "confirmed"]], { selected: @selected_status } %>
+      </div>
+      <div class="filter-field">
+        <%= f.label :kind, ui("dashboard.filters.kind") %>
+        <%= f.select :kind, [[ui("shared.all"), ""], [ui("shared.income"), "income"], [ui("shared.expense"), "expense"]], { selected: @selected_kind } %>
+      </div>
+      <div class="filter-buttons">
+        <%= f.submit ui("shared.filter"), class: "btn btn-primary" %>
+        <%= link_to ui("shared.clear"), finance_transactions_path, class: "btn btn-minimal" %>
+      </div>
     <% end %>
-  </tbody>
-</table>
+    <% if @transactions.any? %>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr><th><%= ui("shared.description") %></th><th><%= ui("shared.date") %></th><th><%= ui("shared.type") %></th><th class="align-right"><%= ui("shared.amount") %></th><th><%= ui("shared.status") %></th><th><%= ui("shared.evidence") %></th></tr>
+          </thead>
+          <tbody>
+            <% @transactions.each do |tx| %>
+              <tr>
+                <td class="entry-cell"><%= link_to (tx.description.presence || "#{ui("shared.draft")} ##{tx.id}"), finance_transaction_path(tx), class: "entry-link" %><small>#<%= tx.id %> · <%= category_label(tx.category) %></small></td>
+                <td><%= human_day(tx.transaction_date) %></td>
+                <td><span class="kind kind-<%= tx.kind %>"><%= ui("shared.#{tx.kind}") %></span></td>
+                <td class="align-right amount-cell"><%= money_vnd(tx.amount) %></td>
+                <td><span class="status-pill <%= tx.confirmed? ? "is-confirmed" : "is-draft" %>"><%= ui("shared.#{tx.status}") %></span></td>
+                <td><%= link_to ui("dashboard.evidence_count", count: tx.document_versions.size), finance_transaction_path(tx, anchor: "documents") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-pagination">
+        <span><%= ui("dashboard.pagination", page: @page, pages: @pages, count: @filtered_count) %></span>
+        <div class="pagination-links">
+          <% base_filters = { status: @selected_status, kind: @selected_kind, q: @query } %>
+          <% if @page > 1 %><%= link_to ui("shared.previous"), finance_transactions_path(base_filters.merge(page: @page-1)), class: "btn btn-minimal" %><% end %>
+          <% if @page < @pages %><%= link_to ui("shared.next"), finance_transactions_path(base_filters.merge(page: @page+1)), class: "btn btn-secondary" %><% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="empty-state"><div class="empty-icon">▣</div><h3><%= ui("dashboard.empty.title") %></h3><p><%= ui("dashboard.empty.help") %></p><%= link_to ui("dashboard.empty.create"), new_finance_transaction_path, class: "btn btn-primary" %></div>
+    <% end %>
+  </section>
+  <aside class="sidebar-panels">
+    <section class="panel helper-panel">
+      <div class="helper-icon">✦</div>
+      <h2><%= ui("dashboard.guide.title") %></h2>
+      <ol class="steps">
+        <li><span>1</span><p><%= ui("dashboard.guide.one") %></p></li>
+        <li><span>2</span><p><%= ui("dashboard.guide.two") %></p></li>
+        <li><span>3</span><p><%= ui("dashboard.guide.three") %></p></li>
+      </ol>
+      <%= link_to ui("nav.guide"), guide_path, class: "text-action" %>
+    </section>
+    <section class="panel quick-actions">
+      <h2><%= ui("dashboard.actions.title") %></h2>
+      <%= link_to "↙  #{ui("dashboard.actions.expense")}", new_finance_transaction_path(kind: "expense"), class: "quick-link" %>
+      <%= link_to "↗  #{ui("dashboard.actions.income")}", new_finance_transaction_path(kind: "income"), class: "quick-link" %>
+      <%= link_to "▤  #{ui("dashboard.actions.report")}", finance_reports_path, class: "quick-link" %>
+    </section>
+  </aside>
+</div>

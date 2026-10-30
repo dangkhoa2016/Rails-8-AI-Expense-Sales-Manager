@@ -6,14 +6,14 @@ module Finance
 
     def accept
       Finance::ReviewSuggestion.call(suggestion: @suggestion, actor: @finance_actor, decision: 'accept')
-      redirect_to edit_finance_transaction_path(@transaction), notice: 'Suggestion reviewed. Check the form before confirming.'
+      redirect_to edit_finance_transaction_path(@transaction), notice: I18n.t('finance.flash.suggestion_reviewed')
     rescue ArgumentError, ActiveRecord::RecordInvalid => e
       redirect_to edit_finance_transaction_path(@transaction), alert: e.message
     end
 
     def reject
       Finance::ReviewSuggestion.call(suggestion: @suggestion, actor: @finance_actor, decision: 'reject')
-      redirect_to edit_finance_transaction_path(@transaction), notice: 'Suggestion rejected.'
+      redirect_to edit_finance_transaction_path(@transaction), notice: I18n.t('finance.flash.suggestion_rejected')
     rescue ArgumentError, ActiveRecord::RecordInvalid => e
       redirect_to edit_finance_transaction_path(@transaction), alert: e.message
     end

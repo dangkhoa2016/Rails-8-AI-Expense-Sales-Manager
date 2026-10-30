@@ -9,7 +9,7 @@ module Finance
       version = Finance::UploadDocument.call(transaction: @transaction, upload: image,
                                              actor: @finance_actor)
       redirect_to finance_transaction_document_version_path(@transaction, version),
-                  notice: 'New image version saved; the original versions remain available.'
+                  notice: I18n.t('finance.flash.image_saved')
     rescue ActionController::ParameterMissing, ArgumentError, ActiveRecord::RecordInvalid => e
       redirect_to finance_transaction_path(@transaction), alert: e.message
     end

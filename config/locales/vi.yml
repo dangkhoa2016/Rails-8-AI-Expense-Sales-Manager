@@ -1,0 +1,288 @@
+vi:
+  finance:
+    app: Quản lý thu chi & bán hàng
+    tagline: Không gian tài chính có người xác nhận
+    nav:
+      transactions: Giao dịch
+      reports: Phân tích
+      guide: Hướng dẫn
+      new: Thêm khoản chi
+      logout: Đăng xuất
+      login: Đăng nhập
+      signup: Tạo tài khoản
+      workspace: Không gian riêng tư
+    footer:
+      safety: Chỉ dùng bản demo · Không nhập dữ liệu thật
+      review: Dữ liệu tài chính cần người xác nhận
+    shared:
+      income: Thu
+      expense: Chi
+      confirmed: Đã xác nhận
+      draft: Bản nháp
+      all: Tất cả
+      cancel: Hủy
+      back: Quay lại
+      unknown: Chưa nhập
+      none: Không có
+      currency: VND
+      date: Ngày thu/chi
+      description: Nội dung
+      amount: Số tiền
+      category: Danh mục
+      status: Trạng thái
+      type: Loại
+      evidence: Chứng từ
+      actions: Thao tác
+      month: Tháng
+      filter: Áp dụng lọc
+      clear: Xóa bộ lọc
+      view: Xem chi tiết
+      previous: Trước
+      next: Tiếp
+      not_available: Chưa có
+      record: Bản ghi
+    dashboard:
+      eyebrow: KHÔNG GIAN TÀI CHÍNH
+      title: Tổng quan giao dịch
+      subtitle: Theo dõi khoản thu, chi và luôn có thể đối chiếu từng bản ghi.
+      kpi:
+        income: Tổng thu đã xác nhận · Tháng này
+        expense: Tổng chi đã xác nhận · Tháng này
+        net: Chênh lệch thu chi · Tháng này
+        drafts: Bản nháp đang chờ xác nhận
+      actions:
+        title: Thao tác nhanh
+        expense: Ghi khoản chi
+        income: Ghi khoản thu
+        report: Xem báo cáo
+      table:
+        title: Lịch sử giao dịch
+        subtitle: Kiểm tra từng giao dịch hoặc tiếp tục bản nháp chưa hoàn thành.
+      filters:
+        search: Tìm theo nội dung
+        placeholder: Tìm nội dung khoản thu, chi…
+        status: Trạng thái duyệt
+        kind: Loại giao dịch
+      pagination: Trang %{page}/%{pages} · %{count} giao dịch
+      empty:
+        title: Chưa có giao dịch phù hợp
+        help: Đổi bộ lọc hoặc tạo khoản thu, chi mới.
+        create: Tạo giao dịch đầu tiên
+      evidence_count: '%{count} phiên bản'
+      guide:
+        title: Quy trình tài chính đáng tin cậy
+        one: Tạo bản nháp thủ công, kể cả khi không có hóa đơn.
+        two: Tải ảnh chứng từ và kiểm tra gợi ý từ AI khi có.
+        three: Xác nhận ngày và số tiền trước khi đưa vào báo cáo.
+    reports:
+      eyebrow: PHÂN TÍCH & BÁO CÁO
+      title: Tình hình thu chi
+      subtitle: Tổng hợp khoản tiền đã được xác nhận. Không tính bản nháp và gợi ý AI chưa duyệt.
+      period: Kỳ báo cáo
+      export: Xuất CSV đã xác nhận
+      kpi:
+        income: Tổng thu
+        expense: Tổng chi
+        net: Chênh lệch thu chi
+        count: Giao dịch đã xác nhận
+      compare:
+        none: Chưa có giao dịch tháng trước
+        title: 'Tháng trước: %{value}'
+      trend:
+        title: Xu hướng 6 tháng
+        subtitle: Tổng thu và chi đã xác nhận theo tháng (VND)
+        empty: Chưa có giao dịch xác nhận trong giai đoạn này.
+      breakdown:
+        title: Cơ cấu chi theo danh mục
+        subtitle: Tỷ trọng danh mục chi trong tháng được chọn.
+        empty: Tháng này chưa có khoản chi đã xác nhận.
+      daily:
+        title: Phát sinh theo ngày
+        subtitle: Khoản thu và chi phát sinh từng ngày trong tháng.
+        empty: Chưa có phát sinh đã xác nhận.
+      latest:
+        title: Giao dịch xác nhận gần đây
+        subtitle: Mở từng khoản đã tổng hợp để đối chiếu chứng từ.
+      evidence_note: Chỉ hiển thị giao dịch đã chốt. Số tiền lấy từ PostgreSQL, không suy đoán tổng tiền
+        từ hóa đơn.
+      no_prev: —
+      balance:
+        positive: Thặng dư
+        negative: Thâm hụt
+        zero: Cân bằng
+      category:
+        uncategorized: Chưa phân loại
+      legend:
+        income: Thu
+        expense: Chi
+      table:
+        day: Ngày
+        income: Thu
+        expense: Chi
+    form:
+      eyebrow: NHẬP GIAO DỊCH
+      title:
+        create: Tạo giao dịch mới
+        edit: 'Chỉnh sửa bản nháp #%{id}'
+      subtitle: Nhập thông tin thủ công hoặc kiểm tra trường AI đã đọc. Chưa ghi nhận tài chính cho đến
+        khi bạn xác nhận.
+      section:
+        date: 01 · Ngày ghi nhận
+        details: 02 · Thông tin giao dịch
+        lines: 03 · Các khoản chi tiết
+        ai: 04 · Các trường AI gợi ý
+      date:
+        help: Chọn ngày phát sinh thực tế. Nếu hóa đơn không có ngày, hãy tự nhập; không lấy ngày tải
+          ảnh làm ngày thu/chi.
+        ai: 'Ngày AI gợi ý: %{value}. Vui lòng kiểm tra.'
+      details:
+        help: Nhập số tiền VND dạng chữ số không có dấu phân nhóm, ví dụ 43500. Kiểm tra lại trước khi
+          xác nhận.
+      lines:
+        help: Có thể để trống các dòng chi tiết khi lưu nháp. Chỉnh sửa từng khoản và không tự cho rằng
+          tổng các dòng bằng số tiền xác nhận.
+        name: Tên khoản
+        amount: Số tiền khoản
+        remove: Xóa dòng nháp này
+      ai:
+        help: Mỗi trường chỉ là gợi ý. Trường không đọc được để trống. Đánh dấu đã xem không tự ghi nhận
+          thu/chi.
+        accept: Đánh dấu đã xem
+        reject: Từ chối gợi ý
+      save: Lưu bản nháp
+      back: Về danh sách
+    detail:
+      eyebrow: HỒ SƠ GIAO DỊCH
+      title: 'Giao dịch #%{id}'
+      subtitle: Xem thông tin tài chính, phiên bản ảnh và lịch sử kiểm soát.
+      confirm:
+        title: Sẵn sàng xác nhận?
+        help: Chỉ xác nhận sau khi kiểm tra ngày, loại thu/chi và số tiền. Giao dịch sẽ được khóa và đưa
+          vào báo cáo.
+        checkbox: Tôi đã kiểm tra ngày, loại giao dịch, số tiền và chứng từ.
+        button: Xác nhận ghi nhận thu chi
+        locked: Giao dịch đã chốt không thể sửa trực tiếp. Có thể thêm ảnh làm bằng chứng mà không đổi
+          ngày hoặc số tiền.
+      edit: Chỉnh sửa bản nháp
+      summary: Thông tin đã kiểm tra
+      confirmed_at: Thời điểm xác nhận
+      upload:
+        help: Ảnh JPEG, PNG hoặc WEBP, tối đa 10 MB. Phiên bản cũ được lưu lại để đối chiếu và kiểm toán.
+        button: Lưu phiên bản ảnh
+        title: Tải thêm ảnh
+      image:
+        version: Phiên bản %{number}
+        active: Chứng từ đã chốt
+        supplement: Chứng từ bổ sung
+      ai:
+        unreadable: Ảnh không đủ rõ để nhận diện đáng tin cậy. Vui lòng nhập tay hoặc tải ảnh rõ hơn.
+        error: Xử lý ảnh gặp lỗi kỹ thuật, không có nghĩa ảnh không đọc được. Bạn có thể thử lại hoặc
+          nhập tay.
+        partial: AI đọc được một số trường. Hãy kiểm tra từng gợi ý và nhập tay phần còn thiếu.
+        manual: Bạn luôn có thể nhập thủ công.
+        title: Trạng thái đọc chứng từ
+      audit:
+        empty: Chưa có hoạt động kiểm soát.
+        title: Lịch sử kiểm soát
+      items:
+        empty: Chưa có khoản chi tiết.
+        title: Các khoản chi tiết
+      documents:
+        empty: Chưa tải ảnh chứng từ.
+        title: Các phiên bản chứng từ
+      back: Quay lại danh sách
+    evidence:
+      title: Ảnh chứng từ · Phiên bản %{number}
+      uploaded: Đã tải lên %{value}
+      original: Mở ảnh gốc
+      ai:
+        empty: Chưa chạy AI trên phiên bản ảnh này.
+        title: Lịch sử AI nhận diện
+      warning: Chứng từ riêng tư. Chỉ người được phân quyền trong workspace mới được xem.
+    auth:
+      title: Chào mừng trở lại
+      subtitle: Đăng nhập để quản lý khoản thu/chi và kiểm tra chứng từ.
+      email: Địa chỉ email
+      password: Mật khẩu
+      signin: Đăng nhập
+      forgot: Quên mật khẩu?
+      signup:
+        subtitle: Không gian tài chính riêng được tạo cùng tài khoản của bạn.
+        title: Tạo tài khoản
+      password_confirmation: Xác nhận mật khẩu
+      preview:
+        disabled: Bản demo tạm thời không cho đăng ký tài khoản mới.
+        help: Sử dụng thông tin tài khoản demo đã được cung cấp.
+      reset_title: Đặt lại mật khẩu
+      reset_help: Nhập địa chỉ email để yêu cầu liên kết đặt lại mật khẩu.
+      reset_send: Gửi hướng dẫn đặt lại
+      new_password: Mật khẩu mới
+      reset_save: Lưu mật khẩu mới
+    guide:
+      eyebrow: HƯỚNG DẪN SỬ DỤNG
+      title: Hiểu quy trình thu chi
+      subtitle: Tận dụng AI để giảm nhập liệu nhưng vẫn kiểm soát dữ liệu tài chính.
+      step1:
+        title: Bắt đầu từ bản nháp
+        body: Bạn có thể ghi khoản thu hoặc chi ngay cả khi chưa có ảnh. Bản nháp được chỉnh sửa và không
+          tính vào báo cáo.
+      step2:
+        title: Tải ảnh và lưu phiên bản
+        body: Mỗi ảnh được lưu thành phiên bản riêng có SHA256. Ảnh cũ luôn có thể mở lại để kiểm tra,
+          đối chiếu.
+      step3:
+        title: Kiểm tra từng trường
+        body: Khi AI được tích hợp và chấp thuận, các trường gợi ý sẽ hiện riêng. Phần khó đọc để trống
+          và cho phép nhập tay.
+      step4:
+        title: Xác nhận ngày và số tiền thực
+        body: Phải có ngày giao dịch trước khi xác nhận. Không suy ngày thiếu từ EXIF, thời điểm tải ảnh
+          hoặc trường khác.
+      step5:
+        title: Thống kê từ giao dịch đã chốt
+        body: Báo cáo, biểu đồ và CSV chỉ lấy giá trị đã xác nhận trong cơ sở dữ liệu, không tính bản
+          nháp hay gợi ý AI chưa duyệt.
+      faq:
+        title: Câu hỏi thường gặp
+      faq1:
+        q: Nếu hóa đơn mờ hoặc chữ viết tay khó đọc thì sao?
+        a: Bạn có thể tải ảnh rõ hơn hoặc nhập tay. Hệ thống không được tự đoán ngày hoặc số tiền khi
+          không đọc chắc chắn.
+      faq2:
+        q: Có thể thay ảnh sau khi đã chốt giao dịch không?
+        a: Có thể tải phiên bản mới, nhưng giá trị tài chính và ảnh tham chiếu đã chốt không thay đổi.
+          Ảnh mới là bằng chứng bổ sung.
+      faq3:
+        q: Bản demo đã bật AI đọc hóa đơn chưa?
+        a: Chưa. Adapter GGUF vẫn tắt để chờ nghiệm thu chất lượng. Nhập tay và lịch sử ảnh đang sử dụng
+          được.
+    flash:
+      draft_created: Đã lưu bản nháp. Hãy kiểm tra và xác nhận trước khi đưa vào báo cáo.
+      draft_updated: Đã cập nhật bản nháp.
+      confirmed: Đã xác nhận giao dịch.
+      image_saved: Đã lưu phiên bản ảnh mới. Các phiên bản trước vẫn được giữ lại.
+      suggestion_reviewed: Đã đánh dấu xem gợi ý. Hãy kiểm tra form trước khi xác nhận.
+      suggestion_rejected: Đã từ chối gợi ý.
+      account_created: Đã tạo tài khoản.
+      signin_failed: Vui lòng kiểm tra địa chỉ email hoặc mật khẩu.
+      password_sent: Nếu email tồn tại, hướng dẫn đặt lại mật khẩu đã được gửi.
+      password_reset: Đã đặt lại mật khẩu.
+      password_mismatch: Mật khẩu xác nhận không khớp.
+      password_invalid: Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.
+    category:
+      office: Văn phòng
+      sales: Bán hàng
+      transport: Di chuyển
+      services: Dịch vụ
+      maintenance: Bảo trì
+      food: Ăn uống
+      other: Khác
+  date:
+    formats:
+      default: '%d/%m/%Y'
+      short: '%d/%m/%Y'
+      month: '%m/%Y'
+  time:
+    formats:
+      default: '%d/%m/%Y %H:%M'
+      short: '%d/%m/%Y %H:%M'
