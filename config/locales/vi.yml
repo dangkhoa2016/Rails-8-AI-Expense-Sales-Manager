@@ -580,11 +580,18 @@ vi:
       create_correction: Tạo bản nháp điều chỉnh
     original_modal:
       title: 'Giao dịch gốc #%{id} (bất biến)'
-      readonly: Chỉ xem. Giao dịch đã xác nhận này không thể bị thay đổi từ bản nháp đang sửa.
+      readonly: Chỉ xem. Giao dịch gốc đã xác nhận không thể bị sửa trực tiếp; bản gốc được bảo toàn để đối chiếu và kiểm toán.
       close: Đóng chi tiết
       evidence_new_tab: Chứng từ mở trong tab mới, không thay đổi bản nháp hiện tại.
       no_evidence: Giao dịch này chưa có chứng từ đính kèm.
     correction_drafts:
+      confirmed_badge: ĐÃ XÁC NHẬN
+      confirmed_title: Giao dịch điều chỉnh đã xác nhận
+      confirmed_notice: 'Giao dịch này đã được xác nhận để thay thế giao dịch gốc #%{source}. Đây không còn là bản nháp. Bản gốc vẫn được giữ nguyên để kiểm toán.'
+      confirmed_help: Giao dịch điều chỉnh đã có hiệu lực trong báo cáo. Không thể sửa trực tiếp bản ghi đã xác nhận; có thể xem và đối chiếu với bản gốc.
+      confirmed_replacement: Giao dịch thay thế đã xác nhận
+      cancelled_badge: ĐÃ HỦY
+      cancelled_notice: 'Đây là bản điều chỉnh từng được tạo từ giao dịch gốc #%{source}, nhưng đã bị hủy và chỉ còn lưu để kiểm toán.'
       copy_badge: BẢN NHÁP ĐIỀU CHỈNH
       copy_title: Đây là bản sao của giao dịch đã xác nhận
       copy_notice: 'Bạn đang sửa bản nháp sao chép từ giao dịch gốc #%{source}. Bản gốc đã khóa và không bị thay đổi.'

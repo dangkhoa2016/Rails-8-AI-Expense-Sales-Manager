@@ -1,8 +1,18 @@
 <% if @comparison_source %>
   <section class="panel correction-origin-notice" id="correction-origin">
-    <span class="status-pill is-draft"><%= ui("correction_drafts.copy_badge") %></span>
-    <h2><%= ui("correction_drafts.copy_title") %></h2>
-    <p><%= ui("correction_drafts.copy_notice", source: @comparison_source.id) %></p>
+    <% if @transaction.confirmed? %>
+      <span class="status-pill is-confirmed"><%= ui("correction_drafts.confirmed_badge") %></span>
+      <h2><%= ui("correction_drafts.confirmed_title") %></h2>
+      <p><%= ui("correction_drafts.confirmed_notice", source: @comparison_source.id) %></p>
+    <% elsif @transaction.cancelled? %>
+      <span class="status-pill is-cancelled"><%= ui("correction_drafts.cancelled_badge") %></span>
+      <h2><%= ui("correction_drafts.cancelled_title") %></h2>
+      <p><%= ui("correction_drafts.cancelled_notice", source: @comparison_source.id) %></p>
+    <% else %>
+      <span class="status-pill is-draft"><%= ui("correction_drafts.copy_badge") %></span>
+      <h2><%= ui("correction_drafts.copy_title") %></h2>
+      <p><%= ui("correction_drafts.copy_notice", source: @comparison_source.id) %></p>
+    <% end %>
     <p class="correction-origin-reason">
       <strong><%= ui("correction_drafts.request_reason") %>:</strong>
       <%= @correction_incoming.reason %>
@@ -11,13 +21,15 @@
       <%= ui("correction_drafts.requested_at") %>:
       <%= @correction_incoming.created_at.in_time_zone("Asia/Ho_Chi_Minh").strftime("%d/%m/%Y %H:%M:%S %Z") %>
     </p>
-    <% if @transaction.cancelled? %>
+    <% if @transaction.confirmed? %>
+      <p class="form-hint"><%= ui("correction_drafts.confirmed_help") %></p>
+    <% elsif @transaction.cancelled? %>
       <p class="form-hint"><%= ui("correction_drafts.cancelled_help") %></p>
     <% else %>
       <p class="form-hint"><%= ui("correction_drafts.edit_only_copy") %></p>
     <% end %>
     <p><%= button_tag ui("correction_drafts.open_original"),
-      type: "button", class: "btn btn-secondary", data: {
+      type: "button", class: "btn btn-secondary original-modal-trigger", data: {
         action: "original-transaction-modal#open"
       } %></p>
     <div class="correction-comparison-summary">
@@ -25,7 +37,7 @@
         <strong>#<%= @comparison_source.id %> · <%= money_vnd(@comparison_source.amount) %></strong>
         <small><%= human_day(@comparison_source.transaction_date) %> ·
           <%= @comparison[:source_count] %> <%= ui("m6.count") %></small></div>
-      <div><small><%= ui("correction_drafts.replacement") %></small>
+      <div><small><%= @transaction.confirmed? ? ui("correction_drafts.confirmed_replacement") : ui("correction_drafts.replacement") %></small>
         <strong>#<%= @transaction.id %> · <%= money_vnd(@transaction.amount) %></strong>
         <small><%= human_day(@transaction.transaction_date) %> ·
           <%= @comparison[:draft_count] %> <%= ui("m6.count") %></small></div>
@@ -64,7 +76,7 @@
                 <div class="revision-pair">
                   <div><small><%= ui("correction_drafts.original") %></small>
                     <pre><%= JSON.pretty_generate(change[:original]) %></pre></div>
-                  <div><small><%= ui("correction_drafts.replacement") %></small>
+                  <div><small><%= @transaction.confirmed? ? ui("correction_drafts.confirmed_replacement") : ui("correction_drafts.replacement") %></small>
                     <pre><%= JSON.pretty_generate(change[:replacement]) %></pre></div>
                 </div>
               </li>

@@ -585,11 +585,18 @@ en:
       create_correction: Create correction draft
     original_modal:
       title: 'Locked original transaction #%{id}'
-      readonly: Read-only. This confirmed transaction cannot be changed from the current correction draft.
+      readonly: Read-only. This confirmed original is preserved for comparison and audit and cannot be directly modified.
       close: Close details
       evidence_new_tab: Evidence opens in a separate tab without leaving the draft.
       no_evidence: No evidence documents are attached to this transaction.
     correction_drafts:
+      confirmed_badge: CONFIRMED
+      confirmed_title: Confirmed correction transaction
+      confirmed_notice: 'This correction has been confirmed as the replacement for original transaction #%{source}. It is no longer an editable draft; the original remains preserved for audit.'
+      confirmed_help: The confirmed correction is effective in reports. The confirmed record cannot be edited directly; the original remains available for comparison.
+      confirmed_replacement: Confirmed replacement
+      cancelled_badge: CANCELLED
+      cancelled_notice: 'This correction was previously created from original transaction #%{source}, but has been cancelled and retained for audit only.'
       copy_badge: CORRECTION DRAFT
       copy_title: This is an editable copy of a confirmed transaction
       copy_notice: 'You are editing a copy of locked original transaction #%{source}. The original cannot be changed.'

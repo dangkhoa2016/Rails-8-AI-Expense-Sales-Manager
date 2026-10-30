@@ -70,6 +70,64 @@ class FinanceCorrectionCancelTest < ActionDispatch::IntegrationTest
     assert_equal before, @source.reload.attributes
   end
 
+  test "confirmed correction shows confirmed replacement copy instead of a draft warning" do
+    post finance_transaction_correction_path(@source), params: {
+      reason: "Correct the original itemized transaction after verifying details."
+    }
+    assert_response :redirect
+    correction = @source.reload.correction_as_original
+    replacement = correction.replacement_transaction
+
+    get finance_transaction_path(replacement, locale: "vi")
+    assert_response :success
+    assert_select "#correction-origin h2", text: "Đây là bản sao của giao dịch đã xác nhận"
+    assert_select "#correction-origin .status-pill.is-draft", count: 1
+    assert_select "#correction-origin .status-pill.is-confirmed", count: 0
+    assert_select ".original-transaction-modal-footer button.original-modal-done", count: 1
+    assert_select ".detail-sidebar button.original-modal-trigger", count: 1
+
+    post confirm_finance_transaction_path(replacement), params: {human_confirmed: "1"}
+    assert_response :redirect
+    assert replacement.reload.confirmed?
+    assert correction.reload.confirmed?
+
+    get finance_transaction_path(replacement, locale: "vi")
+    assert_response :success
+    assert_select "#correction-origin h2", text: "Giao dịch điều chỉnh đã xác nhận"
+    assert_select "#correction-origin .status-pill.is-confirmed", count: 1
+    assert_select "#correction-origin .status-pill.is-draft", count: 0
+    assert_select "#correction-origin button.original-modal-trigger", count: 1
+    assert_select ".detail-sidebar button.original-modal-trigger", count: 1
+    assert_select "dialog.original-transaction-dialog", count: 1
+    assert_select "#correction-origin", text: /đã có hiệu lực trong báo cáo/
+    assert_select "#correction-origin", text: /Đây là bản sao của giao dịch đã xác nhận/, count: 0
+
+    get finance_transaction_path(replacement, locale: "en")
+    assert_response :success
+    assert_select "#correction-origin h2", text: "Confirmed correction transaction"
+    assert_select "#correction-origin", text: /no longer an editable draft/
+    assert @source.reload.confirmed?
+  end
+
+  test "cancelled correction shows cancelled state, never the draft copy title" do
+    post finance_transaction_correction_path(@source), params: {
+      reason: "Temporary correction while verifying the source receipt."
+    }
+    assert_response :redirect
+    replacement = @source.reload.correction_as_original.replacement_transaction
+    post cancel_finance_transaction_correction_path(@source), params: {
+      reason: "This temporary correction is not required after verification."
+    }
+    assert_response :redirect
+    assert replacement.reload.cancelled?
+    get finance_transaction_path(replacement, locale: "vi")
+    assert_response :success
+    assert_select "#correction-origin h2", text: "Bản nháp điều chỉnh đã hủy"
+    assert_select "#correction-origin .status-pill.is-cancelled", count: 1
+    assert_select "#correction-origin .status-pill.is-draft", count: 0
+    assert_select "#correction-origin", text: /Đây là bản sao của giao dịch đã xác nhận/, count: 0
+  end
+
   test "workspace boundary prevents unauthorized cancellation" do
     post finance_transaction_correction_path(@source),
       params: {reason: "Correct an error found after reviewing the original invoice."}

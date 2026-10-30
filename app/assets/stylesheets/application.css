@@ -810,3 +810,48 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
   .original-transaction-modal-item{align-items:flex-start}
   .original-transaction-modal-footer{bottom:-12px}
 }
+
+/* Source-record controls: these are buttons, not navigation. Keep their neutral
+   appearance, alignment and focus styles consistent across mobile and desktop. */
+button.btn.original-modal-trigger {
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
+  gap:8px;min-height:44px;max-width:100%;padding:10px 16px;
+  border:1px solid #bfcfe1;border-radius:10px;
+  background:#fff;color:#244767;font-size:.84rem;font-weight:750;
+  line-height:1.35;white-space:normal;overflow-wrap:anywhere;box-shadow:none;
+  cursor:pointer;vertical-align:middle;appearance:none;
+}
+button.btn.original-modal-trigger:hover {
+  background:#eaf3fd;border-color:#8fb2d8;color:#174a7a;
+}
+button.btn.original-modal-trigger:focus-visible {
+  outline:3px solid #8ebce8;outline-offset:2px;
+}
+.correction-original-sidebar button.original-modal-trigger {
+  width:100%;
+}
+.correction-origin-notice button.original-modal-trigger {
+  min-width:190px;
+}
+.original-transaction-modal-footer button.btn.original-modal-done {
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
+  min-height:44px;min-width:130px;max-width:100%;
+  padding:10px 20px;border:1px solid #bfd0e1;border-radius:10px;
+  background:#fff;color:#254965;font-size:.85rem;font-weight:750;
+  line-height:1.35;white-space:normal;box-shadow:none;
+  cursor:pointer;appearance:none;
+}
+.original-transaction-modal-footer button.btn.original-modal-done:hover {
+  background:#eaf3fd;border-color:#8eafd3;color:#174a7a;
+}
+.original-transaction-modal-footer button.btn.original-modal-done:focus-visible {
+  outline:3px solid #8ebce8;outline-offset:2px;
+}
+@media(max-width:590px){
+  .original-transaction-modal-footer button.btn.original-modal-done {
+    width:100%;
+  }
+  .correction-origin-notice button.original-modal-trigger {
+    width:100%;
+  }
+}
