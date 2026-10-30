@@ -1,96 +1,177 @@
 <% content_for :title, ui("detail.title", id: @transaction.id) %>
-<div class="page-heading">
-  <div><span class="eyebrow"><%= ui("detail.eyebrow") %></span><h1><%= ui("detail.title", id: @transaction.id) %> <span class="status-pill <%= @transaction.confirmed? ? "is-confirmed" : "is-draft" %>"><%= ui("shared.#{@transaction.status}") %></span></h1><p class="subheading"><%= ui("detail.subtitle") %></p></div>
+<div class="page-heading transaction-detail-heading">
+  <div>
+    <span class="eyebrow"><%= ui("detail.eyebrow") %></span>
+    <h1><%= @transaction.description.presence || ui("detail.title", id: @transaction.id) %></h1>
+    <p class="subheading">#<%= @transaction.id %> · <%= human_day(@transaction.transaction_date) %>
+      · <%= category_label(@transaction.category) %></p>
+  </div>
   <div class="heading-actions">
-    <% if @transaction.draft? %><%= link_to ui("detail.edit"), edit_finance_transaction_path(@transaction), class: "btn btn-primary" %><% end %>
+    <% if @transaction.draft? %>
+      <% if @transaction.active_document_version_id.present? %>
+        <%= link_to ui("intake.review_title"), review_finance_transaction_path(@transaction),
+          class: "btn btn-primary" %>
+      <% else %>
+        <%= link_to ui("detail.edit"), edit_finance_transaction_path(@transaction),
+          class: "btn btn-primary" %>
+      <% end %>
+    <% end %>
     <%= link_to ui("detail.back"), finance_transactions_path, class: "btn btn-secondary" %>
   </div>
 </div>
-<div class="record-summary">
-  <div class="summary-box"><span><%= ui("shared.date") %></span><strong><%= human_day(@transaction.transaction_date) %></strong></div>
-  <div class="summary-box"><span><%= ui("shared.type") %></span><strong><%= ui("shared.#{@transaction.kind}") %></strong></div>
-  <div class="summary-box"><span><%= ui("shared.amount") %></span><strong><%= money_vnd(@transaction.amount) %></strong></div>
-  <div class="summary-box"><span><%= ui("shared.category") %></span><strong><%= category_label(@transaction.category) %></strong></div>
-</div>
-<div class="detail-grid">
-  <div>
+
+<section class="detail-hero panel">
+  <div class="detail-hero-main">
+    <span class="eyebrow"><%= ui("detail_view.amount_label") %></span>
+    <strong class="detail-hero-amount"><%= money_vnd(@transaction.amount) %></strong>
+    <div class="detail-hero-pills">
+      <span class="kind kind-<%= @transaction.kind %>"><%= ui("shared.#{@transaction.kind}") %></span>
+      <span class="status-pill <%= @transaction.confirmed? ? "is-confirmed" : "is-draft" %>">
+        <%= ui("shared.#{@transaction.status}") %></span>
+      <% if @correction_outgoing&.confirmed? %>
+        <span class="status-pill is-draft"><%= ui("correction.revised") %></span>
+      <% end %>
+    </div>
+  </div>
+  <div class="detail-hero-meta">
+    <div><span><%= ui("shared.date") %></span><strong><%= human_day(@transaction.transaction_date) %></strong></div>
+    <div><span><%= ui("shared.category") %></span><strong><%= category_label(@transaction.category) %></strong></div>
+    <div><span><%= ui("m6.count") %></span><strong><%= @line_items_count %></strong></div>
+    <div><span><%= ui("m6.difference") %></span><strong><%= money_vnd(@line_items_delta) %></strong></div>
+  </div>
+</section>
+
+<div class="detail-content">
+  <div class="detail-primary">
     <section class="panel">
-      <h2><%= ui("detail.summary") %></h2>
-      <dl class="record-dl">
-        <div><dt><%= ui("shared.description") %></dt><dd><%= @transaction.description.presence || ui("shared.unknown") %></dd></div>
-        <div><dt><%= ui("shared.status") %></dt><dd><%= ui("shared.#{@transaction.status}") %></dd></div>
-        <div><dt><%= ui("detail.confirmed_at") %></dt><dd><%= @transaction.confirmed_at ? l(@transaction.confirmed_at, format: :short) : ui("shared.unknown") %></dd></div>
-      </dl>
+      <div class="panel-heading">
+        <div><h2><%= ui("detail.items.title") %></h2>
+          <p><%= ui("m6.count") %>: <%= @line_items_count %> · <%= ui("m6.lines_total") %>: <%= money_vnd(@line_items_total) %></p>
+        </div>
+        <%= link_to ui("m6.manage", count: @line_items_count),
+          finance_transaction_line_items_path(@transaction), class: "btn btn-primary" %>
+      </div>
+      <% if @line_items_count.positive? && @line_items_delta != 0 %>
+        <div class="proposal-hint"><strong><%= ui("m6.difference") %>: <%= money_vnd(@line_items_delta) %></strong>
+          <p><%= ui("m6.reconciliation") %></p></div>
+      <% end %>
+      <% if @line_items_count.positive? %>
+        <div class="recent-list detail-item-preview">
+          <% @transaction.line_items.order(:position).limit(5).each do |line| %>
+            <div class="recent-entry">
+              <span class="recent-name"><strong><%= line.description %></strong>
+                <small>
+                  <% tags = line.tags.to_a %>
+                  <% if tags.any? %>
+                    <%= tags.map(&:label).join(" · ") %>
+                  <% else %>
+                    <%= category_label(line.category) %>
+                  <% end %>
+                  <% if @transaction.transaction_date %> · <%= human_day(@transaction.transaction_date) %><% end %>
+                  <% if line.occurred_time %> · <%= line.occurred_time.strftime("%H:%M") %><% end %>
+                  <% if line.location_text.present? %><span class="item-mini-location"><%= line.location_text %></span><% end %>
+                </small>
+              </span>
+              <strong class="recent-amount"><%= money_vnd(line.amount) %></strong>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="form-hint"><%= ui("detail.items.empty") %></p>
+      <% end %>
+      <% if @line_items_count > 5 %>
+        <p><%= link_to ui("detail_view.more_items", count: @line_items_count - 5),
+          finance_transaction_line_items_path(@transaction), class: "text-action" %></p>
+      <% end %>
     </section>
+
     <% if @transaction.draft? %>
-      <section class="panel confirm-box">
-        <h2><%= ui("detail.confirm.title") %></h2>
-        <p class="form-hint"><%= ui("detail.confirm.help") %></p>
+      <section class="panel detail-confirm-panel">
+        <h2><%= @correction_incoming ? ui("correction.confirm") : ui("detail.confirm.title") %></h2>
+        <p class="form-hint"><%= @correction_incoming ? ui("correction.confirm_help") : ui("detail.confirm.help") %></p>
         <%= form_with url: confirm_finance_transaction_path(@transaction), method: :post do |f| %>
-          <label class="confirm-checkbox"><%= f.check_box :human_confirmed, required: true %><span><%= ui("detail.confirm.checkbox") %></span></label>
+          <label class="confirm-checkbox">
+            <%= f.check_box :human_confirmed, required: true %>
+            <span><%= ui("detail.confirm.checkbox") %></span>
+          </label>
           <%= f.submit ui("detail.confirm.button"), class: "btn btn-primary" %>
         <% end %>
       </section>
-    <% else %>
-      <div class="security-info">✓ <%= ui("detail.confirm.locked") %></div>
     <% end %>
 
-    <% if @latest_extraction %>
-      <section class="panel">
-        <h2><%= ui("detail.ai.title") %></h2>
-        <% mode = Finance::InputPolicy.ui_mode(@latest_extraction.parse_status) %>
-        <p class="form-hint">
-          <% if mode == :manual_entry_or_better_image %><%= ui("detail.ai.unreadable") %>
-          <% elsif mode == :retry_or_manual %><%= ui("detail.ai.error") %>
-          <% elsif mode == :review_ai_fields_or_manual %><%= ui("detail.ai.partial") %>
-          <% else %><%= ui("detail.ai.manual") %><% end %>
-        </p>
-      </section>
-    <% end %>
-
-    <section class="panel" id="documents">
-      <h2><%= ui("detail.documents.title") %></h2>
+    <details class="panel detail-disclosure" id="documents">
+      <summary><strong><%= ui("detail.documents.title") %></strong>
+        <span><%= @versions.count %> · <%= ui("detail_view.expand") %></span></summary>
       <p class="form-hint"><%= ui("detail.upload.help") %></p>
-      <%= form_with url: finance_transaction_document_versions_path(@transaction), scope: :document_version, method: :post, multipart: true do |f| %>
-        <div class="form-field">
-          <%= f.label :image, ui("detail.upload.title"), class: "form-label" %>
-          <%= f.file_field :image, accept: "image/jpeg,image/png,image/webp", required: true %>
-        </div>
-        <%= f.submit ui("detail.upload.button"), class: "btn btn-primary" %>
+      <%= form_with url: finance_transaction_document_versions_path(@transaction),
+          scope: :document_version, method: :post, multipart: true do |f| %>
+        <div class="form-field"><%= f.label :image, ui("detail.upload.title"), class: "form-label" %>
+          <%= f.file_field :image, accept: "image/jpeg,image/png,image/webp", required: true %></div>
+        <%= f.submit ui("detail.upload.button"), class: "btn btn-secondary" %>
       <% end %>
       <% if @versions.any? %>
         <ol class="evidence-list">
           <% @versions.each do |version| %>
-            <li>
-              <%= link_to ui("detail.image.version", number: version.version_number), finance_transaction_document_version_path(@transaction, version), class: "entry-link" %>
-              <% if @transaction.confirmed? && @transaction.active_document_version_id == version.id %><span class="status-pill is-confirmed"><%= ui("detail.image.active") %></span><% elsif @transaction.confirmed? %><span class="status-pill is-draft"><%= ui("detail.image.supplement") %></span><% end %>
-              <p class="form-hint"><%= l(version.created_at, format: :short) %> · SHA256 <code><%= version.sha256 %></code></p>
+            <li><%= link_to ui("detail.image.version", number: version.version_number),
+              finance_transaction_document_version_path(@transaction, version), class: "entry-link" %>
+              <small>SHA256: <code><%= version.sha256 %></code></small>
             </li>
           <% end %>
         </ol>
-      <% else %><p class="form-hint"><%= ui("detail.documents.empty") %></p><% end %>
-    </section>
+      <% end %>
+    </details>
   </div>
-  <div>
-    <section class="panel">
-      <h2><%= ui("detail.items.title") %></h2>
-      <% if @transaction.line_items.any? %>
-        <div class="recent-list">
-          <% @transaction.line_items.order(:position).each do |line| %>
-            <div class="recent-entry"><span class="recent-name"><strong><%= line.description %></strong></span><span class="recent-amount"><%= money_vnd(line.amount) %></span></div>
-          <% end %>
-        </div>
-      <% else %><p class="form-hint"><%= ui("detail.items.empty") %></p><% end %>
-    </section>
-    <section class="panel">
-      <h2><%= ui("detail.audit.title") %></h2>
-      <% if @transaction.audit_events.any? %>
-        <ul class="audit-list">
-          <% @transaction.audit_events.order(created_at: :desc).limit(50).each do |event| %>
-            <li><span class="status-pill is-confirmed">✓</span> <strong><%= event.event_type.humanize %></strong><br><small><%= l(event.created_at, format: :short) %> · #<%= event.actor_id %></small></li>
-          <% end %>
-        </ul>
-      <% else %><p class="form-hint"><%= ui("detail.audit.empty") %></p><% end %>
-    </section>
-  </div>
+  <aside class="detail-sidebar">
+    <% if @correction_outgoing || @correction_incoming %>
+      <section class="panel">
+        <h2><%= ui("correction.details") %></h2>
+        <% if @correction_outgoing %>
+          <p class="form-hint"><%= @correction_outgoing.confirmed? ? ui("correction.confirmed") : ui("correction.pending") %></p>
+          <p><%= @correction_outgoing.reason %></p>
+          <%= link_to ui("correction.replacement"),
+            finance_transaction_path(@correction_outgoing.replacement_transaction), class: "btn btn-secondary" %>
+        <% end %>
+        <% if @correction_incoming %>
+          <p><%= @correction_incoming.reason %></p>
+          <%= link_to ui("correction.source"),
+            finance_transaction_path(@correction_incoming.original_transaction), class: "btn btn-secondary" %>
+        <% end %>
+      </section>
+    <% end %>
+    <% if @transaction.context.present? %>
+      <details class="panel detail-disclosure">
+        <summary><strong><%= ui("detail.context.title") %></strong>
+          <span><%= ui("detail_view.expand") %></span></summary>
+        <% context = @transaction.context %>
+        <% if context.source == "demo_seed" %>
+          <p class="proposal-hint"><%= ui("detail.context.synthetic") %></p>
+        <% end %>
+        <dl class="record-dl">
+          <div><dt><%= ui("detail.context.details") %></dt><dd><%= context.purchase_details.presence || "—" %></dd></div>
+          <div><dt><%= ui("detail.context.time") %></dt><dd><%= context.occurred_time ? context.occurred_time.strftime("%H:%M") : "—" %></dd></div>
+          <div><dt><%= ui("detail.context.location") %></dt><dd><%= context.location_text.presence || "—" %></dd></div>
+        </dl>
+      </details>
+    <% end %>
+    <% if @latest_extraction %>
+      <section class="panel"><h2><%= ui("detail.ai.title") %></h2>
+        <p class="form-hint"><%= ui("detail.ai.manual") %></p>
+        <%= link_to ui("m6.ai_title"),
+          proposals_finance_transaction_line_items_path(@transaction), class: "text-action" %>
+      </section>
+    <% end %>
+    <details class="panel detail-disclosure">
+      <summary><strong><%= ui("detail.audit.title") %></strong>
+        <span><%= @transaction.audit_events.count %> · <%= ui("detail_view.expand") %></span></summary>
+      <ul class="audit-list">
+        <% @transaction.audit_events.order(created_at: :desc).limit(30).each do |event| %>
+          <li><strong><%= event.event_type.humanize %></strong>
+            <small><%= l(event.created_at, format: :short) %> · #<%= event.actor_id %></small></li>
+        <% end %>
+      </ul>
+    </details>
+    <% if @transaction.confirmed? %>
+      <div class="security-info">✓ <%= ui("detail.confirm.locked") %></div>
+    <% end %>
+  </aside>
 </div>

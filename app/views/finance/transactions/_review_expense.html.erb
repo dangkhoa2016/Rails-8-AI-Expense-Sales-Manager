@@ -1,0 +1,82 @@
+<div class="intake-review-alert" role="status">
+  <strong><%= ui(@suggestions.any? ? "intake.ai_proposals" : "intake.ai_unavailable") %></strong>
+  <p><%= ui(@suggestions.any? ? "intake.ai_proposals_help" : "intake.ai_unavailable_help") %></p>
+</div>
+<div class="intake-review-layout">
+  <section class="intake-review-main">
+    <div class="panel">
+      <div class="panel-heading"><div><h2><%= ui("intake.verify_title") %></h2>
+        <p><%= ui("intake.verify_help") %></p></div>
+        <span class="status-pill is-draft"><%= ui("shared.draft") %></span></div>
+      <% if @transaction.errors.any? %>
+        <div class="flash alert" role="alert"><%= @transaction.errors.full_messages.to_sentence %></div>
+      <% end %>
+      <%= form_with model: @transaction, scope: :finance_transaction,
+          url: finance_transaction_path(@transaction), method: :patch do |f| %>
+        <%= hidden_field_tag :return_to_review, "1" %>
+        <div class="fields-grid">
+          <div class="form-field"><%= f.label :transaction_date, ui("shared.date"), class: "form-label" %>
+            <%= f.date_field :transaction_date %></div>
+          <div class="form-field"><%= f.label :amount, "#{ui('shared.amount')} (VND)", class: "form-label" %>
+            <%= f.number_field :amount, min: 0, step: 1, inputmode: "numeric" %></div>
+          <div class="form-field full"><%= f.label :description, ui("shared.description"), class: "form-label" %>
+            <%= f.text_area :description, rows: 2 %></div>
+        </div>
+        <details class="entry-optional-fields intake-review-optional">
+          <summary><%= ui("new_ux.extra_fields") %></summary>
+          <div class="form-field"><%= f.label :category, ui("shared.category"), class: "form-label" %>
+            <%= f.select :category,
+              options_for_select(category_options(selected: @transaction.category), @transaction.category),
+              {include_blank: ui("categories.select")} %>
+          </div>
+        </details>
+        <div class="intake-submit">
+          <p class="form-hint"><%= ui("intake.no_auto_post") %></p>
+          <%= f.submit ui("intake.save_review"), class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+    <% if @suggestions.any? %>
+      <section class="panel">
+        <h2><%= ui("intake.suggestions_title") %></h2>
+        <p class="form-hint"><%= ui("form.ai.help") %></p>
+        <ul class="audit-list">
+          <% @suggestions.each do |suggestion| %>
+            <li><strong><%= suggestion.field_key %>:</strong> <%= suggestion.proposed_value %>
+              <small><%= suggestion.review_status %></small></li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+    <section class="panel">
+      <div class="panel-heading"><div><h2><%= ui("detail.items.title") %></h2>
+        <p><%= ui("m6.count") %>: <%= @item_count %> · <%= ui("m6.lines_total") %>:
+          <%= money_vnd(@line_total) %></p></div>
+        <%= link_to ui("intake.review_items"), finance_transaction_line_items_path(@transaction),
+          class: "btn btn-secondary" %></div>
+      <p class="form-hint"><%= ui("intake.review_items_help") %></p>
+    </section>
+    <div class="intake-review-next">
+      <%= link_to ui("intake.open_detail"), finance_transaction_path(@transaction),
+        class: "btn btn-secondary" %>
+      <span class="form-hint"><%= ui("intake.confirm_later") %></span>
+    </div>
+  </section>
+  <aside class="intake-review-aside">
+    <section class="panel">
+      <h2><%= ui("intake.source_title") %></h2>
+      <% if @version && @version.image.attached? %>
+        <%= image_tag image_finance_transaction_document_version_path(@transaction, @version),
+          alt: ui("intake.source_title"), class: "receipt-review-image" %>
+        <p class="form-hint"><%= @version.original_filename %></p>
+        <%= link_to ui("intake.view_original"),
+          finance_transaction_document_version_path(@transaction, @version),
+          class: "text-action" %>
+      <% else %>
+        <p class="form-hint"><%= ui("intake.no_source") %></p>
+        <%= link_to ui("intake.upload_new"), finance_transaction_path(@transaction, anchor: "documents"),
+          class: "btn btn-secondary" %>
+      <% end %>
+    </section>
+  </aside>
+</div>

@@ -6,19 +6,27 @@ module Finance
 
     def accept
       Finance::ReviewSuggestion.call(suggestion: @suggestion, actor: @finance_actor, decision: 'accept')
-      redirect_to edit_finance_transaction_path(@transaction), notice: I18n.t('finance.flash.suggestion_reviewed')
+      redirect_to review_destination, notice: I18n.t('finance.flash.suggestion_reviewed')
     rescue ArgumentError, ActiveRecord::RecordInvalid => e
-      redirect_to edit_finance_transaction_path(@transaction), alert: e.message
+      redirect_to review_destination, alert: e.message
     end
 
     def reject
       Finance::ReviewSuggestion.call(suggestion: @suggestion, actor: @finance_actor, decision: 'reject')
-      redirect_to edit_finance_transaction_path(@transaction), notice: I18n.t('finance.flash.suggestion_rejected')
+      redirect_to review_destination, notice: I18n.t('finance.flash.suggestion_rejected')
     rescue ArgumentError, ActiveRecord::RecordInvalid => e
-      redirect_to edit_finance_transaction_path(@transaction), alert: e.message
+      redirect_to review_destination, alert: e.message
     end
 
     private
+    def review_destination
+      if params[:scope] == "line_items"
+        proposals_finance_transaction_line_items_path(@transaction, page: params[:page])
+      else
+        edit_finance_transaction_path(@transaction)
+      end
+    end
+
     def find_suggestion!
       @suggestion = @transaction.field_suggestions.find(params[:id])
     end

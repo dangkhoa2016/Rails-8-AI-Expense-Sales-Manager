@@ -57,6 +57,20 @@
     <% end %>
   </section>
 
+  <section class="panel">
+    <div class="panel-heading"><div><h2><%= ui("m6.items_report") %></h2><p><%= ui("m6.items_report_hint") %></p></div></div>
+    <% if @item_categories.any? %>
+      <% @item_categories.sort_by { |_category, amount| -amount }.each do |category, amount| %>
+        <div class="category-row">
+          <div class="category-head"><strong><%= category_label(category) %></strong><span><%= money_vnd(amount) %></span></div>
+          <div class="progress-track"><div class="progress-bar" style="width:<%= @item_allocation_total.positive? ? (amount / @item_allocation_total * 100).to_f.round(1) : 0 %>%"></div></div>
+        </div>
+      <% end %>
+      <div class="report-bottom-note"><%= ui("m6.lines_total") %>: <strong><%= money_vnd(@item_allocation_total) %></strong></div>
+      <div class="report-bottom-note"><%= ui("m6.unallocated") %>: <strong><%= money_vnd(@item_allocation_difference) %></strong></div>
+    <% else %><p class="form-hint"><%= ui("m6.no_items_report") %></p><% end %>
+  </section>
+
   <section class="panel daily-panel">
     <div class="panel-heading"><div><h2><%= ui("reports.daily.title") %></h2><p><%= ui("reports.daily.subtitle") %></p></div></div>
     <% if @daily_rows.any? %>

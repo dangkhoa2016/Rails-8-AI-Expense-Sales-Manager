@@ -16,8 +16,8 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
-  # Show full error reports.
-  config.consider_all_requests_local = true
+  # Do not expose development exception traces through a public demo tunnel.
+  config.consider_all_requests_local = ENV["FINANCE_DEMO_PREVIEW"] != "1"
 
   # Enable server timing.
   config.server_timing = true

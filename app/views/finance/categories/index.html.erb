@@ -1,0 +1,51 @@
+<% content_for :title, ui("categories.title") %>
+<div class="page-heading"><div><span class="eyebrow"><%= ui("categories.eyebrow") %></span>
+<h1><%= ui("categories.title") %></h1><p class="subheading"><%= ui("categories.subtitle") %></p></div>
+<%= link_to ui("categories.back"), finance_transactions_path, class: "btn btn-secondary" %></div>
+<div class="category-layout">
+  <section class="panel">
+    <div class="panel-heading"><div><h2><%= ui("categories.list") %></h2>
+      <p><%= ui("categories.history_note") %></p></div>
+      <span class="status-pill is-confirmed"><%= @categories.count %></span></div>
+    <div class="table-scroll tag-list-scroll"><table class="data-table tag-list-table"><thead><tr>
+      <th><%= ui("categories.key") %></th><th><%= ui("categories.name_vi") %></th>
+      <th><%= ui("categories.name_en") %></th><th><%= ui("categories.status") %></th><th><%= ui("shared.actions") %></th>
+    </tr></thead><tbody>
+    <% @categories.each do |category| %>
+      <tr><td data-label="<%= ui("categories.key") %>"><code><%= category.key %></code></td>
+      <td data-label="<%= ui("categories.name_vi") %>"><strong><%= category.name_vi %></strong></td>
+      <td data-label="<%= ui("categories.name_en") %>"><%= category.name_en %></td>
+      <td data-label="<%= ui("categories.status") %>"><span class="status-pill <%= category.active? ? "is-confirmed" : "is-draft" %>">
+        <%= ui(category.active? ? "categories.active" : "categories.archived_status") %></span></td>
+      <td data-label="<%= ui("shared.actions") %>"><div class="line-actions">
+        <%= link_to ui("categories.edit"), edit_finance_tag_path(category), class: "btn btn-secondary" %>
+        <%= button_to ui("categories.delete"), finance_tag_path(category), method: :delete,
+          class: "btn btn-minimal", form: { data: { turbo_confirm: ui("categories.delete_confirm") } } %>
+      </div></td></tr>
+    <% end %></tbody></table></div>
+  </section>
+  <aside><section class="panel category-editor" id="category-editor">
+    <h2><%= @category.persisted? ? ui("categories.edit") : ui("categories.create") %></h2>
+    <p class="form-hint"><%= ui("categories.form_note") %></p>
+    <% if @category.errors.any? %><div class="flash alert" role="alert">
+      <%= @category.errors.full_messages.to_sentence %></div><% end %>
+    <%= form_with model: @category, scope: :finance_category,
+      url: @category.persisted? ? finance_tag_path(@category) : finance_tags_path,
+      method: @category.persisted? ? :patch : :post do |f| %>
+      <div class="form-field"><%= f.label :key, ui("categories.key"), class: "form-label" %>
+        <%= f.text_field :key, required: true, maxlength: 50, readonly: @category.persisted?,
+          placeholder: "bakery", pattern: "[a-z][a-z0-9_]{1,49}" %>
+        <p class="form-hint"><%= ui("categories.key_help") %></p></div>
+      <div class="form-field"><%= f.label :name_vi, ui("categories.name_vi"), class: "form-label" %>
+        <%= f.text_field :name_vi, required: true, maxlength: 120 %></div>
+      <div class="form-field"><%= f.label :name_en, ui("categories.name_en"), class: "form-label" %>
+        <%= f.text_field :name_en, required: true, maxlength: 120 %></div>
+      <% if @category.persisted? %><div class="form-field"><label class="tag-status-toggle">
+        <%= f.check_box :active %><span><%= ui("categories.active_hint") %></span>
+      </label></div><% end %>
+      <div class="form-footer"><%= f.submit ui(@category.persisted? ? "categories.update" : "categories.create"), class: "btn btn-primary" %>
+      <% if @category.persisted? %><%= link_to ui("shared.cancel"), finance_tags_path, class: "btn btn-secondary" %><% end %>
+      </div>
+    <% end %>
+  </section></aside>
+</div>

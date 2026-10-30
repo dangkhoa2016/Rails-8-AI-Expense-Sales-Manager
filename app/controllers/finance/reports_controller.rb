@@ -6,7 +6,7 @@ module Finance
     def show
       @month = month_parameter
       period = @month.beginning_of_month..@month.end_of_month
-      confirmed = finance_scope.confirmed.where(transaction_date: period)
+      confirmed = finance_scope.effective_confirmed.where(transaction_date: period)
 
       @totals = confirmed.group(:kind).sum(:amount)
       @categories = confirmed.where(kind: "expense").group(:category).sum(:amount)
@@ -15,12 +15,12 @@ module Finance
       @draft_count = finance_scope.where(status: "draft").count
 
       previous = @month.prev_month
-      @previous_totals = finance_scope.confirmed
+      @previous_totals = finance_scope.effective_confirmed
         .where(transaction_date: previous.beginning_of_month..previous.end_of_month)
         .group(:kind).sum(:amount)
 
       first_month = @month.beginning_of_month - 5.months
-      months_data = finance_scope.confirmed
+      months_data = finance_scope.effective_confirmed
         .where(transaction_date: first_month..@month.end_of_month)
         .group("DATE_TRUNC('month', transaction_date)::date", :kind).sum(:amount)
       @six_months = (0..5).map do |i|
@@ -36,22 +36,33 @@ module Finance
         expense = daily.fetch([date, "expense"], BigDecimal("0"))
         { date: date, income: income, expense: expense } if income.positive? || expense.positive?
       end
+      @item_categories = Finance::LineItem.joins(:finance_transaction)
+        .where(transaction_id: finance_scope.effective_confirmed
+          .where(kind: "expense", transaction_date: period).select(:id))
+        .group(:category).sum(:amount)
+      @item_allocation_total = @item_categories.values.sum(BigDecimal("0"))
       @expense_total = @totals.fetch("expense", BigDecimal("0"))
       @income_total = @totals.fetch("income", BigDecimal("0"))
+      @item_allocation_difference = @expense_total - @item_allocation_total
       @net = @income_total - @expense_total
     end
 
     def export
       month = month_parameter
-      rows = finance_scope.confirmed
+      rows = finance_scope.effective_confirmed
         .where(transaction_date: month.beginning_of_month..month.end_of_month)
+        .includes(:context, :active_document_version, :correction_as_replacement)
         .order(:transaction_date, :id)
       csv = CSV.generate(headers: true, encoding: "UTF-8") do |sheet|
-        sheet << %w[ID Date Kind Amount Currency Category Description DocumentSHA256]
+        sheet << %w[ID Date Kind Amount Currency Category Description DocumentSHA256 PurchaseDetails TransactionTime Location CorrectsTransactionID]
         rows.each do |tx|
           sheet << [tx.id, tx.transaction_date.iso8601, tx.kind, tx.amount.to_s("F"),
                     tx.currency_code, safe_csv(tx.category), safe_csv(tx.description),
-                    tx.active_document_version&.sha256]
+                    tx.active_document_version&.sha256,
+                    safe_csv(tx.context&.purchase_details),
+                    tx.context&.occurred_time&.strftime("%H:%M"),
+                    safe_csv(tx.context&.location_text),
+                    tx.correction_as_replacement&.original_transaction_id]
         end
       end
       send_data csv, filename: "finance-confirmed-#{month.strftime('%Y-%m')}.csv",

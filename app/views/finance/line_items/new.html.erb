@@ -1,0 +1,5 @@
+<% content_for :title, ui("m6.add_one") %>
+<%= turbo_frame_tag "line_item_modal" do %>
+  <%= render "finance/line_items/new_modal", transaction: @transaction,
+    line_item: @new_item, page: @page, error: @modal_error %>
+<% end %>

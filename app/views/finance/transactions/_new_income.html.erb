@@ -1,0 +1,92 @@
+<div class="income-intake-layout">
+  <section class="income-primary-column">
+    <div class="panel income-entry-panel">
+      <div class="income-entry-heading">
+        <span class="income-entry-mark" aria-hidden="true">↙</span>
+        <div><span class="eyebrow"><%= ui("new_ux.income_quick_eyebrow") %></span>
+          <h2><%= ui("new_ux.income_quick_title") %></h2>
+          <p class="form-hint"><%= ui("new_ux.income_quick_help") %></p>
+        </div>
+      </div>
+      <%= form_with model: @transaction, scope: :finance_transaction,
+        url: finance_transactions_path, method: :post, data: {turbo: true} do |f| %>
+        <%= f.hidden_field :kind, value: "income" %>
+        <%= hidden_field_tag :entry_mode, "quick_income" %>
+        <div class="income-primary-fields">
+          <div class="form-field income-amount-field">
+            <%= f.label :amount, ui("new_ux.income_amount"), class: "form-label" %>
+            <div class="income-amount-control">
+              <%= f.number_field :amount, required: true, min: 1, step: 1,
+                inputmode: "numeric", placeholder: "250000" %>
+              <span>VND</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <%= f.label :description, ui("new_ux.income_from"), class: "form-label" %>
+            <%= f.text_field :description, maxlength: 500, required: true,
+              placeholder: ui("new_ux.income_from_hint") %>
+          </div>
+          <div class="form-field">
+            <%= f.label :transaction_date, ui("new_ux.income_date"), class: "form-label" %>
+            <%= f.date_field :transaction_date, required: true %>
+            <p class="form-hint"><%= ui("new_ux.date_verified") %></p>
+          </div>
+        </div>
+        <details class="entry-optional-fields income-extra-fields">
+          <summary><%= ui("new_ux.extra_fields") %></summary>
+          <div class="form-field">
+            <%= f.label :category, ui("shared.category"), class: "form-label" %>
+            <%= f.select :category,
+              options_for_select(category_options(selected: @transaction.category), @transaction.category),
+              {include_blank: ui("categories.select")} %>
+            <%= link_to ui("categories.manage"), finance_tags_path, class: "text-action" %>
+          </div>
+        </details>
+        <div class="intake-submit income-submit">
+          <p class="form-hint"><%= ui("new_ux.income_draft_note") %></p>
+          <%= f.submit ui("new_ux.income_save"), class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+    <details class="panel income-evidence-panel" open>
+      <summary>
+        <span class="income-entry-mark" aria-hidden="true">▧</span>
+        <span><strong><%= ui("new_ux.income_evidence_title") %></strong>
+          <small><%= ui("new_ux.income_evidence_help") %></small></span>
+        <span aria-hidden="true">⌄</span>
+      </summary>
+      <%= form_with url: from_receipt_finance_transactions_path, method: :post,
+        multipart: true, scope: :receipt, data: {controller: "receipt-upload"} do |f| %>
+        <%= f.hidden_field :kind, value: "income" %>
+        <div class="receipt-dropzone" data-receipt-upload-target="zone"
+          data-action="dragenter->receipt-upload#dragEnter dragover->receipt-upload#dragOver dragleave->receipt-upload#dragLeave drop->receipt-upload#drop">
+          <div class="receipt-upload-icon" aria-hidden="true">▧</div>
+          <strong><%= ui("new_ux.income_evidence_drop") %></strong>
+          <p class="form-hint"><%= ui("intake.drop_help") %></p>
+          <%= f.label :image, ui("intake.choose_file"), class: "btn btn-secondary" %>
+          <%= f.file_field :image, accept: "image/jpeg,image/png,image/webp",
+            class: "intake-file-input", required: true,
+            data: {receipt_upload_target: "file", action: "change->receipt-upload#fileChanged"} %>
+          <span class="form-hint"><%= ui("intake.file_limit") %></span>
+        </div>
+        <div class="receipt-selected" data-receipt-upload-target="selected" hidden>
+          <img data-receipt-upload-target="preview" alt="<%= ui("intake.preview") %>" hidden>
+          <span data-receipt-upload-target="filename"></span>
+        </div>
+        <div class="intake-submit">
+          <p class="form-hint"><%= ui("new_ux.income_evidence_safety") %></p>
+          <%= f.submit ui("new_ux.income_evidence_submit"), class: "btn btn-primary",
+            data: {receipt_upload_target: "submit"} %>
+        </div>
+      <% end %>
+    </details>
+  </section>
+  <aside class="income-assist-column">
+    <section class="panel ux-assist-panel income-assist-panel">
+      <span class="eyebrow"><%= ui("new_ux.assistant_title") %></span>
+      <h2><%= ui("new_ux.income_assistant_heading") %></h2>
+      <p class="form-hint"><%= ui("new_ux.income_assistant_help") %></p>
+      <div class="security-info"><%= ui("new_ux.ai_boundary") %></div>
+    </section>
+  </aside>
+</div>

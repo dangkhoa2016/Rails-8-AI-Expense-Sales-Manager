@@ -1,0 +1,85 @@
+<div class="intake-layout">
+  <section class="intake-main">
+    <div class="panel intake-upload-panel">
+      <div class="intake-method-heading">
+        <span class="intake-method-number">01</span>
+        <div><h2><%= ui("new_ux.expense_upload_title") %></h2>
+          <p class="form-hint"><%= ui("intake.upload_help") %></p></div>
+        <span class="status-pill is-confirmed"><%= ui("new_ux.expense_primary_badge") %></span>
+      </div>
+      <%= form_with url: from_receipt_finance_transactions_path, method: :post,
+        multipart: true, scope: :receipt, data: {controller: "receipt-upload"} do |f| %>
+        <%= f.hidden_field :kind, value: "expense" %>
+        <div class="receipt-dropzone" data-receipt-upload-target="zone"
+          data-action="dragenter->receipt-upload#dragEnter dragover->receipt-upload#dragOver dragleave->receipt-upload#dragLeave drop->receipt-upload#drop">
+          <div class="receipt-upload-icon" aria-hidden="true">▧</div>
+          <strong><%= ui("intake.drop_title") %></strong>
+          <p class="form-hint"><%= ui("intake.drop_help") %></p>
+          <%= f.label :image, ui("intake.choose_file"), class: "btn btn-secondary" %>
+          <%= f.file_field :image, accept: "image/jpeg,image/png,image/webp", required: true,
+            class: "intake-file-input", data: {receipt_upload_target: "file",
+              action: "change->receipt-upload#fileChanged"} %>
+          <span class="form-hint"><%= ui("intake.file_limit") %></span>
+        </div>
+        <div class="receipt-selected" data-receipt-upload-target="selected" hidden>
+          <img data-receipt-upload-target="preview" alt="<%= ui("intake.preview") %>" hidden>
+          <span data-receipt-upload-target="filename"></span>
+        </div>
+        <div class="intake-submit">
+          <div><strong><%= ui("new_ux.expense_step_next") %></strong>
+            <p class="form-hint"><%= ui("intake.no_ai_yet") %></p></div>
+          <%= f.submit ui("intake.upload_button"), class: "btn btn-primary",
+            data: {receipt_upload_target: "submit"} %>
+        </div>
+      <% end %>
+    </div>
+    <details class="panel intake-manual" <%= "open" if @transaction.errors.any? %>>
+      <summary><span class="intake-method-number">02</span>
+        <span><strong><%= ui("new_ux.expense_manual_title") %></strong>
+          <small><%= ui("new_ux.expense_manual_help") %></small></span>
+        <span aria-hidden="true">⌄</span></summary>
+      <% if @transaction.errors.any? %>
+        <div role="alert" class="flash alert"><%= @transaction.errors.full_messages.to_sentence %></div>
+      <% end %>
+      <%= form_with model: @transaction, scope: :finance_transaction,
+          url: finance_transactions_path, method: :post do |f| %>
+        <%= f.hidden_field :kind, value: "expense" %>
+        <div class="form-field entry-amount">
+          <%= f.label :amount, ui("shared.amount"), class: "form-label" %>
+          <%= f.number_field :amount, min: 0, step: 1, inputmode: "numeric", placeholder: "30000" %>
+        </div>
+        <div class="form-field">
+          <%= f.label :description, ui("new_ux.expense_purpose"), class: "form-label" %>
+          <%= f.text_area :description, rows: 2, placeholder: ui("new_ux.expense_purpose_placeholder") %>
+        </div>
+        <details class="entry-optional-fields">
+          <summary><%= ui("new_ux.extra_fields") %></summary>
+          <div class="fields-grid">
+            <div class="form-field">
+              <%= f.label :transaction_date, ui("shared.date"), class: "form-label" %>
+              <%= f.date_field :transaction_date %>
+            </div>
+            <div class="form-field">
+              <%= f.label :category, ui("shared.category"), class: "form-label" %>
+              <%= f.select :category,
+                options_for_select(category_options(selected: @transaction.category), @transaction.category),
+                {include_blank: ui("categories.select")} %>
+            </div>
+          </div>
+        </details>
+        <div class="intake-submit">
+          <p class="form-hint"><%= ui("intake.manual_note") %></p>
+          <%= f.submit ui("form.save"), class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+    </details>
+  </section>
+  <aside class="intake-aside">
+    <section class="panel ux-assist-panel">
+      <span class="eyebrow"><%= ui("new_ux.assistant_title") %></span>
+      <h2><%= ui("new_ux.expense_assistant_heading") %></h2>
+      <p class="form-hint"><%= ui("new_ux.expense_assistant_help") %></p>
+      <div class="security-info"><%= ui("intake.safety") %></div>
+    </section>
+  </aside>
+</div>

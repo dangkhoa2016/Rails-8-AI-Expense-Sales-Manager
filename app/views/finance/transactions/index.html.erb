@@ -74,11 +74,18 @@
           <tbody>
             <% @transactions.each do |tx| %>
               <tr>
-                <td class="entry-cell"><%= link_to (tx.description.presence || "#{ui("shared.draft")} ##{tx.id}"), finance_transaction_path(tx), class: "entry-link" %><small>#<%= tx.id %> · <%= category_label(tx.category) %></small></td>
+                <td class="entry-cell"><%= link_to (tx.description.presence || "#{ui("shared.draft")} ##{tx.id}"), finance_transaction_path(tx), class: "entry-link" %><small>#<%= tx.id %> · <%= category_label(tx.category) %></small>
+                  <% if tx.context&.purchase_details.present? %>
+                    <small class="transaction-purpose"><%= truncate(tx.context.purchase_details, length: 96) %></small>
+                  <% end %>
+                </td>
                 <td><%= human_day(tx.transaction_date) %></td>
                 <td><span class="kind kind-<%= tx.kind %>"><%= ui("shared.#{tx.kind}") %></span></td>
                 <td class="align-right amount-cell"><%= money_vnd(tx.amount) %></td>
-                <td><span class="status-pill <%= tx.confirmed? ? "is-confirmed" : "is-draft" %>"><%= ui("shared.#{tx.status}") %></span></td>
+                <td><span class="status-pill <%= tx.confirmed? ? "is-confirmed" : "is-draft" %>"><%= ui("shared.#{tx.status}") %></span>
+                <% if tx.confirmed? && @superseded_transaction_ids.include?(tx.id) %>
+                  <small class="transaction-purpose"><%= ui("correction.revised") %></small>
+                <% end %></td>
                 <td><%= link_to ui("dashboard.evidence_count", count: tx.document_versions.size), finance_transaction_path(tx, anchor: "documents") %></td>
               </tr>
             <% end %>

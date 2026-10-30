@@ -1,0 +1,49 @@
+<section class="panel" id="line_item_list">
+  <div class="panel-heading">
+    <div>
+      <h2><%= ui("m6.list_title") %></h2>
+      <p><%= ui("m6.page_of", page: page, pages: pages) %></p>
+    </div>
+  </div>
+  <% if items.any? %>
+    <div class="table-scroll line-item-table-scroll">
+      <table class="data-table line-item-table">
+        <caption class="line-item-table-caption"><%= ui("m6.list_title") %></caption>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th><%= ui("form.lines.name") %></th>
+            <th><%= ui("form.lines.amount") %></th>
+            <th><%= ui("m6.item_on") %></th>
+            <th><%= ui("m6.item_time") %></th>
+            <th><%= ui("m6.item_place") %></th>
+            <th><%= ui("shared.actions") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% items.each do |item| %>
+            <%= render "finance/line_items/line_item_row",
+              item: item, transaction: transaction %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-pagination">
+      <span><%= ui("m6.page_of", page: page, pages: pages) %></span>
+      <div class="pagination-links">
+        <% if page > 1 %>
+          <%= link_to ui("shared.previous"),
+            finance_transaction_line_items_path(transaction, page: page - 1),
+            class: "btn btn-secondary" %>
+        <% end %>
+        <% if page < pages %>
+          <%= link_to ui("shared.next"),
+            finance_transaction_line_items_path(transaction, page: page + 1),
+            class: "btn btn-secondary" %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <p class="form-hint"><%= ui("detail.items.empty") %></p>
+  <% end %>
+</section>
