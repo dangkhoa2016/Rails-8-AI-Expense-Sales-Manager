@@ -29,3 +29,9 @@ Form sửa và trang chi tiết bản thay thế đều có cảnh báo **“Đ�
 ## Kiểm chứng và bằng chứng
 
 Chạy migrations trên database test, regression tests và kiểm thử giao diện trước khi nâng cấp preview. Ưu tiên thử chặn khác workspace, bất biến bản đã hủy, tạo correction lại, khóa tổng tiền, xóa dòng cuối, chọn nhiều Tags và so sánh bản sao. Sao lưu database và lưu logs trước khi thay đổi. Preview hiện là dữ liệu giả lập; chưa bật GGUF vision inference và không tuyên bố đáp ứng chứng nhận kế toán production.
+
+## Modal xem giao dịch gốc (cải tiến giao diện)
+
+Trong màn hình **Sửa** và **Chi tiết** của bản nháp điều chỉnh, hai nút **Xem giao dịch gốc đã khóa** và **Giao dịch gốc (bất biến)** cùng mở **một modal chỉ đọc** mà không điều hướng sang trang khác. Modal hiển thị trạng thái đã xác nhận, số tiền, ngày, loại giao dịch, nội dung, Tags theo ngôn ngữ, ngữ cảnh, **toàn bộ các khoản chi tiết**, chứng từ và lý do của các phiên bản lịch sử của bản gốc. Liên kết chứng từ mở **tab riêng** để bản nháp đang nhập không bị thay đổi. Đóng modal bằng nút X hoặc **Đóng chi tiết**; không tự đóng khi bấm bên ngoài hoặc nhấn Escape. Sau khi đóng, focus quay lại nút đã mở modal. Giao diện tương thích màn hình nhỏ.
+
+Nút **Hủy và bỏ bản nháp này** có màu **đỏ** rõ ràng để phân biệt thao tác phá hủy trạng thái, nhưng vẫn yêu cầu nhập lý do và xác nhận. Form transaction tiếp tục cho chọn/tạo nhiều Tags, chỉ bỏ liên kết **Quản lý Tags** không cần thiết ngay trong form; menu Tags toàn ứng dụng giữ nguyên. Các thay đổi giao diện không tự cập nhật tài chính, không đổi trạng thái correction và không nới quyền workspace.
