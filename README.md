@@ -152,9 +152,9 @@ On a draft item list, **+ Add a single item** opens a Turbo modal. A successful 
 
 ## Bilingual category catalog and streamlined transaction screens (M8)
 
-The new **Categories** navigation entry opens `/finance/categories`, with workspace-scoped category CRUD. Every entry has a stable key, independent English and Vietnamese display names, and an active/archived state. Used categories are archived rather than deleting historical references; archived labels remain visible in reports and confirmed records. New transaction forms and item edit/add modals use category dropdowns, while original stored category keys remain unchanged.
+The new **Categories** navigation entry opens `/finance/categories`, with workspace-scoped category CRUD. Every entry has a stable key, independent English and Vietnamese display names, and an active/archived state. Used categories are archived rather than deleting historical references; archived labels remain visible in reports and confirmed records. Transaction and item forms now use multi-select Tags; the first Tag remains the primary reporting classification, while original stored category keys remain unchanged.
 
-The transaction creation screen now prioritizes type, date, amount, category and description, with optional context behind a disclosure section and receipt items added after saving the draft. Transaction details show a compact amount/status overview, up to five recent items, the full item manager link, and collapsible evidence, context and audit history. Explicit human confirmation and immutable correction behavior are preserved.
+The current transaction intake uses one shared receipt-first screen with Money in/Money out radios. The manual amount becomes the first item rather than an independently editable parent total; transaction Tags can be selected in a multi-select field. Date and description remain human-verified. Transaction details show a compact amount/status overview, up to five recent items, the full item manager link, and collapsible evidence, context and audit history. Explicit human confirmation and immutable correction behavior are preserved.
 
 See [category management and interface workflows (English)](docs/CATEGORY_MANAGEMENT.en.md). The public demo uses synthetic data and runs on CPU; the GGUF vision model is not part of these UI changes.
 
@@ -196,3 +196,7 @@ The receipt-item manager keeps its seven-column table on wide screens but switch
 Create both Money in and Money out at **`/finance/transactions/new`**, selecting exactly one radio above the existing receipt-first upload and manual fallback. Legacy `?kind=` URLs select the radio without changing layout. Draft edits require a written reason and store immutable, numbered before/after revisions with timestamps and actor. Confirmed ledger values are never overwritten: creating a correction starts a separate draft, preserves the original and records correction lifecycle revisions; reports count only the effective confirmed version.
 
 [Unified intake and transaction revision policy](docs/UNIFIED_INTAKE_TRANSACTION_REVISIONS.en.md).
+
+## Correction draft cancellation, locked totals and transaction Tags
+
+Pending correction copies can be **discarded with a mandatory reason**, with both the original financial record and cancellation history preserved. Draft totals are read-only and calculated from human-authored item amounts; new app-created drafts require at least one item to confirm, while historical legacy amounts are preserved. Transactions now support multiple workspace-scoped Tags, just like individual items, and replacement drafts clearly identify and compare themselves against their locked originals. See [complete policy and constraints](docs/CORRECTION_DRAFT_TAGS_LINE_TOTAL.en.md).

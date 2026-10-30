@@ -25,3 +25,8 @@ A confirmed transaction can have only one outgoing correction. Existing immutabl
 Automated tests cover both radio modes, manual and image flows, drafts with required reasons, before/after states, version sequence, no-op edits, stale conflicts, cross-tenant denial, immutable DB records and the confirmed correction chain. Browser tests must verify radio switching and mobile layout after deployment.
 
 The demo does not contain an enabled GGUF vision adapter. This implementation does not claim production accounting certification or automated financial extraction.
+
+
+## Subsequent item-total/Tags and cancellation update
+
+The original unified-intake revision screen has since been extended with locked transaction totals derived from manually recorded line items, transaction-level multi-select Tags and auditable soft cancellation of pending correction drafts. See [the current rules and legacy exception](CORRECTION_DRAFT_TAGS_LINE_TOTAL.en.md). The earlier description of free-form manual draft totals is superseded for new app-created transactions.

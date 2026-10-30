@@ -170,9 +170,9 @@ Xem [quy trình tải hóa đơn và giới hạn AI (Tiếng Việt)](docs/RECE
 
 ## Hai giao diện Chi tiền và Thu tiền (M10)
 
-Trang tạo giao dịch có **hai chế độ riêng**: **Chi tiền** (`kind=expense`) và **Thu tiền** (`kind=income`), mỗi chế độ có layout responsive và nhãn tiếng Việt/Anh phù hợp. Chi tiền ưu tiên upload hóa đơn; form nhập thủ công được thu gọn. Thu tiền ưu tiên **ba trường** số tiền đã nhận, nguồn thu và ngày phát sinh, còn danh mục và ảnh chứng từ là tùy chọn. Màn hình kiểm tra khoản thu cho phép đính kèm ảnh vào **bản nháp hiện tại** mà không tạo giao dịch trùng.
+Trang tạo giao dịch có **một giao diện chung** tại `/finance/transactions/new`, dùng radio **Chi tiền** (`kind=expense`) và **Thu tiền** (`kind=income`) nhưng không tách bố cục. Cả hai cùng ưu tiên upload ảnh, có form nhập nhanh được thu gọn; nhập nhanh khoản thu yêu cầu số tiền của khoản đầu tiên, nguồn thu và ngày thực tế. Tổng tiền của transaction không được sửa tự do. Giao dịch hỗ trợ chọn nhiều Tags và đính kèm thêm chứng từ vào chính bản nháp hiện tại, không tạo giao dịch trùng.
 
-Không yêu cầu các trường giờ, địa điểm và giải thích chung khi nhập mới. Ledger và dữ liệu lịch sử vẫn giữ nguyên; hai màn hình kiểm tra chỉ chỉnh sửa bản nháp và luôn cần xác nhận thủ công. Upload ảnh đã hoạt động nhưng **adapter inference GGUF chưa kết nối** trong demo CPU. Xem [tài liệu chuẩn hóa UI/UX thu chi (Tiếng Việt)](docs/FINANCE_DUAL_FLOW_UX.vi.md).
+Không yêu cầu các trường giờ, địa điểm và giải thích chung khi nhập mới. Ledger và dữ liệu lịch sử vẫn giữ nguyên; màn hình kiểm tra chỉ chỉnh sửa bản nháp và luôn cần xác nhận thủ công. Upload ảnh đã hoạt động nhưng **adapter inference GGUF chưa kết nối** trong demo CPU. Xem [tài liệu chuẩn hóa UI/UX thu chi (Tiếng Việt)](docs/FINANCE_DUAL_FLOW_UX.vi.md).
 
 
 ## Popup thêm khoản chi nhanh, tính tiền tự động và nhiều Tags (M11)
@@ -196,3 +196,7 @@ Danh sách khoản chi giữ bảng bảy cột trên desktop rộng, nhưng t�
 Tạo cả **Thu tiền** và **Chi tiền** tại **`/finance/transactions/new`**, chọn một radio phía trên cùng giao diện tải ảnh chứng từ và nhập tay. URL cũ `?kind=` chỉ dùng để chọn radio mặc định, không còn hai layout khác nhau. Mỗi lần sửa bản nháp phải có lý do; những thay đổi được ghi thành phiên bản bất biến, đánh số, có dữ liệu trước/sau, thời gian và người sửa. Giao dịch confirmed không bị ghi đè: correction dùng bản nháp thay thế, giữ nguyên bản gốc, lưu lịch sử điều chỉnh và báo cáo chỉ tính bản confirmed đang có hiệu lực.
 
 [Tài liệu một trang tạo Thu/Chi và phiên bản giao dịch](docs/UNIFIED_INTAKE_TRANSACTION_REVISIONS.vi.md).
+
+## Hủy bản nháp điều chỉnh, khóa tổng tiền và chọn nhiều Tags
+
+Có thể **hủy bản nháp điều chỉnh chưa xác nhận** khi nhập lý do; hệ thống xóa mềm bản sao khỏi danh sách đang làm việc nhưng giữ bản confirmed gốc và lịch sử. Tổng tiền nháp chỉ đọc và lấy từ các khoản do người dùng nhập; draft mới phải có ít nhất một dòng trước khi xác nhận, còn tổng tiền của dữ liệu lịch sử được bảo toàn. Transaction hỗ trợ chọn nhiều Tags tương tự các khoản chi tiết. Form bản sao luôn có cảnh báo và so sánh trực tiếp với bản gốc đã khóa. Xem [quy tắc và giới hạn chi tiết](docs/CORRECTION_DRAFT_TAGS_LINE_TOTAL.vi.md).

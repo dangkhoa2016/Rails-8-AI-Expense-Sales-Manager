@@ -12,7 +12,7 @@ CSV mới chỉ cần `description,amount`; có thể thêm `quantity,unit_price
 
 ## Tổng tiền và dữ liệu đã chốt
 
-Tạo, sửa, xóa hoặc import khoản trong draft đồng bộ tổng giao dịch theo tổng các khoản khi còn ít nhất một khoản; thay đổi được audit trong cùng DB transaction. Khi xóa hết khoản, giữ số tiền người dùng đã nhập. Cần kiểm tra phần thuế/giảm giá trước khi chốt. Không tự sửa giao dịch confirmed, ngày lịch sử, hoặc đề xuất AI.
+Tạo, sửa, xóa hoặc import khoản trong draft đồng bộ tổng giao dịch theo tổng các khoản, **kể cả 0 khi xóa khoản cuối**; thay đổi được audit trong cùng DB transaction. Giao dịch mới do app tạo cần có ít nhất một khoản để xác nhận và tổng phải khớp các dòng. Giao dịch lịch sử chưa có dòng giữ giá trị cũ, không backfill bằng dữ liệu đoán. Không tự sửa giao dịch confirmed, ngày lịch sử hoặc đề xuất AI. Xem [quy tắc khóa tổng và hủy bản nháp điều chỉnh](CORRECTION_DRAFT_TAGS_LINE_TOTAL.vi.md).
 
 ## Tags và chứng từ khoản thu
 

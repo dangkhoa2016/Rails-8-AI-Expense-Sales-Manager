@@ -8,7 +8,7 @@ Cột lịch sử `finance_line_items.occurred_on` được giữ lại **để 
 
 Mở `/finance/transactions/:transaction_id/line_items`, nhấn **Sửa chi tiết khoản**. Popup của draft cho phép sửa tên, tiền, số lượng, đơn giá, danh mục/Tags, giờ và địa điểm tùy chọn. Sau khi lưu, tổng tiền nháp đồng bộ có audit. **Để đổi ngày, sửa ngày ở transaction**, không sửa từng khoản.
 
-Không ghi đè bản confirmed. Sửa dòng đã chốt yêu cầu lý do và tạo bản nháp điều chỉnh độc lập; giao dịch gốc bất biến. Báo cáo chỉ dùng bản thay thế sau khi người dùng xác nhận. Giao dịch đã có bản điều chỉnh không được tự tạo bản thứ hai.
+Không ghi đè bản confirmed. Sửa dòng đã chốt yêu cầu lý do và tạo bản nháp điều chỉnh độc lập; giao dịch gốc bất biến. Báo cáo chỉ dùng bản thay thế sau khi người dùng xác nhận. Giao dịch chỉ có tối đa một bản điều chỉnh đang hoạt động; có thể hủy nháp chưa xác nhận bằng hành động ghi audit rồi tạo nháp khác.
 
 ## Nhập CSV
 
