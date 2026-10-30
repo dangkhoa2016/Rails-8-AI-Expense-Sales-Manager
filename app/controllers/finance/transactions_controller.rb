@@ -96,6 +96,7 @@ module Finance
       @versions = @transaction.document_versions.order(version_number: :desc)
       @suggestions = suggestions_for_active_version.order(created_at: :desc).limit(100)
       @latest_extraction = @transaction.active_document_version&.extraction_runs&.order(created_at: :desc)&.first
+      @revisions = @transaction.revisions.includes(:actor).order(version_number: :desc).limit(40)
     end
 
     def edit
@@ -120,28 +121,43 @@ module Finance
     def update
       require_draft!
       attrs = transaction_params.except(:kind)
+      reason = params[:revision_reason].to_s.strip
+      if !reason.length.between?(10, 2000)
+        @transaction.errors.add(:base, I18n.t("finance.revisions.reason_required"))
+        raise ActiveRecord::RecordInvalid, @transaction
+      end
+
       Finance::Transaction.transaction do
-        before = @transaction.attributes.slice('transaction_date', 'amount', 'description', 'category')
-        before_context = @transaction.context&.attributes&.slice('purchase_details', 'occurred_time', 'location_text')
+        @transaction.lock!
+        raise ArgumentError, I18n.t("finance.revisions.stale") if
+          params.dig(:finance_transaction, :lock_version).present? &&
+          params.dig(:finance_transaction, :lock_version).to_i != @transaction.lock_version
+        before = Finance::RecordTransactionRevision.snapshot(@transaction)
         @transaction.assign_attributes(attrs)
         if @transaction.context&.new_record?
           @transaction.context.recorded_by = @finance_actor
           @transaction.context.source = 'manual'
         end
         @transaction.save!
-        after = @transaction.reload.attributes.slice(*before.keys)
-        after_context = @transaction.context&.reload&.attributes&.slice('purchase_details', 'occurred_time', 'location_text')
+        after = Finance::RecordTransactionRevision.snapshot(@transaction)
+        revision = Finance::RecordTransactionRevision.call(
+          transaction: @transaction, actor: @finance_actor, reason: reason,
+          action: "draft_edited", before_state: before, after_state: after
+        )
         audit!('transaction_draft_edited',
-          { before: before, after: after, before_context: before_context, after_context: after_context })
+          { revision_id: revision&.id, version: revision&.version_number,
+            changes: revision&.change_set || {}, reason: reason }) if revision
       end
       target = params[:return_to_review] == "1" ?
         review_finance_transaction_path(@transaction) : finance_transaction_path(@transaction)
       redirect_to target, notice: I18n.t('finance.flash.draft_updated')
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid, ArgumentError => error
+      @transaction.errors.add(:base, error.message) if @transaction.errors.empty?
       if params[:return_to_review] == "1"
         prepare_review!
         render :review, status: :unprocessable_entity
       else
+        @transaction.build_context unless @transaction.context
         @suggestions = suggestions_for_active_version.pending.order(created_at: :desc).limit(100)
         render :edit, status: :unprocessable_entity
       end

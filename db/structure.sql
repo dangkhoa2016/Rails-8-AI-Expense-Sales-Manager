@@ -369,7 +369,7 @@ CREATE TABLE public.finance_corrections (
     CONSTRAINT finance_corrections_confirm_check CHECK ((((status)::text <> 'confirmed'::text) OR ((confirmed_by_id IS NOT NULL) AND (confirmed_at IS NOT NULL)))),
     CONSTRAINT finance_corrections_distinct_check CHECK ((original_transaction_id <> replacement_transaction_id)),
     CONSTRAINT finance_corrections_reason_check CHECK (((char_length(btrim(reason)) >= 10) AND (char_length(btrim(reason)) <= 2000))),
-    CONSTRAINT finance_corrections_status_check CHECK (((status)::text = ANY ((ARRAY['draft'::character varying, 'confirmed'::character varying])::text[])))
+    CONSTRAINT finance_corrections_status_check CHECK (((status)::text = ANY (ARRAY[('draft'::character varying)::text, ('confirmed'::character varying)::text])))
 );
 
 
@@ -657,6 +657,46 @@ ALTER SEQUENCE public.finance_transaction_contexts_id_seq OWNED BY public.financ
 
 
 --
+-- Name: finance_transaction_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.finance_transaction_revisions (
+    id bigint NOT NULL,
+    transaction_id bigint NOT NULL,
+    workspace_id bigint NOT NULL,
+    actor_id bigint NOT NULL,
+    version_number integer NOT NULL,
+    action character varying NOT NULL,
+    reason text NOT NULL,
+    before_state jsonb DEFAULT '{}'::jsonb NOT NULL,
+    after_state jsonb DEFAULT '{}'::jsonb NOT NULL,
+    change_set jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT finance_transaction_revision_positive_version CHECK ((version_number > 0)),
+    CONSTRAINT finance_transaction_revision_reason_length CHECK (((char_length(btrim(reason)) >= 10) AND (char_length(btrim(reason)) <= 2000)))
+);
+
+
+--
+-- Name: finance_transaction_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.finance_transaction_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: finance_transaction_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.finance_transaction_revisions_id_seq OWNED BY public.finance_transaction_revisions.id;
+
+
+--
 -- Name: finance_transactions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -903,6 +943,13 @@ ALTER TABLE ONLY public.finance_transaction_contexts ALTER COLUMN id SET DEFAULT
 
 
 --
+-- Name: finance_transaction_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_revisions ALTER COLUMN id SET DEFAULT nextval('public.finance_transaction_revisions_id_seq'::regclass);
+
+
+--
 -- Name: finance_transactions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1043,6 +1090,14 @@ ALTER TABLE ONLY public.finance_transaction_contexts
 
 
 --
+-- Name: finance_transaction_revisions finance_transaction_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_revisions
+    ADD CONSTRAINT finance_transaction_revisions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: finance_transactions finance_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1129,6 +1184,20 @@ CREATE UNIQUE INDEX idx_finance_line_item_tags_unique ON public.finance_line_ite
 --
 
 CREATE INDEX idx_finance_tenant_status_date ON public.finance_transactions USING btree (workspace_id, status, transaction_date);
+
+
+--
+-- Name: idx_finance_transaction_revision_version; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_finance_transaction_revision_version ON public.finance_transaction_revisions USING btree (transaction_id, version_number);
+
+
+--
+-- Name: idx_finance_transaction_revision_workspace_time; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_finance_transaction_revision_workspace_time ON public.finance_transaction_revisions USING btree (workspace_id, created_at);
 
 
 --
@@ -1251,6 +1320,27 @@ CREATE UNIQUE INDEX index_finance_transaction_contexts_on_transaction_id ON publ
 
 
 --
+-- Name: index_finance_transaction_revisions_on_actor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finance_transaction_revisions_on_actor_id ON public.finance_transaction_revisions USING btree (actor_id);
+
+
+--
+-- Name: index_finance_transaction_revisions_on_transaction_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finance_transaction_revisions_on_transaction_id ON public.finance_transaction_revisions USING btree (transaction_id);
+
+
+--
+-- Name: index_finance_transaction_revisions_on_workspace_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finance_transaction_revisions_on_workspace_id ON public.finance_transaction_revisions USING btree (workspace_id);
+
+
+--
 -- Name: index_sessions_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1314,6 +1404,13 @@ CREATE TRIGGER deny_finance_line_import_mutation BEFORE DELETE OR UPDATE ON publ
 
 
 --
+-- Name: finance_transaction_revisions deny_finance_transaction_revisions_mutation; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER deny_finance_transaction_revisions_mutation BEFORE DELETE OR UPDATE ON public.finance_transaction_revisions FOR EACH ROW EXECUTE FUNCTION public.finance_deny_history_mutation();
+
+
+--
 -- Name: finance_corrections guard_finance_correction_mutation; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1367,6 +1464,14 @@ ALTER TABLE ONLY public.finance_corrections
 
 
 --
+-- Name: finance_transaction_revisions fk_rails_212a31b92f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_revisions
+    ADD CONSTRAINT fk_rails_212a31b92f FOREIGN KEY (workspace_id) REFERENCES public.workspaces(id);
+
+
+--
 -- Name: finance_corrections fk_rails_2da7a4a247; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1388,6 +1493,14 @@ ALTER TABLE ONLY public.finance_transaction_contexts
 
 ALTER TABLE ONLY public.workspaces
     ADD CONSTRAINT fk_rails_5506b4b37e FOREIGN KEY (owner_id) REFERENCES public.users(id);
+
+
+--
+-- Name: finance_transaction_revisions fk_rails_5b7fe18781; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_revisions
+    ADD CONSTRAINT fk_rails_5b7fe18781 FOREIGN KEY (actor_id) REFERENCES public.users(id);
 
 
 --
@@ -1463,6 +1576,14 @@ ALTER TABLE ONLY public.active_storage_attachments
 
 
 --
+-- Name: finance_transaction_revisions fk_rails_c90a843cd8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_revisions
+    ADD CONSTRAINT fk_rails_c90a843cd8 FOREIGN KEY (transaction_id) REFERENCES public.finance_transactions(id);
+
+
+--
 -- Name: finance_document_versions fk_rails_cd5fd6b9e2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1525,6 +1646,7 @@ ALTER TABLE ONLY public.finance_field_suggestions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261030142000'),
 ('20261030110000'),
 ('20261030090000'),
 ('20261030080000'),

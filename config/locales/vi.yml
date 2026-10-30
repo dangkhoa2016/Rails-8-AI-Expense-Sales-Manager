@@ -6,7 +6,7 @@ vi:
       transactions: Giao dịch
       reports: Phân tích
       guide: Hướng dẫn
-      new: Thêm khoản chi
+      new: Thêm giao dịch
       logout: Đăng xuất
       login: Đăng nhập
       signup: Tạo tài khoản
@@ -526,6 +526,55 @@ vi:
       income_amount_required: Vui lòng nhập số tiền đã nhận lớn hơn 0.
       income_date_required: Vui lòng nhập ngày nhận tiền thực tế.
       income_source_required: Vui lòng nhập nguồn thu.
+    unified_intake:
+      title: Tạo giao dịch thu hoặc chi
+      subtitle: Chọn Thu tiền hoặc Chi tiền rồi tải ảnh chứng từ, hoặc nhập thủ công trong cùng một giao diện.
+      select_kind: Loại giao dịch
+      upload_title: Tải ảnh chứng từ thu hoặc chi
+      upload_badge: Ưu tiên chứng từ
+      drop_title: Thả ảnh chứng từ vào đây
+      upload_button: Tải ảnh và tiếp tục
+      manual_title: Không có ảnh? Nhập giao dịch thủ công
+      manual_help: Nhập số tiền, nội dung và thông tin thực tế; bạn có thể lưu bản nháp trước.
+      purpose: Nội dung giao dịch
+      purpose_placeholder: 'Ví dụ: bán hàng, tiền tư vấn, mua vật tư'
+      step_next: 'Bước tiếp theo: kiểm tra chứng từ'
+      assistant_heading: Kiểm tra chứng từ và thông tin
+      assistant_help: Ảnh gốc được bảo toàn cùng SHA256. AI GGUF chưa được kết nối. Chỉ bạn mới có thể xác nhận giao dịch.
+    revisions:
+      reason: Lý do sửa đổi
+      reason_placeholder: 'Ví dụ: Nhập sai ngày giao dịch, cần cập nhật theo chứng từ đã kiểm tra.'
+      reason_help: Bắt buộc 10–2000 ký tự. Mỗi lần lưu thay đổi sẽ tạo một phiên bản bất biến, gồm dữ liệu trước/sau, thời điểm và người sửa.
+      reason_required: Vui lòng ghi lý do sửa đổi (10–2000 ký tự) để lưu phiên bản lịch sử.
+      stale: Giao dịch đã được chỉnh sửa ở phiên khác. Hãy tải lại trước khi lưu.
+      history_title: Lịch sử phiên bản giao dịch
+      empty: Chưa có phiên bản sửa đổi được lưu từ khi tính năng này được bật. Audit cũ vẫn được giữ.
+      version: 'Phiên bản %{number}'
+      changes: 'Xem %{count} nhóm thay đổi'
+      before: Trước khi sửa
+      after: Sau khi sửa
+      fields:
+        transaction: Thông tin giao dịch
+        context: Ngữ cảnh / địa điểm
+        line_items: Các khoản chi tiết
+        correction: Liên kết điều chỉnh
+      labels:
+        kind: Loại giao dịch
+        transaction_date: Ngày giao dịch
+        amount: Số tiền (VND)
+        description: Nội dung
+        category: Danh mục
+        status: Trạng thái
+        purchase_details: Chi tiết giao dịch
+        occurred_time: Giờ
+        location_text: Địa điểm
+      actions:
+        draft_edited: Sửa bản nháp
+        correction_requested: Yêu cầu điều chỉnh
+        correction_confirmed: Xác nhận bản thay thế
+      start_correction: Sửa giao dịch đã xác nhận
+      confirmed_help: Không thể ghi đè giao dịch đã chốt. Nhập lý do để tạo bản nháp thay thế, sau đó sửa và xác nhận riêng. Giao dịch gốc vẫn được giữ.
+      create_correction: Tạo bản nháp điều chỉnh
     quick_item:
       name_placeholder: 'Ví dụ: cà phê, giấy in'
       total: Thành tiền (VND)

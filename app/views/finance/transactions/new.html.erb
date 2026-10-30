@@ -1,33 +1,26 @@
-<% content_for :title, ui("new_ux.#{@transaction.kind}_title") %>
+<% content_for :title, ui("unified_intake.title") %>
 <div class="page-heading modern-intake-heading">
   <div>
     <span class="eyebrow"><%= ui("new_ux.workspace") %></span>
-    <h1><%= ui("new_ux.#{@transaction.kind}_title") %></h1>
-    <p class="subheading"><%= ui("new_ux.#{@transaction.kind}_subtitle") %></p>
+    <h1><%= ui("unified_intake.title") %></h1>
+    <p class="subheading"><%= ui("unified_intake.subtitle") %></p>
   </div>
   <%= link_to ui("form.back"), finance_transactions_path, class: "btn btn-secondary" %>
 </div>
-<nav class="finance-mode-switch" aria-label="<%= ui("new_ux.choose_flow") %>">
-  <%= link_to new_finance_transaction_path(kind: "expense"),
-    class: "finance-mode-link #{'is-active' if @transaction.kind == 'expense'}",
-    aria: {current: (@transaction.kind == 'expense' ? "page" : nil)} do %>
-    <span class="finance-mode-icon" aria-hidden="true">↗</span>
-    <span><strong><%= ui("new_ux.expense_tab") %></strong>
-      <small><%= ui("new_ux.expense_tab_help") %></small></span>
-  <% end %>
-  <%= link_to new_finance_transaction_path(kind: "income"),
-    class: "finance-mode-link #{'is-active' if @transaction.kind == 'income'}",
-    aria: {current: (@transaction.kind == 'income' ? "page" : nil)} do %>
-    <span class="finance-mode-icon" aria-hidden="true">↙</span>
-    <span><strong><%= ui("new_ux.income_tab") %></strong>
-      <small><%= ui("new_ux.income_tab_help") %></small></span>
-  <% end %>
-</nav>
 <% if @transaction.errors.any? %>
   <div class="flash alert" role="alert"><%= @transaction.errors.full_messages.to_sentence %></div>
 <% end %>
-<% if @transaction.kind == "expense" %>
+<div data-controller="finance-kind-selector" class="unified-intake-shell">
+  <fieldset class="finance-kind-radios">
+    <legend><%= ui("unified_intake.select_kind") %></legend>
+    <% [["income", "new_ux.income_tab"], ["expense", "new_ux.expense_tab"]].each do |kind, text_key| %>
+      <label class="finance-kind-option">
+        <%= radio_button_tag :intake_kind, kind, @transaction.kind == kind,
+          data: { finance_kind_selector_target: "radio",
+                  action: "change->finance-kind-selector#select" } %>
+        <span><%= ui(text_key) %></span>
+      </label>
+    <% end %>
+  </fieldset>
   <%= render "finance/transactions/new_expense" %>
-<% else %>
-  <%= render "finance/transactions/new_income" %>
-<% end %>
+</div>

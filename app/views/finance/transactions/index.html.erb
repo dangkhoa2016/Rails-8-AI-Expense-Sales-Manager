@@ -6,8 +6,7 @@
     <p class="subheading"><%= ui("dashboard.subtitle") %></p>
   </div>
   <div class="heading-actions">
-    <%= link_to ui("dashboard.actions.income"), new_finance_transaction_path(kind: "income"), class: "btn btn-secondary" %>
-    <%= link_to "+ #{ui("dashboard.actions.expense")}", new_finance_transaction_path(kind: "expense"), class: "btn btn-primary" %>
+    <%= link_to "+ #{ui("nav.new")}", new_finance_transaction_path, class: "btn btn-primary" %>
   </div>
 </div>
 

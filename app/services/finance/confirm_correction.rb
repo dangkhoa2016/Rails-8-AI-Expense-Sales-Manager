@@ -21,9 +21,21 @@ module Finance
         raise ArgumentError, "Workspace mismatch" unless
           source.workspace_id == record.workspace_id && replacement.workspace_id == record.workspace_id
 
+        previous_snapshot = Finance::RecordTransactionRevision.snapshot(source)
         Finance::ConfirmTransaction.call(transaction: replacement, actor: actor, reviewed: true)
         record.update!(status: "confirmed", confirmed_by: actor, confirmed_at: Time.current)
 
+        Finance::RecordTransactionRevision.call(
+          transaction: source, actor: actor, reason: record.reason, action: "correction_confirmed",
+          before_state: previous_snapshot,
+          after_state: Finance::RecordTransactionRevision.snapshot(replacement).merge(
+            "correction" => {
+              "correction_id" => record.id,
+              "replacement_transaction_id" => replacement.id,
+              "status" => "confirmed"
+            }
+          )
+        )
         before = { transaction_id: source.id, date: source.transaction_date.iso8601,
                    amount: source.amount.to_s("F"), kind: source.kind }
         after = { transaction_id: replacement.id, date: replacement.transaction_date.iso8601,

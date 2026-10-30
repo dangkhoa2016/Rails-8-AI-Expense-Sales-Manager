@@ -11,6 +11,8 @@
       <% if @transaction.active_document_version_id.present? %>
         <%= link_to ui("intake.review_title"), review_finance_transaction_path(@transaction),
           class: "btn btn-primary" %>
+        <%= link_to ui("detail.edit"), edit_finance_transaction_path(@transaction),
+          class: "btn btn-secondary" %>
       <% else %>
         <%= link_to ui("detail.edit"), edit_finance_transaction_path(@transaction),
           class: "btn btn-primary" %>
@@ -84,6 +86,21 @@
           finance_transaction_line_items_path(@transaction), class: "text-action" %></p>
       <% end %>
     </section>
+
+    <% if @transaction.confirmed? && !@correction_outgoing %>
+      <section class="panel detail-confirm-panel">
+        <h2><%= ui("revisions.start_correction") %></h2>
+        <p class="form-hint"><%= ui("revisions.confirmed_help") %></p>
+        <%= form_with url: finance_transaction_correction_path(@transaction), method: :post do |f| %>
+          <div class="form-field">
+            <%= f.label :reason, ui("revisions.reason"), class: "form-label" %>
+            <%= f.text_area :reason, required: true, minlength: 10, maxlength: 2000,
+              rows: 3, placeholder: ui("revisions.reason_placeholder") %>
+          </div>
+          <%= f.submit ui("revisions.create_correction"), class: "btn btn-secondary" %>
+        <% end %>
+      </section>
+    <% end %>
 
     <% if @transaction.draft? %>
       <section class="panel detail-confirm-panel">
@@ -160,6 +177,57 @@
           proposals_finance_transaction_line_items_path(@transaction), class: "text-action" %>
       </section>
     <% end %>
+    <details class="panel detail-disclosure transaction-revision-history" id="revision-history" open>
+      <summary><strong><%= ui("revisions.history_title") %></strong>
+        <span><%= @revisions.count %> · <%= ui("detail_view.expand") %></span></summary>
+      <% if @revisions.empty? %>
+        <p class="form-hint"><%= ui("revisions.empty") %></p>
+      <% else %>
+        <ol class="audit-list transaction-revision-list">
+          <% @revisions.each do |revision| %>
+            <li>
+              <strong><%= ui("revisions.version", number: revision.version_number) %> ·
+                <%= ui("revisions.actions.#{revision.action}") %></strong>
+              <small><%= revision.created_at.in_time_zone("Asia/Ho_Chi_Minh").strftime("%d/%m/%Y %H:%M:%S %Z") %> ·
+                <%= revision.actor.email_address %></small>
+              <p><strong><%= ui("revisions.reason") %>:</strong> <%= revision.reason %></p>
+              <details class="revision-changes">
+                <summary><%= ui("revisions.changes", count: revision.change_set.size) %></summary>
+                <% revision.change_set.each do |field, states| %>
+                  <div class="revision-change">
+                    <strong><%= ui("revisions.fields.#{field}", default: field.humanize) %></strong>
+                    <% before_values = states["before"] %>
+                    <% after_values = states["after"] %>
+                    <% if %w[transaction context].include?(field) &&
+                         before_values.is_a?(Hash) && after_values.is_a?(Hash) %>
+                      <% before_values.keys.union(after_values.keys).each do |key| %>
+                        <% next if before_values[key] == after_values[key] %>
+                        <div class="revision-field-change">
+                          <strong><%= ui("revisions.labels.#{key}", default: key.humanize) %></strong>
+                          <div class="revision-pair">
+                            <div><span><%= ui("revisions.before") %></span>
+                              <p><%= before_values[key].presence || "—" %></p></div>
+                            <div><span><%= ui("revisions.after") %></span>
+                              <p><%= after_values[key].presence || "—" %></p></div>
+                          </div>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <div class="revision-pair">
+                        <div><span><%= ui("revisions.before") %></span>
+                          <pre><%= JSON.pretty_generate(before_values) %></pre></div>
+                        <div><span><%= ui("revisions.after") %></span>
+                          <pre><%= JSON.pretty_generate(after_values) %></pre></div>
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
+              </details>
+            </li>
+          <% end %>
+        </ol>
+      <% end %>
+    </details>
     <details class="panel detail-disclosure">
       <summary><strong><%= ui("detail.audit.title") %></strong>
         <span><%= @transaction.audit_events.count %> · <%= ui("detail_view.expand") %></span></summary>

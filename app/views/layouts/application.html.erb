@@ -25,7 +25,7 @@
               <%= link_to ui("categories.nav"), finance_tags_path,
                   class: "nav-link #{(request.path.start_with?("/finance/tags") || request.path.start_with?("/finance/categories")) ? 'current' : ''}" %>
               <%= link_to ui("nav.guide"), guide_path, class: "nav-link #{request.path == guide_path ? 'current' : ''}" %>
-              <%= link_to "+ #{ui("nav.new")}", new_finance_transaction_path(kind: "expense"), class: "nav-new" %>
+              <%= link_to "+ #{ui("nav.new")}", new_finance_transaction_path, class: "nav-new" %>
               <%= button_to ui("nav.logout"), session_path, method: :delete, class: "nav-signout" %>
             <% else %>
               <%= link_to ui("nav.login"), new_session_path, class: "nav-link" %>

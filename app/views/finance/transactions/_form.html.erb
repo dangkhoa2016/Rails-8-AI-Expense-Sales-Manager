@@ -96,6 +96,16 @@
           <% end %>
         </details>
       <% end %>
+      <% if @transaction.persisted? %>
+        <div class="form-field panel transaction-revision-reason">
+          <%= label_tag :revision_reason, ui("revisions.reason"), class: "form-label" %>
+          <%= text_area_tag :revision_reason, params[:revision_reason], rows: 3,
+            required: true, minlength: 10, maxlength: 2000,
+            placeholder: ui("revisions.reason_placeholder") %>
+          <p class="form-hint"><%= ui("revisions.reason_help") %></p>
+          <%= f.hidden_field :lock_version %>
+        </div>
+      <% end %>
       <div class="transaction-entry-actions">
         <div><strong><%= ui("entry.draft_notice") %></strong>
           <p class="form-hint"><%= ui("entry.draft_help") %></p></div>

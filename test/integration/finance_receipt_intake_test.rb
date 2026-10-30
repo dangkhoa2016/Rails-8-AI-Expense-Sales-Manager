@@ -13,7 +13,7 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
   test "new transaction prioritizes photo and keeps manual form collapsed in both languages" do
     get new_finance_transaction_path(locale: "vi")
     assert_response :success
-    assert_select "h1", text: /Ghi nhận khoản chi/
+    assert_select "h1", text: /Tạo giao dịch thu hoặc chi/
     assert_select "form[action='#{from_receipt_finance_transactions_path}'][enctype='multipart/form-data']", count: 1
     assert_select "input[type='file'][name='receipt[image]'][required]", count: 1
     assert_select "form[data-controller='receipt-upload']", count: 1
@@ -24,7 +24,7 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Chưa kết nối" if response.body.include?("Chưa kết nối")
     get new_finance_transaction_path(locale: "en")
     assert_response :success
-    assert_select "h2", text: /Add an expense from a receipt/
+    assert_select "h2", text: /Upload income or expense evidence/
     assert_select "details.intake-manual", count: 1
     assert_includes response.body, "GGUF adapter"
   end
@@ -75,6 +75,7 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
     tx = upload_draft
     patch finance_transaction_path(tx), params: {
       return_to_review: "1",
+      revision_reason: "Verified these draft fields against the saved image.",
       finance_transaction: {
         transaction_date: "2026-04-26", amount: "30000",
         description: "Sweet bread", category: "food",

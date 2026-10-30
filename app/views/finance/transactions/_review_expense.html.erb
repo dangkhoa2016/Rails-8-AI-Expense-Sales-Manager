@@ -30,6 +30,14 @@
               {include_blank: ui("categories.select")} %>
           </div>
         </details>
+        <div class="form-field transaction-revision-reason">
+          <%= label_tag :revision_reason, ui("revisions.reason"), class: "form-label" %>
+          <%= text_area_tag :revision_reason, params[:revision_reason], rows: 2,
+            required: true, minlength: 10, maxlength: 2000,
+            placeholder: ui("revisions.reason_placeholder") %>
+          <p class="form-hint"><%= ui("revisions.reason_help") %></p>
+          <%= f.hidden_field :lock_version %>
+        </div>
         <div class="intake-submit">
           <p class="form-hint"><%= ui("intake.no_auto_post") %></p>
           <%= f.submit ui("intake.save_review"), class: "btn btn-primary" %>
