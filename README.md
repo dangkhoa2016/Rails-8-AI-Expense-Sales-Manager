@@ -64,3 +64,14 @@ Create a dedicated non-production preview account and use *synthetic* data only.
 **Details:** [Finance UX and reporting (English)](docs/UX_REPORTING.en.md).
 
 The current Cloudflare preview remains limited to synthetic sample data; GGUF live inference is still disabled. The application does not claim production accounting compliance.
+
+
+## Optional multi-month demo data
+
+A development-only, idempotent script adds synthetic confirmed income and expenses for May–October 2026 to the existing dedicated demo workspace. It does not create a user, generate receipts, or alter existing transactions.
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_reporting.rb
+```
+
+The script refuses production and requires the exact existing demo account/workspace. Run it manually, never from the default production seeds. All sample values are invented and must not be represented as actual financial history.
