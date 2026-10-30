@@ -570,6 +570,9 @@ vi:
         purchase_details: Chi tiết giao dịch
         occurred_time: Giờ
         location_text: Địa điểm
+        quantity: Số lượng
+        unit_price: Đơn giá
+        tags: Tags
       actions:
         draft_edited: Sửa bản nháp
         correction_requested: Yêu cầu điều chỉnh
@@ -604,6 +607,10 @@ vi:
       compare_title: So sánh với giao dịch gốc
       changes_count: '%{count} thay đổi'
       item_changes: '%{count} khoản chi tiết khác bản gốc'
+      item_diff_help: 'Chỉ hiển thị các khoản chi tiết khác giữa giao dịch gốc #%{source} và bản điều chỉnh. Không thay đổi dữ liệu.'
+      item_position: 'Khoản #%{number}'
+      item_missing: Không có khoản này
+      field_differences: Các trường giao dịch khác bản gốc
       no_changes: Chưa có khác biệt. Bạn có thể chỉnh sửa ngày, nội dung, Tags và các khoản chi tiết.
       cancel_title: Hủy bản nháp điều chỉnh
       cancel_help: Hủy bản nháp này khỏi danh sách giao dịch hoạt động. Bản gốc đã xác nhận vẫn được giữ nguyên. Lịch sử hủy được lưu để điều tra; sau đó bạn có thể tạo bản điều chỉnh mới.
