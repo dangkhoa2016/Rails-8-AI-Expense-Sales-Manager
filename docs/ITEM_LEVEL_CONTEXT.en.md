@@ -1,23 +1,23 @@
-# Independent item date, time and location
+# Transaction date with optional line-level time and location
 
-Each `finance_line_items` row has its own **optional** `occurred_on` (ISO calendar date), `occurred_time` (local wall-clock HH:MM) and `location_text` (free text, up to 400 characters), as well as a description/label, amount, category and optional quantity/unit price. All three contextual columns are nullable. They are **not** filled from the transaction date, photo metadata or any unrelated item. Time does not imply a verified timezone. The accounting transaction date is a distinct mandatory field when confirming.
+Each item belongs to one `finance_transactions` record, and **inherits its effective date from `transaction_date`**. The item editor shows the shared date but does not accept a line-level calendar input. A missing date on a draft is not replaced with today's date. The parent date must be reviewed before confirmation. An item may store its own optional local `occurred_time` (HH:MM) and optional `location_text` (up to 400 characters). Different times within one transaction are possible but not required or assumed.
 
-An item can be documented as a synthetic example: "Sweet bread · 30,000 VND · 2026-04-26 · 08:12 · Example bakery near a police station in Da Nang". Another item on the same transaction can have a different date, time, location or none. Example names and places are fictitious and must not be represented as verified merchants.
+The deprecated `finance_line_items.occurred_on` column is retained **read-only in user workflows for historical provenance**. New manual, nested and CSV items leave it NULL. Existing confirmed items may contain old dates different from the parent date; those original values are preserved without destructive backfill. Display uses the parent transaction's effective date, while corrections clone historical source values for audit purposes.
 
-## How to edit
+## Item editing and corrections
 
-For a **draft transaction**, open `/finance/transactions/:transaction_id/line_items` and select the prominent **Edit item details** button on its row. A Turbo/Stimulus modal lets users change the item label, price, quantity, unit price, category, date, time and place; blank fields remain null. Edits are logged in the transaction audit. The parent transaction amount does not silently change when a line price is edited, so reconcile totals before confirming.
+Open `/finance/transactions/:transaction_id/line_items`. A draft item's **Edit item details** modal edits description, amount, quantity, unit price, category/tags, optional time and location. Draft financial totals synchronize after changes and are audited. Changing the date requires editing the **transaction** rather than the item.
 
-For a **confirmed transaction**, the original item is immutable. Select **Edit item details** on the row; the same modal requires a correction reason. Saving creates an auditable correction draft with all items cloned and applies the edited fields to the selected copy. The original row updates to link to the replacement draft, which must be separately confirmed. The original receipt stays available. Only after explicit confirmation does the replacement become effective in reporting. If the original already has a correction, the row links to the existing replacement instead. Turbo Streams replaces only the affected row and reconciliation summary, closes the modal and displays a status message; invalid data keeps the modal open. The obsolete correction/new GET page is no longer used.
+Confirmed records cannot be overwritten. Their edit action requires a correction reason and creates an editable replacement draft; source data stays intact. The original is superseded in reports only after explicit human confirmation of the replacement. A second correction is prevented when one already exists.
 
-## Manual CSV import
+## CSV import
 
-`description` and `amount` remain required. All other optional columns include `quantity`, `unit_price`, `category`, `occurred_on`, `occurred_time` and `location_text`. Date must use `YYYY-MM-DD`; time must use 24-hour `HH:MM`; unknown values must be empty. Invalid CSV values reject the whole import. No OCR parser or image-specific heuristics are used.
+Required headers: `description,amount`. Optional: `quantity,unit_price,category,occurred_time,location_text`. For compatibility, the historical `occurred_on` header is accepted only if each supplied nonblank value matches the stored parent transaction date; mismatch or malformed date rejects the entire batch. Unknown time/location may be blank. No image parser, OCR heuristics or fabricated dates are used.
 
-Use [example CSV](../examples/receipt_lines_with_item_context.csv). For a **development-only draft** with five distinct purchases, run:
+[Example CSV](../examples/receipt_lines_with_item_context.csv). To create a development-only five-item example with one shared day and different optional times/locations:
 
 ```bash
 FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_individual_item_contexts.rb
 ```
 
-The five purchases deliberately contain both populated and missing contextual fields. This is synthetic sample data and stays in draft for safe interactive editing.
+The script is opt-in, uses fictional data, and does not alter existing confirmed records or previous demonstration drafts.

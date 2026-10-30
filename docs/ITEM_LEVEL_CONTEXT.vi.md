@@ -1,23 +1,23 @@
-# Ngày, giờ và địa điểm riêng trên từng khoản chi tiết
+# Ngày chung của giao dịch, giờ và địa điểm tùy chọn theo khoản
 
-Mỗi dòng `finance_line_items` có **ba trường tùy chọn riêng**: `occurred_on` (ngày YYYY-MM-DD), `occurred_time` (giờ địa phương HH:MM, 24 giờ) và `location_text` (địa điểm dạng văn bản, tối đa 400 ký tự). Ngoài ra có tên hàng, thành tiền, danh mục, số lượng/đơn giá tùy chọn. Ba trường này đều cho phép `NULL`. **Không** tự chép ngày của transaction, lấy thông tin EXIF hay sao chép dữ liệu của dòng khác. Giờ không đồng nghĩa đã biết múi giờ. Ngày giao dịch kế toán vẫn là trường riêng, bắt buộc khi chốt.
+Mỗi khoản chi tiết thuộc một `finance_transactions` và **lấy ngày có hiệu lực từ `transaction_date`**. Modal hiển thị ngày dùng chung nhưng không cho nhập ngày riêng. Nếu draft chưa có ngày, hệ thống không tự gán ngày hôm nay; người dùng phải kiểm tra ngày giao dịch trước khi chốt. Mỗi khoản vẫn có thể có `occurred_time` riêng (HH:MM) và `location_text` (tối đa 400 ký tự), đều tùy chọn. Không bắt buộc hoặc tự giả định các khoản phải khác giờ nhau.
 
-Ví dụ dòng giả lập: "Mua bánh mì ngọt – 30.000 VND – ngày 26/04/2026 – 08:12 – tại tiệm bánh mẫu gần đồn cảnh sát Đà Nẵng". Các dòng khác trong cùng transaction có thể có ngày/giờ/địa điểm khác nhau hoặc để trống hoàn toàn. Tên và địa điểm ví dụ không xác nhận sự tồn tại của cửa hàng thực tế.
+Cột lịch sử `finance_line_items.occurred_on` được giữ lại **để truy vết**, nhưng form, nested attributes và CSV mới không ghi giá trị vào cột đó (NULL). Giao dịch confirmed cũ có thể chứa ngày riêng khác ngày cha; không backfill hoặc sửa dữ liệu gốc. Giao diện hiển thị ngày của transaction; bản nháp điều chỉnh giữ bản sao dữ liệu lịch sử phục vụ audit.
 
-## Cách chỉnh sửa từng dòng
+## Sửa khoản và tạo bản điều chỉnh
 
-- **Bản nháp**: mở `/finance/transactions/:transaction_id/line_items`, chọn **Sửa chi tiết khoản** ngay trên dòng. Modal popup Turbo/Stimulus có tên hàng, giá tiền, số lượng, đơn giá, danh mục, ngày, giờ và địa điểm. Để trống thì lưu `NULL`. Mọi thay đổi được audit; sửa một dòng **không** tự đổi tổng tiền của transaction.
-- **Đã xác nhận**: bản gốc không thể sửa. Nhấn **Sửa chi tiết khoản**, nhập lý do ngay trong modal rồi lưu. Hệ thống tạo bản nháp điều chỉnh có đủ các dòng, chỉ sửa **bản sao của dòng được chọn** và re-render dòng gốc thành liên kết đến bản nháp mới. Bản gốc giữ nguyên ảnh và lịch sử; chỉ sau khi xác nhận bản mới thì báo cáo mới chuyển sang giá trị thay thế.
-- **Đã có bản điều chỉnh**: liên kết đến giao dịch thay thế, tránh tạo correction trùng. Turbo Streams cập nhật đúng dòng và phần tổng đối chiếu, đóng popup khi thành công hoặc giữ popup và hiển thị lỗi. Không còn trang GET correction/new.
+Mở `/finance/transactions/:transaction_id/line_items`, nhấn **Sửa chi tiết khoản**. Popup của draft cho phép sửa tên, tiền, số lượng, đơn giá, danh mục/Tags, giờ và địa điểm tùy chọn. Sau khi lưu, tổng tiền nháp đồng bộ có audit. **Để đổi ngày, sửa ngày ở transaction**, không sửa từng khoản.
 
-## Import thủ công bằng CSV
+Không ghi đè bản confirmed. Sửa dòng đã chốt yêu cầu lý do và tạo bản nháp điều chỉnh độc lập; giao dịch gốc bất biến. Báo cáo chỉ dùng bản thay thế sau khi người dùng xác nhận. Giao dịch đã có bản điều chỉnh không được tự tạo bản thứ hai.
 
-Vẫn bắt buộc `description`, `amount`. Các cột tùy chọn có thể thêm: `quantity`, `unit_price`, `category`, `occurred_on`, `occurred_time`, `location_text`. Ngày theo `YYYY-MM-DD`, giờ theo `HH:MM` 24 giờ; không biết thì để trống. Dữ liệu lỗi làm rollback toàn bộ lượt import. Không có OCR tự viết hoặc heuristic đọc ảnh theo từng mẫu.
+## Nhập CSV
 
-Xem [CSV mẫu](../examples/receipt_lines_with_item_context.csv). Có thể tạo **bản nháp demo 5 khoản chi** với ngày/giờ/địa điểm khác nhau:
+Cột bắt buộc: `description,amount`. Cột tùy chọn: `quantity,unit_price,category,occurred_time,location_text`. CSV cũ có cột `occurred_on` vẫn tương thích nếu mỗi ngày không rỗng hợp lệ và trùng ngày transaction; sai định dạng hoặc khác ngày phải rollback cả lượt nhập. Giờ/địa điểm không biết có thể để trống. Không tự viết OCR hoặc dùng heuristic đoán ngày/số tiền.
+
+[CSV mẫu](../examples/receipt_lines_with_item_context.csv). Để tạo bản nháp ví dụ năm khoản có cùng ngày nhưng giờ/địa điểm khác nhau:
 
 ```bash
 FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_individual_item_contexts.rb
 ```
 
-Đây là dữ liệu hoàn toàn giả lập; một số dòng chủ động thiếu thông tin để kiểm tra trường tùy chọn.
+Script chỉ chạy ở môi trường development, dùng dữ liệu giả lập, không sửa bản confirmed hoặc bản demo cũ đã có.

@@ -6,7 +6,7 @@
 
 ## Chi tiền — ưu tiên hóa đơn
 
-Mở `/finance/transactions/new?kind=expense` hoặc tab **Chi tiền**. Hành động chính là **tải ảnh hóa đơn**. Ảnh JPEG/PNG/WEBP gốc được lưu với phiên bản và SHA256; một bản nháp chưa có số tiền/ngày được tạo trước khi người dùng nhập bất kỳ giá trị tài chính nào. Màn hình kiểm tra khoản chi hiển thị ảnh thật, ngày, số tiền, nội dung và danh mục tùy chọn. Các mặt hàng được quản lý qua modal Turbo riêng từng dòng, vẫn cho phép ngày/giờ/địa điểm tùy chọn.
+Mở `/finance/transactions/new?kind=expense` hoặc tab **Chi tiền**. Hành động chính là **tải ảnh hóa đơn**. Ảnh JPEG/PNG/WEBP gốc được lưu với phiên bản và SHA256; một bản nháp chưa có số tiền/ngày được tạo trước khi người dùng nhập bất kỳ giá trị tài chính nào. Màn hình kiểm tra khoản chi hiển thị ảnh thật, ngày, số tiền, nội dung và danh mục tùy chọn. Các mặt hàng được quản lý qua modal Turbo riêng từng dòng, dùng ngày chung của giao dịch, còn giờ và địa điểm từng khoản là tùy chọn.
 
 Nếu không có ảnh, mục **nhập khoản chi nhanh** được thu gọn: số tiền và nội dung; ngày thực tế và danh mục nằm trong phần tùy chọn. Trước khi **xác nhận giao dịch**, hệ thống vẫn yêu cầu ngày thực tế và số tiền dương.
 
@@ -14,9 +14,9 @@ Nếu không có ảnh, mục **nhập khoản chi nhanh** được thu gọn: s
 
 Mở `/finance/transactions/new?kind=income` hoặc tab **Thu tiền**. Form chính có **ba trường**: số tiền đã nhận, nguồn thu/nội dung, ngày thực tế. Backend kiểm tra cả ba trước khi lưu qua luồng nhập nhanh, kể cả khi bỏ qua kiểm tra HTML. Không tự gán ngày hôm nay hoặc đoán tiền từ thông tin khác. Danh mục nằm trong mục tùy chọn.
 
-Khi chỉ có chứng từ, người dùng có thể mở mục tải ảnh để tạo bản nháp thu tiền trống. Sau khi đã lưu bản nháp thu tiền, người dùng có thể **đính kèm chứng từ vào chính bản nháp đó** từ màn hình kiểm tra, tránh tạo transaction trùng.
+Tính năng upload ảnh chứng từ thu tiền được mở sẵn với khu vực chọn ảnh/kéo thả tương tự khoản chi; ảnh tạo bản nháp thu trống, không suy đoán tiền/ngày. Sau khi đã lưu bản nháp thu tiền, người dùng có thể **đính kèm chứng từ vào chính bản nháp đó** từ màn hình kiểm tra, tránh tạo transaction trùng.
 
-Trang kiểm tra khoản thu tập trung vào số tiền, nguồn thu và ngày. Danh sách item chỉ cần dùng khi một lần nhận tiền gồm nhiều khoản. Tổng transaction không bị tự sửa theo tổng item.
+Trang kiểm tra khoản thu tập trung vào số tiền, nguồn thu và ngày. Danh sách item chỉ cần dùng khi một lần nhận tiền gồm nhiều khoản. Sau thao tác sửa dòng chi tiết, tổng giao dịch nháp có dòng còn lại sẽ tự đồng bộ; người dùng có thể điều chỉnh tổng thủ công và đối chiếu trước khi xác nhận.
 
 ## Bỏ các trường gây phiền trong giao diện
 
