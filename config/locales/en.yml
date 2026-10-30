@@ -575,6 +575,9 @@ en:
         purchase_details: Details
         occurred_time: Time
         location_text: Location
+        quantity: Quantity
+        unit_price: Unit price
+        tags: Tags
       actions:
         draft_edited: Draft edited
         correction_requested: Correction requested
@@ -609,6 +612,10 @@ en:
       compare_title: Compare with original
       changes_count: '%{count} changes'
       item_changes: '%{count} item differences'
+      item_diff_help: 'Read-only differences in line items between original transaction #%{source} and this correction.'
+      item_position: 'Item #%{number}'
+      item_missing: Item not present
+      field_differences: Transaction fields changed from the original
       no_changes: No differences yet. You can edit the date, details, Tags and line items.
       cancel_title: Discard correction draft
       cancel_help: Remove this draft from active work while preserving the immutable original and an auditable cancellation trail. Another correction can then be started.

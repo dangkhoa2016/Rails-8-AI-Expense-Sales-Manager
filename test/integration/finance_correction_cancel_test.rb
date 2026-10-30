@@ -160,7 +160,9 @@ class FinanceCorrectionCancelTest < ActionDispatch::IntegrationTest
     assert_select "dialog.original-transaction-dialog a[href='#{finance_transaction_path(@source)}']", count: 0
     assert_select "input[type=submit].btn-danger", count: 1
     assert_select "fieldset.transaction-tag-picker a[href='#{finance_tags_path}']", count: 0
-    assert_includes response.body, "Chưa có khác biệt"
+    assert_select "#correction-origin .correction-field-differences", count: 0
+    assert_select "#correction-origin .correction-item-differences", count: 0
+    assert_select "#correction-origin .correction-differences", count: 0
     item=draft.line_items.order(:position).first
     patch finance_transaction_line_item_path(draft,item),params:{line_item:{
       description:"Corrected bread item",amount:"1500"}}
@@ -170,7 +172,14 @@ class FinanceCorrectionCancelTest < ActionDispatch::IntegrationTest
     assert_select "button[data-action='original-transaction-modal#open']", minimum: 2
     assert_select "dialog.original-transaction-dialog", count: 1
     assert_includes response.body, "Corrected bread item"
-    assert_includes response.body, "So sánh với giao dịch gốc"
+    assert_select "#correction-origin .correction-differences", count: 0
+    assert_select "#correction-origin", text: /So sánh với giao dịch gốc · .*thay đổi/, count: 0
+    assert_select "button.correction-item-diff-trigger[data-action='correction-item-diffs-modal#open']", text: /1 khoản chi tiết khác bản gốc/
+    assert_select "dialog.correction-item-differences-dialog[data-correction-item-diffs-modal-target='dialog']", count: 1
+    assert_select "dialog.correction-item-differences-dialog .correction-item-difference", count: 1
+    assert_select "dialog.correction-item-differences-dialog .correction-item-difference-columns section", count: 2
+    assert_select "dialog.correction-item-differences-dialog form", count: 0
+    assert_select "dialog.correction-item-differences-dialog .is-changed", minimum: 1
     assert_equal original_amount,@source.reload.amount
     assert_equal "Bread",@source.line_items.order(:position).first.description
     assert_equal BigDecimal("3500"),draft.reload.amount

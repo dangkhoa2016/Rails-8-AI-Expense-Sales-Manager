@@ -42,48 +42,24 @@
         <small><%= human_day(@transaction.transaction_date) %> ·
           <%= @comparison[:draft_count] %> <%= ui("m6.count") %></small></div>
     </div>
-    <details class="correction-differences" open>
-      <summary><%= ui("correction_drafts.compare_title") %> ·
-        <%= ui("correction_drafts.changes_count",
-          count: @comparison[:fields].size + @comparison[:item_differences].size +
-            (@comparison[:source_tags] == @comparison[:draft_tags] ? 0 : 1)) %></summary>
-      <% if @comparison[:fields].empty? && @comparison[:item_differences].empty? &&
-            @comparison[:source_tags] == @comparison[:draft_tags] %>
-        <p class="form-hint"><%= ui("correction_drafts.no_changes") %></p>
-      <% end %>
-      <% @comparison[:fields].each do |change| %>
-        <div class="comparison-diff-row">
-          <strong><%= ui("revisions.labels.#{change[:field]}", default: change[:field].humanize) %></strong>
-          <span><%= change[:before].presence || "—" %></span>
-          <span><%= change[:after].presence || "—" %></span>
-        </div>
-      <% end %>
-      <% if @comparison[:source_tags] != @comparison[:draft_tags] %>
-        <div class="comparison-diff-row"><strong>Tags</strong>
-          <span><%= @comparison[:source_tags].join(", ").presence || "—" %></span>
-          <span><%= @comparison[:draft_tags].join(", ").presence || "—" %></span></div>
-      <% end %>
-      <% if @comparison[:item_differences].any? %>
-        <details class="comparison-items">
-          <summary><%= ui("correction_drafts.item_changes",
-            count: @comparison[:item_differences].size) %></summary>
-          <ol class="comparison-item-list">
-            <% @comparison[:item_differences].each do |change| %>
-              <li>
-                <strong>#<%= change[:position] + 1 %> ·
-                  <%= change[:replacement]&.fetch("description", nil) ||
-                      change[:original]&.fetch("description", nil) %></strong>
-                <div class="revision-pair">
-                  <div><small><%= ui("correction_drafts.original") %></small>
-                    <pre><%= JSON.pretty_generate(change[:original]) %></pre></div>
-                  <div><small><%= @transaction.confirmed? ? ui("correction_drafts.confirmed_replacement") : ui("correction_drafts.replacement") %></small>
-                    <pre><%= JSON.pretty_generate(change[:replacement]) %></pre></div>
-                </div>
-              </li>
-            <% end %>
-          </ol>
-        </details>
-      <% end %>
-    </details>
+    <% if @comparison[:fields].any? || @comparison[:source_tags] != @comparison[:draft_tags] %>
+      <div class="correction-field-differences" aria-label="<%= ui("correction_drafts.field_differences") %>">
+        <% @comparison[:fields].each do |change| %>
+          <div class="comparison-diff-row">
+            <strong><%= ui("revisions.labels.#{change[:field]}", default: change[:field].humanize) %></strong>
+            <span><%= change[:before].presence || "—" %></span>
+            <span><%= change[:after].presence || "—" %></span>
+          </div>
+        <% end %>
+        <% if @comparison[:source_tags] != @comparison[:draft_tags] %>
+          <div class="comparison-diff-row">
+            <strong>Tags</strong>
+            <span><%= @comparison[:source_tags].join(", ").presence || "—" %></span>
+            <span><%= @comparison[:draft_tags].join(", ").presence || "—" %></span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <%= render "finance/transactions/correction_item_differences_modal" if @comparison[:item_differences].any? %>
   </section>
 <% end %>

@@ -1,0 +1,82 @@
+<div class="correction-item-differences" data-controller="correction-item-diffs-modal">
+  <button type="button" class="btn btn-secondary correction-item-diff-trigger"
+    data-action="correction-item-diffs-modal#open">
+    <%= ui("correction_drafts.item_changes", count: @comparison[:item_differences].size) %>
+  </button>
+  <dialog class="correction-item-differences-dialog"
+    data-correction-item-diffs-modal-target="dialog"
+    data-action="cancel->correction-item-diffs-modal#preventImplicitClose close->correction-item-diffs-modal#restoreFocus"
+    aria-labelledby="correction-item-diffs-title-<%= @transaction.id %>">
+    <div class="correction-item-differences-content">
+      <header class="correction-item-differences-header">
+        <div>
+          <span class="status-pill <%= @transaction.confirmed? ? "is-confirmed" : "is-draft" %>">
+            <%= ui("shared.#{@transaction.status}") %>
+          </span>
+          <h2 id="correction-item-diffs-title-<%= @transaction.id %>">
+            <%= ui("correction_drafts.item_changes", count: @comparison[:item_differences].size) %>
+          </h2>
+          <p class="form-hint"><%= ui("correction_drafts.item_diff_help", source: @comparison_source.id) %></p>
+        </div>
+        <button type="button" class="correction-item-differences-close"
+          aria-label="<%= ui("original_modal.close") %>"
+          data-action="correction-item-diffs-modal#close">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </header>
+      <div class="correction-item-differences-body">
+        <ol class="correction-item-differences-list">
+          <% @comparison[:item_differences].each do |change| %>
+            <li class="correction-item-difference">
+              <h3><%= ui("correction_drafts.item_position", number: change[:position] + 1) %>
+                · <%= change[:replacement]&.fetch("description", nil) ||
+                      change[:original]&.fetch("description", nil) %></h3>
+              <div class="correction-item-difference-columns">
+                <section>
+                  <h4><%= ui("correction_drafts.original") %></h4>
+                  <% if change[:original].present? %>
+                    <dl>
+                      <% change[:original].each do |key, value| %>
+                        <div>
+                          <dt><%= ui("revisions.labels.#{key}", default: key.humanize) %></dt>
+                          <dd><%= value.presence || "—" %></dd>
+                        </div>
+                      <% end %>
+                    </dl>
+                  <% else %>
+                    <p class="form-hint"><%= ui("correction_drafts.item_missing") %></p>
+                  <% end %>
+                </section>
+                <section>
+                  <h4><%= @transaction.confirmed? ? ui("correction_drafts.confirmed_replacement") : ui("correction_drafts.replacement") %></h4>
+                  <% if change[:replacement].present? %>
+                    <dl>
+                      <% change[:replacement].each do |key, value| %>
+                        <div class="<%= 'is-changed' if change[:original]&.fetch(key, nil) != value %>">
+                          <dt><%= ui("revisions.labels.#{key}", default: key.humanize) %></dt>
+                          <dd><%= value.presence || "—" %></dd>
+                        </div>
+                      <% end %>
+                    </dl>
+                  <% else %>
+                    <p class="form-hint"><%= ui("correction_drafts.item_missing") %></p>
+                  <% end %>
+                </section>
+              </div>
+            </li>
+          <% end %>
+        </ol>
+      </div>
+      <footer class="correction-item-differences-footer">
+        <button type="button" class="btn btn-secondary correction-item-differences-done"
+          data-action="correction-item-diffs-modal#close">
+          <%= ui("original_modal.close") %>
+        </button>
+      </footer>
+    </div>
+  </dialog>
+</div>

@@ -855,3 +855,110 @@ button.btn.original-modal-trigger:focus-visible {
     width:100%;
   }
 }
+
+/* Show only the changed item count on the correction page; inspect item-level
+   before/after states in a dedicated, scrollable, read-only modal. */
+.correction-field-differences {
+  border-top:1px solid #e9d8bc;
+  margin-top:12px;
+}
+.correction-item-differences {margin-top:14px}
+button.btn.correction-item-diff-trigger {
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
+  min-height:44px;max-width:100%;padding:10px 16px;
+  border:1px solid #bfcfe1;border-radius:10px;
+  background:#fff;color:#244767;font-size:.84rem;font-weight:750;
+  line-height:1.35;white-space:normal;overflow-wrap:anywhere;box-shadow:none;cursor:pointer;
+}
+button.btn.correction-item-diff-trigger:hover {
+  background:#eaf3fd;border-color:#8fb2d8;color:#174a7a;
+}
+button.btn.correction-item-diff-trigger:focus-visible,
+.correction-item-differences-dialog button:focus-visible {
+  outline:3px solid #8ebce8;outline-offset:2px;
+}
+.correction-item-differences-dialog {
+  width:min(920px,calc(100vw - 28px));max-height:min(90dvh,960px);
+  margin:auto;padding:0;border:1px solid #c9d7e4;border-radius:17px;
+  box-shadow:0 24px 90px #0e1e38a3;background:#fff;color:#1b3045;
+  overscroll-behavior:contain;
+}
+.correction-item-differences-dialog::backdrop {
+  background:rgba(9,20,37,.7);backdrop-filter:blur(2px);
+}
+.correction-item-differences-content {
+  max-height:89dvh;display:flex;flex-direction:column;overflow:hidden;
+  padding:20px 24px 0;min-width:0;
+}
+.correction-item-differences-header {
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;flex:0 0 auto;border-bottom:1px solid #e1e8f0;padding-bottom:14px;
+}
+.correction-item-differences-header h2 {
+  font-size:1.25rem;line-height:1.3;margin:8px 0 5px;
+}
+.correction-item-differences-header p {margin:0}
+.correction-item-differences-close {
+  display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;
+  padding:0;border:1px solid #d5e2ed;border-radius:10px;
+  background:#f4f8fd;color:#35536e;cursor:pointer;
+}
+.correction-item-differences-close svg {display:block;pointer-events:none}
+.correction-item-differences-close:hover{background:#e6f0fc;color:#16477b}
+.correction-item-differences-body {
+  overflow:auto;min-height:0;flex:1 1 auto;overscroll-behavior:contain;
+}
+.correction-item-differences-list {
+  margin:0;padding:0;list-style:none;
+}
+.correction-item-difference {
+  padding:14px 0 18px;border-bottom:1px solid #e3ebf1;
+}
+.correction-item-difference h3 {
+  font-size:.94rem;line-height:1.4;margin:0 0 12px;overflow-wrap:anywhere;
+}
+.correction-item-difference-columns {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+}
+.correction-item-difference-columns section {
+  min-width:0;border:1px solid #dfe8f1;border-radius:10px;
+  padding:10px 12px;background:#f8fafc;
+}
+.correction-item-difference-columns h4 {
+  font-size:.84rem;margin:2px 0 10px;color:#2c4d69;
+}
+.correction-item-difference-columns dl {margin:0}
+.correction-item-difference-columns dl>div {
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);
+  align-items:start;gap:8px;padding:6px 4px;border-bottom:1px solid #e3eaf2;
+}
+.correction-item-difference-columns dl>div:last-child {border-bottom:0}
+.correction-item-difference-columns dt {
+  color:#5a7188;font-size:.76rem;overflow-wrap:anywhere;
+}
+.correction-item-difference-columns dd {
+  margin:0;font-size:.82rem;font-weight:650;
+  overflow-wrap:anywhere;word-break:break-word;
+}
+.correction-item-difference-columns .is-changed {
+  background:#fff3da;border-radius:6px;
+}
+.correction-item-differences-footer {
+  display:flex;justify-content:flex-end;flex:0 0 auto;
+  padding:12px 0 14px;background:#fff;border-top:1px solid #e2eaf1;
+}
+.correction-item-differences-footer button.btn {
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
+  min-height:44px;min-width:130px;padding:10px 20px;border-radius:10px;
+  background:#fff;color:#254965;border:1px solid #bfd0e1;
+  font-size:.85rem;font-weight:750;box-shadow:none;
+}
+.correction-item-differences-footer button.btn:hover {
+  background:#eaf3fd;border-color:#8eafd3;color:#174a7a;
+}
+@media(max-width:590px) {
+  .correction-item-differences-content {padding:14px 14px 0}
+  .correction-item-difference-columns {grid-template-columns:1fr}
+  button.btn.correction-item-diff-trigger,
+  .correction-item-differences-footer button.btn {width:100%}
+}
