@@ -1,0 +1,40 @@
+<tr id="<%= dom_id(item) %>">
+  <td class="line-cell line-cell-number" data-label="#"><%= item.position + 1 %></td>
+  <td class="line-cell line-cell-name">
+    <strong><%= item.description %></strong>
+    <small class="transaction-purpose">
+      <% item_tags = item.tags.to_a %>
+      <% if item_tags.any? %>
+        <% item_tags.each do |tag| %>
+          <span class="inline-tag-pill"><%= tag.label %></span>
+        <% end %>
+      <% else %>
+        <%= category_label(item.category) %>
+      <% end %>
+      <% if item.quantity.present? %> · <%= item.quantity %> × <%= item.unit_price ? money_vnd(item.unit_price) : "—" %><% end %>
+    </small>
+  </td>
+  <td class="line-cell line-cell-amount" data-label="<%= ui("form.lines.amount") %>"><%= money_vnd(item.amount) %></td>
+  <td class="line-cell line-cell-date <%= "is-empty" if transaction.transaction_date.nil? %>" data-label="<%= ui("m6.short_date") %>"><%= transaction.transaction_date ? human_day(transaction.transaction_date) : "—" %></td>
+  <td class="line-cell line-cell-time <%= "is-empty" if item.occurred_time.nil? %>" data-label="<%= ui("m6.short_time") %>"><%= item.occurred_time ? item.occurred_time.strftime("%H:%M") : "—" %></td>
+  <td class="line-cell line-cell-place <%= "is-empty" if item.location_text.blank? %>" data-label="<%= ui("m6.short_place") %>"><%= item.location_text.presence || "—" %></td>
+  <td class="line-cell line-cell-actions" data-label="<%= ui("shared.actions") %>">
+    <% if transaction.draft? || transaction.correction_as_original.nil? %>
+      <div class="line-actions">
+        <%= link_to ui("m6.item_edit"), edit_finance_transaction_line_item_path(transaction,item),
+            class: "btn btn-primary",
+            data: { turbo_frame: "line_item_modal" },
+            aria: { label: "#{ui('m6.item_edit')}: #{item.description}" } %>
+        <% if transaction.draft? %>
+          <%= button_to ui("m6.delete_row"), finance_transaction_line_item_path(transaction,item),
+              method: :delete, class: "btn btn-minimal",
+              form: { data: { turbo_confirm: ui("m6.delete_confirm") } } %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= link_to ui("m6.open_replacement"),
+          finance_transaction_line_items_path(transaction.correction_as_original.replacement_transaction),
+          class: "btn btn-secondary" %>
+    <% end %>
+  </td>
+</tr>

@@ -9,7 +9,7 @@ module Finance
       raise ArgumentError, 'Authenticated reviewer required' if actor.nil?
       raise ArgumentError, 'Invalid decision' unless %w[accept reject].include?(decision)
       Finance::Transaction.transaction do
-        tx = Finance::Transaction.lock.find(suggestion.finance_transaction_id)
+        tx = Finance::Transaction.lock.find(suggestion.transaction_id)
         suggestion.lock!
         raise ArgumentError, 'Already reviewed' unless suggestion.review_status == 'pending'
         raise ArgumentError, 'Only draft data can be reviewed' unless tx.draft?

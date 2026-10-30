@@ -103,8 +103,8 @@ en:
       latest:
         title: Recently confirmed
         subtitle: Trace each summarized amount back to its entry and evidence.
-      evidence_note: Only confirmed transactions appear here. Values come from PostgreSQL, not from inferred
-        receipt totals.
+      evidence_note: Only confirmed transactions appear here. Values come from PostgreSQL, not from inferred receipt
+        totals.
       no_prev: —
       balance:
         positive: Surplus
@@ -124,44 +124,52 @@ en:
       title:
         create: New transaction
         edit: 'Edit draft #%{id}'
-      subtitle: Complete the details manually or review available AI proposals. Nothing is posted until
-        you confirm.
+      subtitle: Complete the details manually or review available AI proposals. Nothing is posted until you confirm.
       section:
         date: 01 · Accounting date
         details: 02 · Transaction details
-        lines: 03 · Individual items
-        ai: 04 · AI field suggestions
+        lines: 04 · Individual items
+        ai: 05 · AI field suggestions
+        context: 03 · Purchase details and context
       date:
-        help: Choose the actual transaction date. If the receipt has no date, enter it yourself. Never
-          use the image upload date as a substitute.
+        help: Choose the actual transaction date. If the receipt has no date, enter it yourself. Never use the image
+          upload date as a substitute.
         ai: 'AI suggested date: %{value}. Please verify it.'
       details:
         help: Use VND digits without grouping punctuation, e.g. 43500. Check the amount before confirmation.
       lines:
-        help: Line items are optional in a draft. Adjust them manually; do not assume their sum equals
-          the confirmed receipt total.
+        help: Line items are optional in a draft. Adjust them manually; do not assume their sum equals the confirmed
+          receipt total.
         name: Item name
         amount: Item amount
         remove: Remove this draft item
       ai:
-        help: Each field is a proposal only. Unknown fields stay blank. Marking a proposal reviewed does
-          not post a transaction.
+        help: Each field is a proposal only. Unknown fields stay blank. Marking a proposal reviewed does not post
+          a transaction.
         accept: Mark reviewed
         reject: Reject suggestion
       save: Save draft
       back: Back to transactions
+      context:
+        details: What was this transaction for?
+        details_placeholder: e.g. Sweet bread for breakfast, 30,000 VND
+        time: Transaction time (optional)
+        location: Location (optional)
+        location_placeholder: e.g. Bakery near Da Nang police station
+        help: Add details that explain what was bought or paid for. Time and location are optional. Do not guess
+          missing details from a receipt.
     detail:
       eyebrow: TRANSACTION RECORD
       title: 'Transaction #%{id}'
       subtitle: Inspect financial details, document versions and the audit trail.
       confirm:
         title: Ready to confirm?
-        help: Confirm only after checking the date, type and amount. This locks the record and includes
-          it in financial reports.
+        help: Confirm only after checking the date, type and amount. This locks the record and includes it in financial
+          reports.
         checkbox: I have checked the transaction date, type, amount and evidence.
         button: Confirm financial entry
-        locked: Confirmed record is locked. New images can be appended as supporting evidence without
-          changing the amount or date.
+        locked: Confirmed record is locked. New images can be appended as supporting evidence without changing the
+          amount or date.
       edit: Edit this draft
       summary: Verified details
       confirmed_at: Confirmed at
@@ -174,10 +182,8 @@ en:
         active: Confirmed evidence
         supplement: Supplemental evidence
       ai:
-        unreadable: This image cannot be read reliably. Please enter the data manually or upload a clearer
-          image.
-        error: Processing failed. This does not imply the image is unreadable; you may retry or enter
-          manually.
+        unreadable: This image cannot be read reliably. Please enter the data manually or upload a clearer image.
+        error: Processing failed. This does not imply the image is unreadable; you may retry or enter manually.
         partial: Some values were detected. Review each proposal and manually enter missing information.
         manual: Manual entry is always available.
         title: Document recognition status
@@ -191,6 +197,13 @@ en:
         empty: No receipt images uploaded yet.
         title: Receipt versions
       back: Back to transactions
+      context:
+        title: Purchase and payment details
+        details: What was purchased or paid for
+        time: Time (optional)
+        location: Location (optional)
+        empty: No additional transaction details were supplied.
+        synthetic: Synthetic demo details, not verified real-world activity
     evidence:
       title: Receipt image · Version %{number}
       uploaded: Uploaded on %{value}
@@ -224,38 +237,38 @@ en:
       subtitle: Make the most of AI assistance without giving up control of financial data.
       step1:
         title: Start with a draft
-        body: Record income or expense without needing a receipt. Drafts can be edited and are not counted
-          in reports.
+        body: Record income or expense without needing a receipt. Drafts can be edited and are not counted in reports.
       step2:
         title: Attach and retain images
-        body: Each upload creates a separate evidence version with SHA256. Previous images remain accessible
-          for review and financial investigation.
+        body: Each upload creates a separate evidence version with SHA256. Previous images remain accessible for
+          review and financial investigation.
       step3:
         title: Review each field
-        body: When approved AI inference becomes available, proposals will appear by field. Missing or
-          unreadable information stays blank and can be entered manually.
+        body: When approved AI inference becomes available, proposals will appear by field. Missing or unreadable
+          information stays blank and can be entered manually.
       step4:
         title: Confirm the actual date and amount
-        body: Transaction date is required to confirm a record. Never infer missing dates from EXIF, upload
-          timestamp or unrelated fields.
+        body: Transaction date is required to confirm a record. Never infer missing dates from EXIF, upload timestamp
+          or unrelated fields.
       step5:
         title: Use trustworthy analytics
-        body: Reports, charts and CSV reflect confirmed database values only. Drafts and AI-only proposals
-          are excluded.
+        body: Reports, charts and CSV reflect confirmed database values only. Drafts and AI-only proposals are excluded.
       faq:
         title: Common questions
       faq1:
         q: What if a receipt is blurry or handwritten?
-        a: Upload a clearer image or use manual entry. The system should never fabricate a date or amount
-          when recognition is unreliable.
+        a: Upload a clearer image or use manual entry. The system should never fabricate a date or amount when recognition
+          is unreliable.
       faq2:
         q: Can I replace an image after confirmation?
-        a: You can add a new version, but confirmed financial values and the reference image remain locked.
-          New images are supplemental evidence.
+        a: You can add a new version, but confirmed financial values and the reference image remain locked. New
+          images are supplemental evidence.
       faq3:
         q: Is AI receipt extraction enabled in this demo?
-        a: No. The GGUF inference adapter remains disabled pending quality approval. Manual entry and
-          document history are usable now.
+        a: No. The GGUF inference adapter remains disabled pending quality approval. Manual entry and document history
+          are usable now.
+      context_note: Transaction date is required for confirmation. Time and location are optional and can be left
+        blank.
     flash:
       draft_created: Draft saved. Review and confirm before reporting.
       draft_updated: Draft updated.
@@ -277,6 +290,274 @@ en:
       maintenance: Maintenance
       food: Food
       other: Other
+    m6:
+      title: Receipt line items
+      subtitle: Manage individual purchases, import large item lists, and reconcile to the confirmed amount.
+      count: Number of items
+      lines_total: Sum of item amounts
+      invoice_total: Transaction amount
+      difference: Difference (transaction − items)
+      reconciliation: Adding, editing, deleting or importing draft items synchronizes the draft transaction amount to the item sum while items remain. You can still adjust the transaction amount for tax or discounts; reconcile before confirming.
+      import_title: Import many items from CSV
+      import_help: UTF-8 CSV requires description,amount; quantity,unit_price,category,occurred_time,location_text are optional. Item dates use the transaction date. Older CSV occurred_on values must match that date. No OCR.
+      import_limit: Up to 500 rows per file and per transaction, max 512 KiB. Invalid rows roll back the entire
+        import. Re-uploading identical CSV will not duplicate entries.
+      csv_label: Choose CSV file
+      import_button: Import lines into draft
+      imported: '%{count} line items imported into draft'
+      duplicate: This exact CSV has already been imported; nothing changed.
+      add_one: Add a single item
+      quantity: Quantity (optional)
+      unit_price: Unit price (optional)
+      saved: Line item saved.
+      removed: Line item removed.
+      list_title: Itemized breakdown
+      page_of: Page %{page} / %{pages} · 25 per page
+      save_row: Save
+      delete_row: Remove
+      delete_confirm: Remove this item from the draft?
+      manage: View and manage all %{count} items
+      add_row: Add another item
+      remove_row: Remove row
+      bulk_hint: For large receipts, save the draft then open the item manager to import/edit 100+ lines without
+        a huge form.
+      items_report: Verified item category allocation
+      items_report_hint: Item allocations are shown separately from transaction totals to avoid double-counting.
+        Differences may include tax, discounts or missing rows.
+      no_items_report: No confirmed itemized expenses this month.
+      unallocated: Difference to verified expense total
+      ai_notice: AI recognition is disabled; structured item rows must currently be entered or imported manually
+        and reviewed.
+      ai_title: Line-level AI proposals (review only)
+      ai_field: Proposed field
+      ai_value: Verbatim model output
+      ai_warning: Reviewing a proposal does not add it to the ledger or the line-item list. AI recognition is currently
+        disabled; manually enter or import only values you have verified.
+      ai_empty: No line-item AI proposals are stored for this receipt.
+      proposals_count: '%{count} proposed item groups'
+      item_edit: Edit item details
+      item_edit_hint: Edit this item's details. Saving a draft item also synchronizes its parent draft transaction amount to the item sum.
+      item_on: Shared transaction date
+      item_time: Item time (optional)
+      item_place: Item location (optional)
+      item_place_placeholder: e.g. Bakery near the Da Nang police station
+      item_date_hint: All items inherit the transaction date. Item time and location remain optional; verify the transaction date before confirmation.
+      correction_edit: Correct this item
+      open_replacement: Open corrected transaction
+      item_confirmed_hint: This item is locked. Start a documented correction to edit its label, price, time or
+        location in a new draft.
+      item_summary: Item context
+      save_item: Save item changes
+      back_items: Back to item list
+      item_reason: Reason for changing this item
+      item_edit_path: After entering the correction reason, you will be taken to this item's editable draft form.
+      correction_modal_hint: For a confirmed item, saving creates a correction draft; it does not overwrite the
+        original or change reports until you confirm the replacement.
+      correction_reason_required: A correction reason of 10–2000 characters is required.
+      correction_already_exists: A correction already exists; open its replacement draft to edit.
+      correction_draft_created: Correction draft created. Review and confirm it before the new amount becomes effective.
+      modal_cancel: Close dialog
+      view_new_item: View the newly added item
+      item_limit_reached: 500-item limit reached
+      short_date: Date
+      short_time: Time
+      short_place: Location
+    correction:
+      start: Create a financial correction
+      reason: Reason for correction
+      reason_help: Provide at least 10 characters describing the error. The original record and receipt evidence
+        will remain unchanged.
+      new_help: A new editable draft will copy the original amount, date, details, and line items. It will not change
+        reports until separately confirmed.
+      submit: Create correction draft
+      created: Correction draft created. Edit and verify before confirming.
+      source: Original transaction (immutable)
+      replacement: Replacement transaction
+      pending: Correction draft is in progress
+      confirmed: This record has been superseded by a confirmed correction
+      current: This transaction is the current effective entry
+      linked_evidence: Original evidence remains attached to the source transaction
+      confirm: Confirm this correction and replace the report value
+      confirm_help: Confirming locks the replacement and makes it effective. The original amount/date/history remain
+        available, but are no longer included in financial aggregates. Confirm only after reviewing date, amount,
+        and all line items.
+      status: Correction status
+      details: Correction history
+      no_double: Financial reports include the effective confirmed version only, avoiding double counting.
+      evidence: Source receipt images and extraction history remain on the original record.
+      revised: Superseded
+      review: Edit replacement draft
+    categories:
+      title: Manage tags
+      nav: Tags
+      eyebrow: WORKSPACE TAGS
+      subtitle: Create reusable tags with independent English and Vietnamese labels. Choose several tags on each
+        item.
+      list: Tag library
+      history_note: Archived tags remain attached to historical items.
+      back: Back to transactions
+      key: Stable category key
+      key_help: Lowercase letters, numbers and underscores; cannot change after creation.
+      name_vi: Vietnamese tag name
+      name_en: English tag name
+      status: Status
+      active: Active
+      archived_status: Archived
+      active_hint: Allow selection in new transactions and items
+      form_note: New tags entered directly in the item popup can be translated here.
+      create: Create tag
+      edit: Edit tag
+      update: Save tag
+      delete: Delete / archive
+      delete_confirm: Remove this category? Referenced categories are archived to preserve history.
+      created: Category created.
+      updated: Category updated.
+      deleted: Unused category deleted.
+      archived: Referenced category archived; history preserved.
+      select: Select category (optional)
+      manage: Manage tags
+    entry:
+      optional: Optional information
+      items_after: Add purchased items from the transaction details screen after saving this draft.
+      items_step: 'Step 2: Add items and attach evidence after saving.'
+      draft_notice: Save as a draft
+      draft_help: No amount enters confirmed reports until you review and confirm.
+      guide_label: SAFE WORKFLOW
+      guide_title: Three simple steps
+      guide_one: Enter a date, amount and a clear description.
+      guide_two: Save the draft, then manage each item in a popup.
+      guide_three: Check the totals and confirm manually.
+      privacy: Drafts remain editable. AI suggestions never post financial values automatically.
+    detail_view:
+      amount_label: Transaction amount
+      more_items: View all items (+%{count} more)
+      expand: Expand
+    intake:
+      title: Add a transaction
+      eyebrow: RECEIPT-FIRST WORKFLOW
+      subtitle: Start with a receipt photo. Add or correct fields only after reviewing the evidence.
+      upload_title: Upload your receipt
+      upload_help: No need to type the date, total, merchant or items before uploading.
+      recommended: Recommended
+      drop_title: Drop your receipt image here
+      drop_help: Or choose an image from your computer or phone.
+      choose_file: Choose image
+      file_limit: JPG, PNG or WEBP · up to 10 MB
+      preview: Selected receipt preview
+      step_next: 'Next: review the draft'
+      no_ai_yet: Photo is saved securely. AI reading requires the GGUF adapter to be connected; no text or amount
+        is guessed.
+      upload_button: Upload & continue
+      manual_title: Enter without a receipt
+      manual_subtitle: Optional alternative for transactions without an image
+      manual_note: Save a draft first; you can add items and evidence later.
+      workflow_heading: HOW IT WORKS
+      step1: Upload
+      step1_help: Store the original image and its SHA256 provenance.
+      step2: Review
+      step2_help: Inspect the receipt, review AI proposals if available, and correct missing fields.
+      step3: Confirm
+      step3_help: Only you can confirm and post this transaction.
+      safety: Uploading never posts money to a confirmed ledger.
+      saved: Receipt saved as an unconfirmed draft. Review the image and enter verified details.
+      review_title: Review receipt and details
+      review_eyebrow: HUMAN REVIEW
+      review_subtitle: Your original receipt is preserved. Fields remain editable until you explicitly confirm.
+      ai_proposals: AI proposals are available for review
+      ai_proposals_help: Check proposals against the image. They are not silently written into financial fields.
+      ai_unavailable: AI reading is not connected on this CPU demo
+      ai_unavailable_help: Upload and preview work now. The GGUF vision adapter must be connected before automatic
+        extraction is available; no values are fabricated.
+      verify_title: Check transaction fields
+      verify_help: Only enter values you can verify from the receipt. Unknown values may stay blank in the draft.
+      no_auto_post: Saved edits remain in draft, not confirmed reports.
+      save_review: Save reviewed details
+      suggestions_title: Model suggestions (unconfirmed)
+      review_items: Manage receipt items
+      review_items_help: Add or edit each item, including its optional date, time and place, using the item modals.
+      open_detail: Open transaction detail
+      confirm_later: Confirm only after checking amounts and items.
+      source_title: Original receipt
+      view_original: View original and SHA256
+      no_source: No receipt uploaded yet.
+      upload_new: Upload receipt
+    new_ux:
+      workspace: SMART FINANCE
+      choose_flow: Choose your transaction workflow
+      expense_title: Record an expense
+      expense_subtitle: Save the receipt first. Review only what is needed.
+      income_title: Record income
+      income_subtitle: Start with the amount received; supporting proof is optional.
+      expense_tab: Money out
+      expense_tab_help: Receipts and purchased items
+      income_tab: Money in
+      income_tab_help: Payments and sales receipts
+      expense_primary_badge: Receipt-first
+      expense_upload_title: Add an expense from a receipt
+      expense_manual_title: No receipt? Enter a quick expense
+      expense_manual_help: Only amount and purpose first; other details are optional.
+      expense_purpose: What did you spend on?
+      expense_purpose_placeholder: E.g. breakfast, office supplies
+      expense_step_next: 'Next: verify the receipt'
+      assistant_title: AI ASSISTANCE
+      expense_assistant_heading: Focus on the receipt
+      expense_assistant_help: The original receipt is preserved with SHA256. AI proposals will appear only after
+        the verified GGUF reader is connected. You decide what to confirm.
+      extra_fields: More options (optional)
+      income_quick_eyebrow: QUICK ENTRY
+      income_quick_title: Received a payment?
+      income_quick_help: Three essential fields. You can add categories and proof later.
+      income_amount: Amount received
+      income_from: Received from / reason
+      income_from_hint: E.g. sale to a customer, consulting fee
+      income_date: Date received
+      date_verified: Choose the actual date; no automatic guessing.
+      income_draft_note: Saves as a draft. It will not affect reports until confirmed.
+      income_save: Save income draft
+      income_evidence_title: Attach a payment proof or invoice
+      income_evidence_help: 'Optional: receipt, payment confirmation or sales document.'
+      income_evidence_drop: Select a payment proof image
+      income_evidence_safety: Creates a separate unconfirmed draft from this image.
+      income_evidence_submit: Upload proof and review
+      income_assistant_heading: Keep income entry simple
+      income_assistant_help: Record what you actually received. You can categorize it, attach evidence and review
+        details before confirmation.
+      ai_boundary: The GGUF image reader is not connected on this CPU demo. No values are invented.
+      review_expense_title: Review expense
+      review_income_title: Review income
+      review_income_help: Check amount, source and date. Evidence remains optional.
+      review_income_items: Optional income breakdown
+      review_income_items_help: Break down a combined payment only when needed.
+      income_amount_required: Enter a positive received amount.
+      income_date_required: Enter the actual date received.
+      income_source_required: Describe the source of income.
+    quick_item:
+      name_placeholder: E.g. coffee, paper supplies
+      total: Line total (VND)
+      total_help: Quantity × unit price updates automatically as you type. Without unit price, enter the total manually.
+      tags_label: Tags (choose more than one)
+      new_tags: Add new tags
+      new_tags_placeholder: E.g. Breakfast, Project A
+      tags_help: Select existing tags or enter new names separated by commas. New names will initially appear identically
+        in both languages until translated in Tag Management.
+      more_details: Time and location (optional)
+      date_default_hint: The date comes from the transaction. Edit it on the transaction form; individual items have no separate date.
+      invalid_calculation: Invalid quantity or unit price. Please check the values.
+      tag_management: Manage tags
+      date_required: Verify the transaction date before confirmation.
+  activerecord:
+    attributes:
+      finance/category:
+        key: Tag key
+    errors:
+      models:
+        finance/category:
+          attributes:
+            key:
+              taken: has already been used in this workspace
+  errors:
+    messages:
+      taken: has already been taken
   date:
     formats:
       default: '%d/%m/%Y'

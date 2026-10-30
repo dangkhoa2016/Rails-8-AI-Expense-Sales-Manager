@@ -8,8 +8,10 @@ module Finance
       image = params.require(:document_version).require(:image)
       version = Finance::UploadDocument.call(transaction: @transaction, upload: image,
                                              actor: @finance_actor)
-      redirect_to finance_transaction_document_version_path(@transaction, version),
-                  notice: I18n.t('finance.flash.image_saved')
+      destination = params[:return_to_review] == "1" && @transaction.draft? ?
+        review_finance_transaction_path(@transaction) :
+        finance_transaction_document_version_path(@transaction, version)
+      redirect_to destination, notice: I18n.t('finance.flash.image_saved')
     rescue ActionController::ParameterMissing, ArgumentError, ActiveRecord::RecordInvalid => e
       redirect_to finance_transaction_path(@transaction), alert: e.message
     end

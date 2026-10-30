@@ -1,0 +1,32 @@
+<% content_for :title, ui("m6.ai_title") %>
+<div class="page-heading"><div><span class="eyebrow"><%= ui("form.section.ai") %></span><h1><%= ui("m6.ai_title") %></h1><p class="subheading"><%= ui("m6.ai_notice") %></p></div><%= link_to ui("m6.title"), finance_transaction_line_items_path(@transaction), class: "btn btn-secondary" %></div>
+<div class="security-info"><%= ui("m6.ai_warning") %></div>
+<section class="panel">
+  <div class="panel-heading"><h2><%= ui("m6.proposals_count", count: @indices.size) %></h2><p><%= ui("m6.page_of", page: @page, pages: @pages) %></p></div>
+  <% if @proposals.any? %>
+    <div class="table-scroll"><table class="data-table">
+      <thead><tr><th>#</th><th><%= ui("m6.ai_field") %></th><th><%= ui("m6.ai_value") %></th><th><%= ui("shared.status") %></th><th><%= ui("shared.actions") %></th></tr></thead>
+      <tbody>
+        <% @proposals.each do |index, suggestions| %>
+          <% suggestions.each do |suggestion| %>
+            <tr><td><%= index + 1 %></td><td><%= suggestion.field_key.split(".").last %></td><td><%= suggestion.proposed_value.presence || ui("shared.unknown") %></td>
+              <td><%= suggestion.review_status %></td>
+              <td>
+                <% if @transaction.draft? && suggestion.review_status == "pending" %>
+                  <div class="line-actions">
+                    <%= button_to ui("form.ai.accept"), accept_finance_transaction_field_suggestion_path(@transaction, suggestion), method: :post, params: {scope:"line_items",page:@page}, class:"btn btn-secondary" %>
+                    <%= button_to ui("form.ai.reject"), reject_finance_transaction_field_suggestion_path(@transaction, suggestion), method: :post, params: {scope:"line_items",page:@page}, class:"btn btn-minimal" %>
+                  </div>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table></div>
+    <div class="table-pagination"><span><%= ui("m6.page_of", page: @page, pages: @pages) %></span><div class="pagination-links">
+      <% if @page>1 %><%= link_to ui("shared.previous"), proposals_finance_transaction_line_items_path(@transaction,page:@page-1), class:"btn btn-secondary" %><% end %>
+      <% if @page<@pages %><%= link_to ui("shared.next"), proposals_finance_transaction_line_items_path(@transaction,page:@page+1), class:"btn btn-secondary" %><% end %>
+    </div></div>
+  <% else %><p class="form-hint"><%= ui("m6.ai_empty") %></p><% end %>
+</section>

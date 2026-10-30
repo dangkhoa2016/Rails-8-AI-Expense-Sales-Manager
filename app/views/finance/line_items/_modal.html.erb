@@ -1,0 +1,46 @@
+<dialog class="item-edit-dialog" data-controller="item-modal"
+  data-action="cancel->item-modal#preventImplicitClose close->item-modal#onClose"
+  aria-labelledby="item-modal-title">
+  <div class="item-modal-content">
+    <div class="item-modal-heading">
+      <div>
+        <span class="eyebrow"><%= ui("m6.title") %></span>
+        <h2 id="item-modal-title"><%= ui("m6.item_edit") %> #<%= line_item.position + 1 %></h2>
+      </div>
+      <button type="button" class="item-modal-close" aria-label="<%= ui("shared.cancel") %>"
+        data-action="item-modal#close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          aria-hidden="true" focusable="false">
+          <path d="M18 6 6 18M6 6l12 12"></path>
+        </svg></button>
+    </div>
+    <% if requires_correction %>
+      <div class="security-info"><%= ui("m6.item_confirmed_hint") %></div>
+    <% else %>
+      <p class="form-hint"><%= ui("m6.item_edit_hint") %></p>
+    <% end %>
+    <% if error.present? || line_item.errors.any? %>
+      <div class="flash alert" role="alert">
+        <%= error.presence || line_item.errors.full_messages.to_sentence %>
+      </div>
+    <% end %>
+    <%= form_with model: line_item, scope: :line_item,
+      url: finance_transaction_line_item_path(transaction, line_item),
+      method: :patch, data: { turbo_frame: "line_item_modal" } do |f| %>
+      <%= render "finance/line_items/item_fields", f: f, item: line_item %>
+      <% if requires_correction %>
+        <div class="form-field">
+          <%= label_tag :correction_reason, ui("correction.reason"), class: "form-label" %>
+          <%= text_area_tag :correction_reason, params[:correction_reason], required: true,
+            minlength: 10, maxlength: 2000, rows: 3,
+            placeholder: ui("correction.reason_help") %>
+        </div>
+        <p class="form-hint"><%= ui("m6.correction_modal_hint") %></p>
+      <% end %>
+      <div class="form-footer">
+        <%= f.submit ui("m6.save_item"), class: "btn btn-primary" %>
+        <button type="button" class="btn item-modal-cancel" data-action="item-modal#close"><%= ui("shared.cancel") %></button>
+      </div>
+    <% end %>
+  </div>
+</dialog>

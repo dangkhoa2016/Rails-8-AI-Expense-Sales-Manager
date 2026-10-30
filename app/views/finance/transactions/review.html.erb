@@ -1,0 +1,17 @@
+<% review_title = @transaction.kind == "income" ?
+  ui("new_ux.review_income_title") : ui("intake.review_title") %>
+<% content_for :title, review_title %>
+<div class="page-heading modern-intake-heading">
+  <div><span class="eyebrow"><%= ui("intake.review_eyebrow") %></span>
+    <h1><%= review_title %> #<%= @transaction.id %></h1>
+    <p class="subheading"><%= @transaction.kind == "income" ?
+      ui("new_ux.review_income_help") : ui("intake.review_subtitle") %></p>
+  </div>
+  <%= link_to ui("detail.back"), finance_transaction_path(@transaction),
+    class: "btn btn-secondary" %>
+</div>
+<% if @transaction.kind == "income" %>
+  <%= render "finance/transactions/review_income" %>
+<% else %>
+  <%= render "finance/transactions/review_expense" %>
+<% end %>

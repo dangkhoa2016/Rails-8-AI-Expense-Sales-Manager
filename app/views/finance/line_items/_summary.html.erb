@@ -1,0 +1,12 @@
+<div id="line_items_summary" aria-live="polite">
+  <div class="kpi-grid">
+    <% [[ui("m6.count"), count],
+         [ui("m6.lines_total"), money_vnd(sum)],
+         [ui("m6.invoice_total"), money_vnd(transaction.amount)],
+         [ui("m6.difference"), money_vnd(difference)]].each do |label, value| %>
+      <article class="kpi-card"><span class="kpi-label"><%= label %></span>
+        <strong class="kpi-value"><%= value %></strong></article>
+    <% end %>
+  </div>
+  <div class="security-info"><%= ui("m6.reconciliation") %></div>
+</div>

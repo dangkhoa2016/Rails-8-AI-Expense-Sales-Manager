@@ -3,6 +3,7 @@
   <div><span class="eyebrow"><%= ui("guide.eyebrow") %></span><h1><%= ui("guide.title") %></h1><p class="subheading"><%= ui("guide.subtitle") %></p></div>
   <%= link_to ui("dashboard.actions.expense"), new_finance_transaction_path(kind: "expense"), class: "btn btn-primary" %>
 </div>
+<div class="security-info">✓ <%= ui("guide.context_note") %></div>
 <div class="guide-grid">
   <% (1..5).each do |n| %>
     <article class="guide-card"><span class="guide-count"><%= format("%02d", n) %> / 05</span><h2><%= ui("guide.step#{n}.title") %></h2><p><%= ui("guide.step#{n}.body") %></p></article>

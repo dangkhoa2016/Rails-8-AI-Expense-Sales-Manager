@@ -7,8 +7,25 @@ module Finance
     has_many :field_suggestions, class_name: 'Finance::FieldSuggestion', foreign_key: :transaction_id, dependent: :restrict_with_exception
     has_many :audit_events, class_name: 'Finance::AuditEvent', foreign_key: :transaction_id, dependent: :restrict_with_exception
     belongs_to :active_document_version, class_name: 'Finance::DocumentVersion', optional: true
+    has_one :context, class_name: "Finance::TransactionContext", foreign_key: :transaction_id,
+      inverse_of: :finance_transaction, dependent: :restrict_with_exception
 
-    accepts_nested_attributes_for :line_items, allow_destroy: true, limit: 30,
+    accepts_nested_attributes_for :context, update_only: true,
+      reject_if: ->(attrs) {
+        attrs['purchase_details'].blank? && attrs['occurred_time'].blank? && attrs['location_text'].blank?
+      }
+
+
+    has_one :correction_as_original, class_name: "Finance::Correction",
+      foreign_key: :original_transaction_id, inverse_of: :original_transaction,
+      dependent: :restrict_with_exception
+    has_one :correction_as_replacement, class_name: "Finance::Correction",
+      foreign_key: :replacement_transaction_id, inverse_of: :replacement_transaction,
+      dependent: :restrict_with_exception
+
+    has_many :line_import_batches, class_name: 'Finance::LineImportBatch', foreign_key: :transaction_id, dependent: :restrict_with_exception
+
+    accepts_nested_attributes_for :line_items, allow_destroy: true, limit: 200,
       reject_if: ->(attrs) { attrs['description'].blank? && attrs['amount'].blank? }
 
     validates :workspace_id, :created_by_id, presence: true
@@ -23,6 +40,12 @@ module Finance
     validate :confirmed_record_is_readonly, on: :update
 
     scope :confirmed, -> { where(status: 'confirmed') }
+    # Corrections replace the effective value without mutating or double-counting the original.
+    scope :effective_confirmed, -> {
+      confirmed.where.not(
+        id: Finance::Correction.confirmed.select(:original_transaction_id)
+      )
+    }
     scope :for_workspace, ->(id) { where(workspace_id: id) }
 
     def confirmed? = status == 'confirmed'

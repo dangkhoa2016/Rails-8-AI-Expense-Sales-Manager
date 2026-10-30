@@ -103,8 +103,8 @@ vi:
       latest:
         title: Giao dịch xác nhận gần đây
         subtitle: Mở từng khoản đã tổng hợp để đối chiếu chứng từ.
-      evidence_note: Chỉ hiển thị giao dịch đã chốt. Số tiền lấy từ PostgreSQL, không suy đoán tổng tiền
-        từ hóa đơn.
+      evidence_note: Chỉ hiển thị giao dịch đã chốt. Số tiền lấy từ PostgreSQL, không suy đoán tổng tiền từ hóa
+        đơn.
       no_prev: —
       balance:
         positive: Thặng dư
@@ -124,45 +124,52 @@ vi:
       title:
         create: Tạo giao dịch mới
         edit: 'Chỉnh sửa bản nháp #%{id}'
-      subtitle: Nhập thông tin thủ công hoặc kiểm tra trường AI đã đọc. Chưa ghi nhận tài chính cho đến
-        khi bạn xác nhận.
+      subtitle: Nhập thông tin thủ công hoặc kiểm tra trường AI đã đọc. Chưa ghi nhận tài chính cho đến khi bạn
+        xác nhận.
       section:
         date: 01 · Ngày ghi nhận
         details: 02 · Thông tin giao dịch
-        lines: 03 · Các khoản chi tiết
-        ai: 04 · Các trường AI gợi ý
+        lines: 04 · Các khoản chi tiết
+        ai: 05 · Các trường AI gợi ý
+        context: 03 · Chi tiết khoản chi và ngữ cảnh
       date:
-        help: Chọn ngày phát sinh thực tế. Nếu hóa đơn không có ngày, hãy tự nhập; không lấy ngày tải
-          ảnh làm ngày thu/chi.
+        help: Chọn ngày phát sinh thực tế. Nếu hóa đơn không có ngày, hãy tự nhập; không lấy ngày tải ảnh làm ngày
+          thu/chi.
         ai: 'Ngày AI gợi ý: %{value}. Vui lòng kiểm tra.'
       details:
-        help: Nhập số tiền VND dạng chữ số không có dấu phân nhóm, ví dụ 43500. Kiểm tra lại trước khi
-          xác nhận.
+        help: Nhập số tiền VND dạng chữ số không có dấu phân nhóm, ví dụ 43500. Kiểm tra lại trước khi xác nhận.
       lines:
-        help: Có thể để trống các dòng chi tiết khi lưu nháp. Chỉnh sửa từng khoản và không tự cho rằng
-          tổng các dòng bằng số tiền xác nhận.
+        help: Có thể để trống các dòng chi tiết khi lưu nháp. Chỉnh sửa từng khoản và không tự cho rằng tổng các
+          dòng bằng số tiền xác nhận.
         name: Tên khoản
         amount: Số tiền khoản
         remove: Xóa dòng nháp này
       ai:
-        help: Mỗi trường chỉ là gợi ý. Trường không đọc được để trống. Đánh dấu đã xem không tự ghi nhận
-          thu/chi.
+        help: Mỗi trường chỉ là gợi ý. Trường không đọc được để trống. Đánh dấu đã xem không tự ghi nhận thu/chi.
         accept: Đánh dấu đã xem
         reject: Từ chối gợi ý
       save: Lưu bản nháp
       back: Về danh sách
+      context:
+        details: Khoản thu/chi này dùng cho việc gì?
+        details_placeholder: 'Ví dụ: Mua bánh mì ngọt cho bữa sáng'
+        time: Giờ thu/chi (không bắt buộc)
+        location: Địa điểm (không bắt buộc)
+        location_placeholder: 'Ví dụ: Tiệm bánh gần đồn cảnh sát Đà Nẵng'
+        help: Ghi rõ đã mua hoặc thanh toán cho việc gì. Giờ và địa điểm là tùy chọn. Không suy đoán thông tin còn
+          thiếu từ hóa đơn.
     detail:
       eyebrow: HỒ SƠ GIAO DỊCH
       title: 'Giao dịch #%{id}'
       subtitle: Xem thông tin tài chính, phiên bản ảnh và lịch sử kiểm soát.
       confirm:
         title: Sẵn sàng xác nhận?
-        help: Chỉ xác nhận sau khi kiểm tra ngày, loại thu/chi và số tiền. Giao dịch sẽ được khóa và đưa
-          vào báo cáo.
+        help: Chỉ xác nhận sau khi kiểm tra ngày, loại thu/chi và số tiền. Giao dịch sẽ được khóa và đưa vào báo
+          cáo.
         checkbox: Tôi đã kiểm tra ngày, loại giao dịch, số tiền và chứng từ.
         button: Xác nhận ghi nhận thu chi
-        locked: Giao dịch đã chốt không thể sửa trực tiếp. Có thể thêm ảnh làm bằng chứng mà không đổi
-          ngày hoặc số tiền.
+        locked: Giao dịch đã chốt không thể sửa trực tiếp. Có thể thêm ảnh làm bằng chứng mà không đổi ngày hoặc
+          số tiền.
       edit: Chỉnh sửa bản nháp
       summary: Thông tin đã kiểm tra
       confirmed_at: Thời điểm xác nhận
@@ -176,8 +183,7 @@ vi:
         supplement: Chứng từ bổ sung
       ai:
         unreadable: Ảnh không đủ rõ để nhận diện đáng tin cậy. Vui lòng nhập tay hoặc tải ảnh rõ hơn.
-        error: Xử lý ảnh gặp lỗi kỹ thuật, không có nghĩa ảnh không đọc được. Bạn có thể thử lại hoặc
-          nhập tay.
+        error: Xử lý ảnh gặp lỗi kỹ thuật, không có nghĩa ảnh không đọc được. Bạn có thể thử lại hoặc nhập tay.
         partial: AI đọc được một số trường. Hãy kiểm tra từng gợi ý và nhập tay phần còn thiếu.
         manual: Bạn luôn có thể nhập thủ công.
         title: Trạng thái đọc chứng từ
@@ -191,6 +197,13 @@ vi:
         empty: Chưa tải ảnh chứng từ.
         title: Các phiên bản chứng từ
       back: Quay lại danh sách
+      context:
+        title: Chi tiết mua sắm và thanh toán
+        details: Mua hoặc thanh toán cho việc gì
+        time: Giờ phát sinh (tùy chọn)
+        location: Địa điểm (tùy chọn)
+        empty: Chưa nhập thông tin bổ sung cho giao dịch.
+        synthetic: Thông tin giả lập để xem thử, không phải giao dịch thực tế
     evidence:
       title: Ảnh chứng từ · Phiên bản %{number}
       uploaded: Đã tải lên %{value}
@@ -224,38 +237,37 @@ vi:
       subtitle: Tận dụng AI để giảm nhập liệu nhưng vẫn kiểm soát dữ liệu tài chính.
       step1:
         title: Bắt đầu từ bản nháp
-        body: Bạn có thể ghi khoản thu hoặc chi ngay cả khi chưa có ảnh. Bản nháp được chỉnh sửa và không
-          tính vào báo cáo.
+        body: Bạn có thể ghi khoản thu hoặc chi ngay cả khi chưa có ảnh. Bản nháp được chỉnh sửa và không tính vào
+          báo cáo.
       step2:
         title: Tải ảnh và lưu phiên bản
-        body: Mỗi ảnh được lưu thành phiên bản riêng có SHA256. Ảnh cũ luôn có thể mở lại để kiểm tra,
-          đối chiếu.
+        body: Mỗi ảnh được lưu thành phiên bản riêng có SHA256. Ảnh cũ luôn có thể mở lại để kiểm tra, đối chiếu.
       step3:
         title: Kiểm tra từng trường
-        body: Khi AI được tích hợp và chấp thuận, các trường gợi ý sẽ hiện riêng. Phần khó đọc để trống
-          và cho phép nhập tay.
+        body: Khi AI được tích hợp và chấp thuận, các trường gợi ý sẽ hiện riêng. Phần khó đọc để trống và cho phép
+          nhập tay.
       step4:
         title: Xác nhận ngày và số tiền thực
-        body: Phải có ngày giao dịch trước khi xác nhận. Không suy ngày thiếu từ EXIF, thời điểm tải ảnh
-          hoặc trường khác.
+        body: Phải có ngày giao dịch trước khi xác nhận. Không suy ngày thiếu từ EXIF, thời điểm tải ảnh hoặc trường
+          khác.
       step5:
         title: Thống kê từ giao dịch đã chốt
-        body: Báo cáo, biểu đồ và CSV chỉ lấy giá trị đã xác nhận trong cơ sở dữ liệu, không tính bản
-          nháp hay gợi ý AI chưa duyệt.
+        body: Báo cáo, biểu đồ và CSV chỉ lấy giá trị đã xác nhận trong cơ sở dữ liệu, không tính bản nháp hay gợi
+          ý AI chưa duyệt.
       faq:
         title: Câu hỏi thường gặp
       faq1:
         q: Nếu hóa đơn mờ hoặc chữ viết tay khó đọc thì sao?
-        a: Bạn có thể tải ảnh rõ hơn hoặc nhập tay. Hệ thống không được tự đoán ngày hoặc số tiền khi
-          không đọc chắc chắn.
+        a: Bạn có thể tải ảnh rõ hơn hoặc nhập tay. Hệ thống không được tự đoán ngày hoặc số tiền khi không đọc
+          chắc chắn.
       faq2:
         q: Có thể thay ảnh sau khi đã chốt giao dịch không?
-        a: Có thể tải phiên bản mới, nhưng giá trị tài chính và ảnh tham chiếu đã chốt không thay đổi.
-          Ảnh mới là bằng chứng bổ sung.
+        a: Có thể tải phiên bản mới, nhưng giá trị tài chính và ảnh tham chiếu đã chốt không thay đổi. Ảnh mới là
+          bằng chứng bổ sung.
       faq3:
         q: Bản demo đã bật AI đọc hóa đơn chưa?
-        a: Chưa. Adapter GGUF vẫn tắt để chờ nghiệm thu chất lượng. Nhập tay và lịch sử ảnh đang sử dụng
-          được.
+        a: Chưa. Adapter GGUF vẫn tắt để chờ nghiệm thu chất lượng. Nhập tay và lịch sử ảnh đang sử dụng được.
+      context_note: Ngày phát sinh bắt buộc khi xác nhận. Giờ và địa điểm có thể bỏ trống.
     flash:
       draft_created: Đã lưu bản nháp. Hãy kiểm tra và xác nhận trước khi đưa vào báo cáo.
       draft_updated: Đã cập nhật bản nháp.
@@ -277,6 +289,270 @@ vi:
       maintenance: Bảo trì
       food: Ăn uống
       other: Khác
+    m6:
+      title: Các khoản chi tiết trong hóa đơn
+      subtitle: Quản lý từng khoản mua, nhập danh sách dài và đối chiếu với tổng tiền giao dịch.
+      count: Số khoản chi tiết
+      lines_total: Tổng các dòng chi tiết
+      invoice_total: Số tiền giao dịch
+      difference: Chênh lệch (giao dịch − các dòng)
+      reconciliation: Khi thêm, sửa, xóa hoặc nhập dòng chi tiết trong bản nháp, hệ thống tự đồng bộ số tiền giao dịch theo tổng các dòng nếu còn dòng. Bạn vẫn có thể chỉnh số tiền giao dịch để phản ánh thuế hoặc giảm giá; hãy đối chiếu lại trước khi xác nhận.
+      import_title: Nhập hàng loạt khoản chi từ CSV
+      import_help: CSV UTF-8 cần description,amount; các cột quantity,unit_price,category,occurred_time,location_text là tùy chọn. Ngày lấy từ giao dịch; CSV cũ có occurred_on chỉ hợp lệ khi trùng ngày giao dịch. Không chạy OCR.
+      import_limit: Tối đa 500 dòng mỗi tệp và mỗi giao dịch, tối đa 512 KiB. Dòng sai sẽ hủy toàn bộ lượt nhập.
+        Tải lại cùng tệp không tạo dữ liệu trùng.
+      csv_label: Chọn tệp CSV
+      import_button: Nhập các dòng vào bản nháp
+      imported: Đã nhập %{count} dòng vào bản nháp
+      duplicate: Tệp CSV này đã được nhập trước đó; không có thay đổi.
+      add_one: Thêm một khoản chi
+      quantity: Số lượng (tùy chọn)
+      unit_price: Đơn giá (tùy chọn)
+      saved: Đã lưu khoản chi tiết.
+      removed: Đã xóa khoản chi tiết.
+      list_title: Danh sách khoản chi tiết
+      page_of: Trang %{page}/%{pages} · 25 dòng/trang
+      save_row: Lưu
+      delete_row: Xóa
+      delete_confirm: Xóa dòng này khỏi bản nháp?
+      manage: Xem và quản lý đủ %{count} khoản
+      add_row: Thêm dòng mới
+      remove_row: Xóa dòng
+      bulk_hint: Với hóa đơn dài, lưu nháp rồi mở trang quản lý khoản chi để nhập/chỉnh 100+ dòng mà không phải
+        tải một form quá lớn.
+      items_report: Phân bổ danh mục theo khoản chi tiết đã xác nhận
+      items_report_hint: Các dòng chi tiết được báo cáo riêng với tổng giao dịch để tránh đếm hai lần. Chênh lệch
+        có thể do thuế, giảm giá hoặc thiếu dòng.
+      no_items_report: Tháng này chưa có các dòng chi tiết đã xác nhận.
+      unallocated: Chênh lệch so với tổng chi đã chốt
+      ai_notice: AI nhận diện chưa bật; hiện người dùng nhập hoặc import dòng chi tiết thủ công và tự kiểm tra.
+      ai_title: Đề xuất AI theo từng dòng (chỉ để kiểm tra)
+      ai_field: Trường được gợi ý
+      ai_value: Giá trị nguyên văn từ model
+      ai_warning: Duyệt đề xuất không tự thêm dòng hoặc thay đổi sổ tài chính. AI nhận diện hiện đang tắt; chỉ nhập
+        tay hoặc import các giá trị đã kiểm tra.
+      ai_empty: Chưa có gợi ý AI cho các dòng của chứng từ này.
+      proposals_count: '%{count} nhóm dòng được đề xuất'
+      item_edit: Sửa chi tiết khoản
+      item_edit_hint: Sửa các trường của khoản này. Khi lưu khoản trong bản nháp, tổng tiền giao dịch được đồng bộ từ tổng các dòng.
+      item_on: Ngày giao dịch (dùng chung)
+      item_time: Giờ của khoản chi (tùy chọn)
+      item_place: Địa điểm của khoản chi (tùy chọn)
+      item_place_placeholder: 'Ví dụ: Tiệm bánh gần đồn cảnh sát Đà Nẵng'
+      item_date_hint: Mỗi khoản dùng chung ngày của giao dịch. Có thể nhập giờ hoặc địa điểm riêng; phải xác nhận ngày giao dịch trước khi chốt.
+      correction_edit: Điều chỉnh khoản này
+      open_replacement: Xem giao dịch thay thế
+      item_confirmed_hint: Khoản này đã chốt. Hãy tạo bản điều chỉnh có lý do để sửa tên, tiền, giờ hoặc địa điểm
+        trong bản nháp mới.
+      item_summary: Thông tin từng khoản
+      save_item: Lưu thay đổi khoản chi
+      back_items: Quay lại danh sách khoản
+      item_reason: Lý do cần chỉnh khoản này
+      item_edit_path: Sau khi nhập lý do, hệ thống mở form sửa của chính dòng này trong bản nháp điều chỉnh.
+      correction_modal_hint: Với khoản đã xác nhận, lưu trong popup sẽ tạo bản nháp điều chỉnh; giao dịch gốc không
+        thay đổi và báo cáo chỉ cập nhật sau khi xác nhận bản thay thế.
+      correction_reason_required: Bạn phải nhập lý do điều chỉnh từ 10 đến 2000 ký tự.
+      correction_already_exists: Giao dịch đã có bản điều chỉnh; hãy mở bản nháp thay thế để sửa.
+      correction_draft_created: Đã tạo bản nháp điều chỉnh. Kiểm tra và xác nhận để số tiền mới có hiệu lực.
+      modal_cancel: Đóng cửa sổ
+      view_new_item: Xem khoản vừa thêm
+      item_limit_reached: Đã đạt giới hạn 500 khoản chi tiết
+      short_date: Ngày
+      short_time: Giờ
+      short_place: Địa điểm
+    correction:
+      start: Tạo bản điều chỉnh tài chính
+      reason: Lý do điều chỉnh
+      reason_help: Giải thích sai sót (ít nhất 10 ký tự). Bản ghi gốc và bằng chứng hóa đơn không bị thay đổi.
+      new_help: Một bản nháp mới sẽ sao chép số tiền, ngày, nội dung và các dòng chi tiết. Báo cáo chỉ thay đổi
+        khi bạn xác nhận bản điều chỉnh.
+      submit: Tạo bản nháp điều chỉnh
+      created: Đã tạo bản nháp điều chỉnh. Hãy chỉnh sửa và kiểm tra trước khi xác nhận.
+      source: Giao dịch gốc (bất biến)
+      replacement: Giao dịch thay thế
+      pending: Bản điều chỉnh đang chờ xác nhận
+      confirmed: Giao dịch này đã được thay thế bằng bản điều chỉnh được xác nhận
+      current: Giao dịch này đang có hiệu lực
+      linked_evidence: Chứng từ gốc tiếp tục được lưu trong giao dịch ban đầu
+      confirm: Xác nhận điều chỉnh và cập nhật số liệu báo cáo
+      confirm_help: Khi xác nhận, bản thay thế được khóa và có hiệu lực. Ngày, số tiền và lịch sử bản gốc vẫn lưu,
+        nhưng không còn tính vào tổng thu/chi. Hãy kiểm tra ngày, số tiền và tất cả khoản chi tiết trước khi xác
+        nhận.
+      status: Trạng thái điều chỉnh
+      details: Lịch sử điều chỉnh
+      no_double: Báo cáo chỉ tính phiên bản đã xác nhận đang có hiệu lực, không cộng trùng giao dịch cũ và mới.
+      evidence: Ảnh hóa đơn và lịch sử AI thuộc về hồ sơ gốc, không chuyển hoặc ghi đè chứng từ.
+      revised: Đã được thay thế
+      review: Chỉnh sửa bản nháp thay thế
+    categories:
+      title: Quản lý Tags
+      nav: Tags
+      eyebrow: THƯ VIỆN TAGS
+      subtitle: Tạo tags dùng lại, đặt tên tiếng Việt và tiếng Anh riêng; mỗi khoản chi có thể gắn nhiều tags.
+      list: Danh sách Tags
+      history_note: Tags đã lưu trữ vẫn gắn với các khoản chi trong lịch sử.
+      back: Trở lại giao dịch
+      key: Mã danh mục cố định
+      key_help: Chỉ chữ thường không dấu, số và dấu gạch dưới; không đổi mã sau khi tạo.
+      name_vi: Tên tag tiếng Việt
+      name_en: Tên tag tiếng Anh
+      status: Trạng thái
+      active: Đang dùng
+      archived_status: Đã lưu trữ
+      active_hint: Cho phép chọn khi tạo giao dịch và khoản chi
+      form_note: Tag tạo từ popup khoản chi có thể cập nhật bản dịch tại đây.
+      create: Tạo tag
+      edit: Sửa tag
+      update: Lưu tag
+      delete: Xóa / lưu trữ
+      delete_confirm: Xóa danh mục? Danh mục đã dùng sẽ được lưu trữ để giữ lịch sử.
+      created: Đã tạo danh mục.
+      updated: Đã cập nhật danh mục.
+      deleted: Đã xóa danh mục chưa dùng.
+      archived: Danh mục đã dùng được lưu trữ; lịch sử được bảo toàn.
+      select: Chọn danh mục (tùy chọn)
+      manage: Quản lý Tags
+    entry:
+      optional: Thông tin tùy chọn
+      items_after: Thêm từng khoản mua tại trang chi tiết sau khi lưu bản nháp.
+      items_step: 'Bước 2: Thêm khoản chi và chứng từ sau khi lưu.'
+      draft_notice: Lưu dưới dạng bản nháp
+      draft_help: Chưa tính vào báo cáo thu/chi khi chưa kiểm tra và xác nhận.
+      guide_label: QUY TRÌNH AN TOÀN
+      guide_title: Ba bước thực hiện
+      guide_one: Nhập ngày, số tiền và nội dung.
+      guide_two: Lưu bản nháp rồi quản lý từng khoản qua popup.
+      guide_three: Đối chiếu tổng tiền rồi chủ động xác nhận.
+      privacy: Bản nháp có thể sửa. Đề xuất AI không tự ghi nhận khoản tiền.
+    detail_view:
+      amount_label: Số tiền giao dịch
+      more_items: Xem tất cả khoản chi (còn %{count})
+      expand: Mở rộng
+    intake:
+      title: Tạo giao dịch mới
+      eyebrow: TẠO GIAO DỊCH TỪ HÓA ĐƠN
+      subtitle: Bắt đầu bằng ảnh hóa đơn. Chỉ bổ sung hoặc sửa thông tin sau khi xem chứng từ.
+      upload_title: Tải ảnh hóa đơn lên
+      upload_help: Chưa cần nhập ngày, tổng tiền, cửa hàng hoặc danh sách mặt hàng.
+      recommended: Nên dùng
+      drop_title: Thả ảnh hóa đơn vào đây
+      drop_help: Hoặc chọn ảnh từ máy tính hay điện thoại.
+      choose_file: Chọn ảnh
+      file_limit: JPG, PNG hoặc WEBP · tối đa 10 MB
+      preview: Xem trước ảnh đã chọn
+      step_next: 'Tiếp theo: kiểm tra bản nháp'
+      no_ai_yet: Ảnh được lưu an toàn. Cần kết nối adapter GGUF để AI đọc; hệ thống không tự đoán chữ hay số tiền.
+      upload_button: Tải ảnh và tiếp tục
+      manual_title: Nhập thủ công khi không có ảnh
+      manual_subtitle: Phương án khác khi không có ảnh hóa đơn
+      manual_note: Lưu bản nháp trước; có thể thêm khoản chi và chứng từ sau.
+      workflow_heading: CÁCH THỰC HIỆN
+      step1: Tải ảnh
+      step1_help: Lưu ảnh gốc và dấu vết SHA256.
+      step2: Kiểm tra
+      step2_help: Đối chiếu ảnh, xem đề xuất AI khi có, bổ sung các trường còn thiếu.
+      step3: Xác nhận
+      step3_help: Chỉ bạn mới có thể xác nhận giao dịch.
+      safety: Tải ảnh không tự ghi nhận khoản thu/chi đã xác nhận.
+      saved: Đã lưu hóa đơn vào bản nháp chưa xác nhận. Hãy đối chiếu ảnh và nhập dữ liệu đã kiểm tra.
+      review_title: Kiểm tra hóa đơn và thông tin
+      review_eyebrow: KIỂM TRA TRƯỚC KHI XÁC NHẬN
+      review_subtitle: Ảnh gốc đã được lưu. Bạn có thể sửa các trường trước khi chủ động xác nhận.
+      ai_proposals: Có đề xuất AI để kiểm tra
+      ai_proposals_help: Đối chiếu đề xuất với ảnh. Dữ liệu AI không tự ghi vào trường tài chính.
+      ai_unavailable: Chưa kết nối AI đọc hóa đơn trên demo CPU
+      ai_unavailable_help: Hiện có thể tải và xem ảnh. Cần kết nối adapter vision GGUF để tự động trích xuất; không
+        sinh dữ liệu giả.
+      verify_title: Kiểm tra thông tin giao dịch
+      verify_help: Chỉ nhập giá trị bạn xác minh từ ảnh. Trường chưa rõ có thể để trống trong bản nháp.
+      no_auto_post: Lưu chỉnh sửa chỉ cập nhật bản nháp, không vào báo cáo đã chốt.
+      save_review: Lưu thông tin đã kiểm tra
+      suggestions_title: Đề xuất từ model (chưa xác nhận)
+      review_items: Quản lý các khoản trong hóa đơn
+      review_items_help: Thêm hoặc sửa từng khoản, gồm ngày, giờ và địa điểm tùy chọn, bằng modal.
+      open_detail: Mở chi tiết giao dịch
+      confirm_later: Chỉ xác nhận sau khi đối chiếu số tiền và các khoản.
+      source_title: Ảnh hóa đơn gốc
+      view_original: Xem ảnh gốc và SHA256
+      no_source: Chưa tải hóa đơn lên.
+      upload_new: Tải hóa đơn
+    new_ux:
+      workspace: TÀI CHÍNH THÔNG MINH
+      choose_flow: Chọn quy trình giao dịch
+      expense_title: Ghi nhận khoản chi
+      expense_subtitle: Tải hóa đơn trước. Chỉ kiểm tra những thông tin cần thiết.
+      income_title: Ghi nhận khoản thu
+      income_subtitle: Bắt đầu từ số tiền đã nhận; chứng từ là tùy chọn.
+      expense_tab: Chi tiền
+      expense_tab_help: Hóa đơn và mặt hàng
+      income_tab: Thu tiền
+      income_tab_help: Tiền nhận và bán hàng
+      expense_primary_badge: Ưu tiên hóa đơn
+      expense_upload_title: Tạo khoản chi từ hóa đơn
+      expense_manual_title: Không có hóa đơn? Nhập khoản chi nhanh
+      expense_manual_help: Chỉ cần số tiền và lý do; thông tin khác là tùy chọn.
+      expense_purpose: Bạn đã chi cho việc gì?
+      expense_purpose_placeholder: 'Ví dụ: ăn sáng, mua vật tư'
+      expense_step_next: 'Tiếp theo: đối chiếu hóa đơn'
+      assistant_title: AI HỖ TRỢ
+      expense_assistant_heading: Tập trung vào hóa đơn
+      expense_assistant_help: Ảnh gốc được giữ cùng SHA256. Chỉ khi kết nối bộ đọc GGUF đã kiểm chứng, đề xuất AI
+        mới xuất hiện. Bạn là người xác nhận.
+      extra_fields: Thông tin khác (tùy chọn)
+      income_quick_eyebrow: NHẬP NHANH
+      income_quick_title: Bạn vừa nhận được tiền?
+      income_quick_help: Chỉ ba trường chính. Có thể bổ sung danh mục và chứng từ sau.
+      income_amount: Số tiền đã nhận
+      income_from: Nguồn thu hoặc nội dung
+      income_from_hint: 'Ví dụ: bán hàng, phí tư vấn'
+      income_date: Ngày nhận tiền
+      date_verified: Chọn ngày phát sinh thực tế, không tự suy đoán.
+      income_draft_note: Chỉ lưu bản nháp; chưa ghi vào báo cáo khi chưa xác nhận.
+      income_save: Lưu bản nháp khoản thu
+      income_evidence_title: Đính kèm chứng từ thu tiền
+      income_evidence_help: 'Tùy chọn: biên nhận, xác nhận thanh toán hoặc hóa đơn bán hàng.'
+      income_evidence_drop: Chọn ảnh chứng từ thu tiền
+      income_evidence_safety: Tạo bản nháp riêng, chưa xác nhận, từ ảnh này.
+      income_evidence_submit: Tải chứng từ và kiểm tra
+      income_assistant_heading: Ghi thu đơn giản hơn
+      income_assistant_help: Ghi số tiền thực tế đã nhận. Bạn có thể phân loại, đính kèm chứng từ và kiểm tra trước
+        khi xác nhận.
+      ai_boundary: Bộ đọc ảnh GGUF chưa kết nối trong demo CPU. Không tự tạo dữ liệu giả.
+      review_expense_title: Kiểm tra khoản chi
+      review_income_title: Kiểm tra khoản thu
+      review_income_help: Kiểm tra số tiền, nguồn thu và ngày. Chứng từ là tùy chọn.
+      review_income_items: Các khoản thu chi tiết (tùy chọn)
+      review_income_items_help: Chỉ tách từng khoản khi một lần nhận tiền có nhiều nội dung.
+      income_amount_required: Vui lòng nhập số tiền đã nhận lớn hơn 0.
+      income_date_required: Vui lòng nhập ngày nhận tiền thực tế.
+      income_source_required: Vui lòng nhập nguồn thu.
+    quick_item:
+      name_placeholder: 'Ví dụ: cà phê, giấy in'
+      total: Thành tiền (VND)
+      total_help: Số lượng × đơn giá được tính ngay khi gõ. Nếu không có đơn giá, hãy nhập thành tiền.
+      tags_label: Tags (có thể chọn nhiều)
+      new_tags: Tạo tags mới
+      new_tags_placeholder: 'Ví dụ: Ăn sáng, Dự án A'
+      tags_help: Chọn nhiều tag có sẵn hoặc nhập các tên mới ngăn cách bằng dấu phẩy. Tên tag mới dùng chung cho
+        hai ngôn ngữ cho tới khi chỉnh bản dịch ở trang Quản lý Tags.
+      more_details: Giờ và địa điểm (tùy chọn)
+      date_default_hint: Ngày do giao dịch quyết định. Để thay đổi, hãy chỉnh ngày ở trang giao dịch; các khoản không có ngày riêng.
+      invalid_calculation: Số lượng hoặc đơn giá không hợp lệ. Hãy kiểm tra lại.
+      tag_management: Quản lý Tags
+      date_required: Vui lòng xác nhận ngày của giao dịch trước khi chốt.
+  activerecord:
+    attributes:
+      finance/category:
+        key: Mã Tag
+    errors:
+      models:
+        finance/category:
+          attributes:
+            key:
+              taken: đã tồn tại trong không gian này
+  errors:
+    messages:
+      taken: đã tồn tại
   date:
     formats:
       default: '%d/%m/%Y'

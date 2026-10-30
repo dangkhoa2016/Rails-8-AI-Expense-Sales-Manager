@@ -1,0 +1,38 @@
+<dialog class="item-edit-dialog" data-controller="item-modal"
+  data-action="cancel->item-modal#preventImplicitClose close->item-modal#onClose"
+  aria-labelledby="item-modal-title">
+  <div class="item-modal-content">
+    <div class="item-modal-heading">
+      <div>
+        <span class="eyebrow"><%= ui("m6.title") %></span>
+        <h2 id="item-modal-title"><%= ui("m6.add_one") %></h2>
+      </div>
+      <button type="button" class="item-modal-close"
+        aria-label="<%= ui("shared.cancel") %>" data-action="item-modal#close">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          aria-hidden="true" focusable="false">
+          <path d="M18 6 6 18M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <p class="form-hint"><%= ui("m6.item_date_hint") %></p>
+    <% if error.present? || line_item.errors.any? %>
+      <div class="flash alert" role="alert">
+        <%= error.presence || line_item.errors.full_messages.to_sentence %>
+      </div>
+    <% end %>
+    <%= form_with model: line_item, scope: :line_item,
+      url: finance_transaction_line_items_path(transaction), method: :post,
+      data: { turbo_frame: "line_item_modal" } do |f| %>
+      <%= hidden_field_tag :page, page %>
+      <%= render "finance/line_items/item_fields", f: f, item: line_item %>
+      <div class="form-footer">
+        <%= f.submit ui("m6.add_one"), class: "btn btn-primary" %>
+        <button type="button" class="btn item-modal-cancel" data-action="item-modal#close">
+          <%= ui("shared.cancel") %>
+        </button>
+      </div>
+    <% end %>
+  </div>
+</dialog>

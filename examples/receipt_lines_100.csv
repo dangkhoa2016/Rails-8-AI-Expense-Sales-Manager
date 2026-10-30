@@ -1,0 +1,101 @@
+description,amount,quantity,unit_price,category
+Synthetic item 001 - Sweet bread,5000,1,5000,food
+Synthetic item 002 - Milk,14000,2,7000,food
+Synthetic item 003 - Eggs,27000,3,9000,food
+Synthetic item 004 - A4 paper,11000,1,11000,office
+Synthetic item 005 - Ballpoint pens,26000,2,13000,office
+Synthetic item 006 - Document folders,45000,3,15000,office
+Synthetic item 007 - Packaging bags,17000,1,17000,office
+Synthetic item 008 - Drinking water,38000,2,19000,food
+Synthetic item 009 - Charging cable,63000,3,21000,maintenance
+Synthetic item 010 - Delivery fee,5000,1,5000,transport
+Synthetic item 011 - Sweet bread,14000,2,7000,food
+Synthetic item 012 - Milk,27000,3,9000,food
+Synthetic item 013 - Eggs,11000,1,11000,food
+Synthetic item 014 - A4 paper,26000,2,13000,office
+Synthetic item 015 - Ballpoint pens,45000,3,15000,office
+Synthetic item 016 - Document folders,17000,1,17000,office
+Synthetic item 017 - Packaging bags,38000,2,19000,office
+Synthetic item 018 - Drinking water,63000,3,21000,food
+Synthetic item 019 - Charging cable,5000,1,5000,maintenance
+Synthetic item 020 - Delivery fee,14000,2,7000,transport
+Synthetic item 021 - Sweet bread,27000,3,9000,food
+Synthetic item 022 - Milk,11000,1,11000,food
+Synthetic item 023 - Eggs,26000,2,13000,food
+Synthetic item 024 - A4 paper,45000,3,15000,office
+Synthetic item 025 - Ballpoint pens,17000,1,17000,office
+Synthetic item 026 - Document folders,38000,2,19000,office
+Synthetic item 027 - Packaging bags,63000,3,21000,office
+Synthetic item 028 - Drinking water,5000,1,5000,food
+Synthetic item 029 - Charging cable,14000,2,7000,maintenance
+Synthetic item 030 - Delivery fee,27000,3,9000,transport
+Synthetic item 031 - Sweet bread,11000,1,11000,food
+Synthetic item 032 - Milk,26000,2,13000,food
+Synthetic item 033 - Eggs,45000,3,15000,food
+Synthetic item 034 - A4 paper,17000,1,17000,office
+Synthetic item 035 - Ballpoint pens,38000,2,19000,office
+Synthetic item 036 - Document folders,63000,3,21000,office
+Synthetic item 037 - Packaging bags,5000,1,5000,office
+Synthetic item 038 - Drinking water,14000,2,7000,food
+Synthetic item 039 - Charging cable,27000,3,9000,maintenance
+Synthetic item 040 - Delivery fee,11000,1,11000,transport
+Synthetic item 041 - Sweet bread,26000,2,13000,food
+Synthetic item 042 - Milk,45000,3,15000,food
+Synthetic item 043 - Eggs,17000,1,17000,food
+Synthetic item 044 - A4 paper,38000,2,19000,office
+Synthetic item 045 - Ballpoint pens,63000,3,21000,office
+Synthetic item 046 - Document folders,5000,1,5000,office
+Synthetic item 047 - Packaging bags,14000,2,7000,office
+Synthetic item 048 - Drinking water,27000,3,9000,food
+Synthetic item 049 - Charging cable,11000,1,11000,maintenance
+Synthetic item 050 - Delivery fee,26000,2,13000,transport
+Synthetic item 051 - Sweet bread,45000,3,15000,food
+Synthetic item 052 - Milk,17000,1,17000,food
+Synthetic item 053 - Eggs,38000,2,19000,food
+Synthetic item 054 - A4 paper,63000,3,21000,office
+Synthetic item 055 - Ballpoint pens,5000,1,5000,office
+Synthetic item 056 - Document folders,14000,2,7000,office
+Synthetic item 057 - Packaging bags,27000,3,9000,office
+Synthetic item 058 - Drinking water,11000,1,11000,food
+Synthetic item 059 - Charging cable,26000,2,13000,maintenance
+Synthetic item 060 - Delivery fee,45000,3,15000,transport
+Synthetic item 061 - Sweet bread,17000,1,17000,food
+Synthetic item 062 - Milk,38000,2,19000,food
+Synthetic item 063 - Eggs,63000,3,21000,food
+Synthetic item 064 - A4 paper,5000,1,5000,office
+Synthetic item 065 - Ballpoint pens,14000,2,7000,office
+Synthetic item 066 - Document folders,27000,3,9000,office
+Synthetic item 067 - Packaging bags,11000,1,11000,office
+Synthetic item 068 - Drinking water,26000,2,13000,food
+Synthetic item 069 - Charging cable,45000,3,15000,maintenance
+Synthetic item 070 - Delivery fee,17000,1,17000,transport
+Synthetic item 071 - Sweet bread,38000,2,19000,food
+Synthetic item 072 - Milk,63000,3,21000,food
+Synthetic item 073 - Eggs,5000,1,5000,food
+Synthetic item 074 - A4 paper,14000,2,7000,office
+Synthetic item 075 - Ballpoint pens,27000,3,9000,office
+Synthetic item 076 - Document folders,11000,1,11000,office
+Synthetic item 077 - Packaging bags,26000,2,13000,office
+Synthetic item 078 - Drinking water,45000,3,15000,food
+Synthetic item 079 - Charging cable,17000,1,17000,maintenance
+Synthetic item 080 - Delivery fee,38000,2,19000,transport
+Synthetic item 081 - Sweet bread,63000,3,21000,food
+Synthetic item 082 - Milk,5000,1,5000,food
+Synthetic item 083 - Eggs,14000,2,7000,food
+Synthetic item 084 - A4 paper,27000,3,9000,office
+Synthetic item 085 - Ballpoint pens,11000,1,11000,office
+Synthetic item 086 - Document folders,26000,2,13000,office
+Synthetic item 087 - Packaging bags,45000,3,15000,office
+Synthetic item 088 - Drinking water,17000,1,17000,food
+Synthetic item 089 - Charging cable,38000,2,19000,maintenance
+Synthetic item 090 - Delivery fee,63000,3,21000,transport
+Synthetic item 091 - Sweet bread,5000,1,5000,food
+Synthetic item 092 - Milk,14000,2,7000,food
+Synthetic item 093 - Eggs,27000,3,9000,food
+Synthetic item 094 - A4 paper,11000,1,11000,office
+Synthetic item 095 - Ballpoint pens,26000,2,13000,office
+Synthetic item 096 - Document folders,45000,3,15000,office
+Synthetic item 097 - Packaging bags,17000,1,17000,office
+Synthetic item 098 - Drinking water,38000,2,19000,food
+Synthetic item 099 - Charging cable,63000,3,21000,maintenance
+Synthetic item 100 - Delivery fee,5000,1,5000,transport

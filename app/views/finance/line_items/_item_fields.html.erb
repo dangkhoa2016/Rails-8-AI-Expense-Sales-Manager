@@ -1,0 +1,72 @@
+<div class="quick-item-fields" data-controller="line-item-entry">
+  <div class="form-field">
+    <%= f.label :description, ui("form.lines.name"), class: "form-label" %>
+    <%= f.text_field :description, required: true, maxlength: 500,
+      placeholder: ui("quick_item.name_placeholder") %>
+  </div>
+
+  <div class="quick-item-calculator">
+    <div class="fields-grid">
+      <div class="form-field">
+        <%= f.label :quantity, ui("m6.quantity"), class: "form-label" %>
+        <%= f.number_field :quantity, min: 0.001, step: 0.001, inputmode: "decimal",
+          data: { line_item_entry_target: "quantity",
+            action: "input->line-item-entry#calculate keyup->line-item-entry#calculate" } %>
+      </div>
+      <div class="form-field">
+        <%= f.label :unit_price, ui("m6.unit_price"), class: "form-label" %>
+        <%= f.number_field :unit_price, min: 0, step: 0.01, inputmode: "decimal",
+          data: { line_item_entry_target: "unitPrice",
+            action: "input->line-item-entry#calculate keyup->line-item-entry#calculate" } %>
+      </div>
+    </div>
+    <div class="form-field quick-item-total">
+      <%= f.label :amount, ui("quick_item.total"), class: "form-label" %>
+      <%= f.number_field :amount, min: 0, step: 0.01, inputmode: "decimal",
+        required: true, data: { line_item_entry_target: "amount" } %>
+      <p class="form-hint" data-line-item-entry-target="hint">
+        <%= ui("quick_item.total_help") %>
+      </p>
+    </div>
+  </div>
+
+  <fieldset class="quick-item-tags">
+    <legend class="form-label"><%= ui("quick_item.tags_label") %></legend>
+    <%= hidden_field_tag "line_item[tag_selection]", "1" %>
+    <div class="quick-tag-list">
+      <% @available_tags.each do |tag| %>
+        <label class="quick-tag-choice">
+          <%= check_box_tag "line_item[tag_ids][]", tag.id,
+            @selected_tag_ids.include?(tag.id.to_s) %>
+          <span><%= tag.label %></span>
+        </label>
+      <% end %>
+    </div>
+    <div class="form-field quick-new-tags">
+      <%= label_tag :line_item_new_tags, ui("quick_item.new_tags"), class: "form-label" %>
+      <%= text_field_tag "line_item[new_tags]", @new_tag_names, id: "line_item_new_tags",
+        maxlength: 480, placeholder: ui("quick_item.new_tags_placeholder") %>
+      <p class="form-hint"><%= ui("quick_item.tags_help") %></p>
+    </div>
+  </fieldset>
+
+  <div class="form-field quick-item-inherited-date">
+    <span class="form-label"><%= ui("m6.item_on") %></span>
+    <strong><%= @transaction.transaction_date ? human_day(@transaction.transaction_date) : ui("shared.not_available") %></strong>
+    <p class="form-hint"><%= ui("quick_item.date_default_hint") %></p>
+  </div>
+  <details class="quick-item-optional" <%= "open" if item.location_text.present? %>>
+    <summary><%= ui("quick_item.more_details") %></summary>
+    <div class="fields-grid">
+      <div class="form-field">
+        <%= f.label :occurred_time, ui("m6.item_time"), class: "form-label" %>
+        <%= f.time_field :occurred_time, value: item.occurred_time&.strftime("%H:%M") %>
+      </div>
+    </div>
+    <div class="form-field">
+      <%= f.label :location_text, ui("m6.item_place"), class: "form-label" %>
+      <%= f.text_field :location_text, maxlength: 400,
+        placeholder: ui("m6.item_place_placeholder") %>
+    </div>
+  </details>
+</div>
