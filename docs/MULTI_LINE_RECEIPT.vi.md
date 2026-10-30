@@ -1,5 +1,8 @@
 # M6 — Hóa đơn nhiều dòng và nhập hàng loạt (Tiếng Việt)
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Mô hình dữ liệu
 
 Một giao dịch thu/chi có thể chứa **0–500 dòng khoản chi tiết**, không phải 500 bút toán tài chính độc lập. Số tiền và ngày trong giao dịch cha được người dùng xác nhận; mỗi dòng có tên hàng, thành tiền và các trường tùy chọn như số lượng, đơn giá, danh mục. Giờ và địa điểm vẫn là tùy chọn ở cấp giao dịch.

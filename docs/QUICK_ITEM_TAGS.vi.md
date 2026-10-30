@@ -1,5 +1,8 @@
 # Thêm khoản chi nhanh, tính thành tiền tức thì và dùng nhiều Tags (M11)
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Trải nghiệm chính
 
 Nút **+ Thêm một khoản chi** mở modal Turbo. Người dùng chỉ cần tập trung vào tên khoản và phần tính tiền. **Số lượng mặc định là 1**, còn đơn giá để trống cho đến khi nhập. Khi có cả số lượng và đơn giá, mỗi lần gõ hoặc sửa một trong hai trường sẽ tự tính **thành tiền = số lượng × đơn giá** (làm tròn hai chữ số thập phân). Thành tiền tạm khóa chỉnh tay khi phép tính đầy đủ; nếu không có đơn giá thì vẫn cho nhập trực tiếp thành tiền.

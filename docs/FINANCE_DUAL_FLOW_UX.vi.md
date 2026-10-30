@@ -1,5 +1,8 @@
 # Thiết kế hai quy trình thu/chi trước đây (M10)
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 **Trạng thái hiện tại (30/10/2026):** Hai layout riêng của M10 đã được thay bằng **một trang tạo giao dịch** `/finance/transactions/new` với radio Thu tiền / Chi tiền, cùng ưu tiên tải ảnh chứng từ. Tổng tiền cấp transaction hiện chỉ đọc, tính từ `line_item` mới; trường danh mục đơn lẻ được thay bằng chọn nhiều Tags. Các phần phía dưới là **mô tả thiết kế lịch sử M10**, không phải hướng dẫn UI hiện tại. Xem [thiết kế một trang tạo Thu/Chi](UNIFIED_INTAKE_TRANSACTION_REVISIONS.vi.md) và [chính sách điều chỉnh/Tags mới](CORRECTION_DRAFT_TAGS_LINE_TOTAL.vi.md).
 
 ## Mục tiêu

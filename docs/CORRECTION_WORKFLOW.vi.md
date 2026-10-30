@@ -1,5 +1,8 @@
 # M7 — Quy trình điều chỉnh giao dịch có kiểm toán
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Nguyên tắc bảo toàn lịch sử
 
 Giao dịch và các khoản chi tiết **đã xác nhận phải bất biến**, kể cả khi người dùng phát hiện sai ngày, số tiền hoặc danh sách mua hàng. Sửa trực tiếp sẽ làm mất khả năng đối chiếu bản gốc.

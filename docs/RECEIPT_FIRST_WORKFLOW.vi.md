@@ -1,5 +1,8 @@
 # Tạo giao dịch từ ảnh hóa đơn và kiểm tra thủ công (M9)
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Luồng sử dụng
 
 Chế độ **Chi tiền** tại `/finance/transactions/new?kind=expense` ưu tiên **tải ảnh hóa đơn** (JPEG/PNG/WEBP, tối đa 10 MB). Người dùng chọn Thu/Chi, chọn ảnh từ thiết bị hoặc thả vào vùng upload, nhấn **Tải ảnh và tiếp tục**. **Không phải nhập ngày, số tiền, mô tả, danh mục, cửa hàng hoặc từng khoản trước khi tải ảnh.** Trình duyệt chỉ hiện ảnh xem trước; không đọc hoặc phân tích dữ liệu ảnh.

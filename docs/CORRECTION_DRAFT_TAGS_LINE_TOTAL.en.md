@@ -1,5 +1,8 @@
 # Correction draft cancellation, locked totals, transaction Tags, and original comparison
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## Scope and invariants
 
 A confirmed transaction remains an immutable financial source. A correction creates a separate editable draft, preserves its relationship to the source and does not change reporting until a human confirms it. The accounting date remains on the parent transaction; every item inherits it. No image-reading heuristics, estimated amounts, OCR parser or new GGUF inference are introduced by this change.

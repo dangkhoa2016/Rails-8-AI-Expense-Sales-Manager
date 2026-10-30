@@ -1,5 +1,8 @@
 # Fast receipt-item entry, live totals and reusable tags (M11)
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## Primary experience
 
 The **+ Add a single item** button opens a Turbo modal. Only the item description and a monetary calculation are front-and-center. Quantity defaults to **1**, while unit price stays blank until the user enters it. When both quantity and unit price are present, typing or changing either immediately computes the line total (**quantity × unit price**, rounded to two decimals). The line total becomes read-only while calculated. When unit price is missing, the amount is editable manually.

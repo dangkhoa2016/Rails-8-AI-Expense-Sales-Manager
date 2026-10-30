@@ -1,5 +1,8 @@
 # Unified income/expense intake and auditable transaction revisions
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## One intake screen
 
 Use **`/finance/transactions/new`** for both Money in and Money out. The page uses one receipt-first layout and exactly two radio choices. The selected kind is passed by the image-upload and manual-entry forms; changing the radio **does not navigate away or discard data already entered**. Older `?kind=income` and `?kind=expense` links remain valid as selection presets, not separate pages.

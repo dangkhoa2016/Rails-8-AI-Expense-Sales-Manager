@@ -1,5 +1,8 @@
 # Ngày chung của giao dịch, giờ và địa điểm tùy chọn theo khoản
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 Mỗi khoản chi tiết thuộc một `finance_transactions` và **lấy ngày có hiệu lực từ `transaction_date`**. Modal hiển thị ngày dùng chung nhưng không cho nhập ngày riêng. Nếu draft chưa có ngày, hệ thống không tự gán ngày hôm nay; người dùng phải kiểm tra ngày giao dịch trước khi chốt. Mỗi khoản vẫn có thể có `occurred_time` riêng (HH:MM) và `location_text` (tối đa 400 ký tự), đều tùy chọn. Không bắt buộc hoặc tự giả định các khoản phải khác giờ nhau.
 
 Cột lịch sử `finance_line_items.occurred_on` được giữ lại **để truy vết**, nhưng form, nested attributes và CSV mới không ghi giá trị vào cột đó (NULL). Giao dịch confirmed cũ có thể chứa ngày riêng khác ngày cha; không backfill hoặc sửa dữ liệu gốc. Giao diện hiển thị ngày của transaction; bản nháp điều chỉnh giữ bản sao dữ liệu lịch sử phục vụ audit.

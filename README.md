@@ -63,7 +63,7 @@ Create a dedicated non-production preview account and use *synthetic* data only.
 ## Dashboard, reports and language support
 
 - Responsive finance workspace dashboard with four KPIs, transaction search, type/status filters and pagination.
-- Expanded reports: previous-month comparisons, six-month trend, expense category shares, daily activity, recent confirmed entries and verified CSV export.
+- Expanded reports: previous-month comparisons, six-month trend, expense primary-Tag allocation, daily activity, recent confirmed entries and verified CSV export.
 - English and Vietnamese interface switching with Rails I18n and a signed locale cookie. UI translations are stored in separate locale files; underlying financial data and CSV remain unchanged.
 - Step-by-step in-app guide for manual input, evidence versioning, review and human confirmation.
 
@@ -100,9 +100,9 @@ See [transaction context details (English)](docs/TRANSACTION_CONTEXT.en.md). CSV
 
 ## Multi-line receipts and bulk imports (M6)
 
-A single transaction can contain up to **500 itemized lines** with independent descriptions, amounts and optional quantity, unit price and category. The accounting total remains a separately **human-confirmed amount**, synchronized from human-entered draft line items on changes, but never inferred from untrusted OCR output.
+A single transaction can contain up to **500 itemized lines** with independent descriptions, amounts and optional quantity, unit price and Tags. The accounting total remains a separately **human-confirmed amount**, synchronized from human-entered draft line items on changes, but never inferred from untrusted OCR output.
 
-For a small draft, use **Add another item** on the transaction form. For a long receipt, open **View and manage all items**, which paginates 25 rows at a time and permits editing or removing draft entries. Alternatively import a UTF-8 CSV with required `description,amount` and optional `quantity,unit_price,category,occurred_time,location_text` columns, max 500 rows/512 KiB. Imports are atomic and SHA256-idempotent per transaction; changed CSV files append rather than overwrite.
+For a small draft, use **Add another item** on the transaction form. For a long receipt, open **View and manage all items**, which paginates 25 rows at a time and permits editing or removing draft entries. Alternatively import a UTF-8 CSV with required `description,amount` and optional `quantity,unit_price,tags,occurred_time,location_text` columns, max 500 rows/512 KiB. Imports are atomic and SHA256-idempotent per transaction; changed CSV files append rather than overwrite.
 
 Try [100-row example CSV](examples/receipt_lines_100.csv), or seed four **synthetic** 5/20/50/100-line demo receipts in an existing dedicated development demo workspace:
 
@@ -110,7 +110,7 @@ Try [100-row example CSV](examples/receipt_lines_100.csv), or seed four **synthe
 FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_itemized_receipts.rb
 ```
 
-The reporting dashboard now has a separate confirmed item-category allocation view and reconciliation difference; it never counts items again as standalone transaction totals. Stored model proposals can be reviewed in paged item groups, but they never auto-write finance data. **Live GGUF OCR import remains disabled pending separate model quality acceptance.**
+The reporting dashboard now has a separate confirmed primary-Tag allocation view and reconciliation difference; it never counts items again as standalone transaction totals. Stored model proposals can be reviewed in paged item groups, but they never auto-write finance data. **Live GGUF OCR import remains disabled pending separate model quality acceptance.**
 
 See [M6 receipt workflows (English)](docs/MULTI_LINE_RECEIPT.en.md).
 
@@ -132,7 +132,7 @@ More: [Correction workflow (English)](docs/CORRECTION_WORKFLOW.en.md). This work
 
 ## Shared transaction date, optional item times and places
 
-Every item **uses the date of its parent transaction**, with optional item-specific time (HH:MM) and location. The item editor shows this date but never asks for a separate day or invents the current time. An undated draft can have items; the transaction date is required before confirmation. The legacy per-item date column is preserved, not backfilled or changed on confirmed originals. Item description, amount, quantity, unit price and category remain editable on drafts.
+Every item **uses the date of its parent transaction**, with optional item-specific time (HH:MM) and location. The item editor shows this date but never asks for a separate day or invents the current time. An undated draft can have items; the transaction date is required before confirmation. The legacy per-item date column is preserved, not backfilled or changed on confirmed originals. Item description, amount, quantity, unit price and Tags remain editable on drafts.
 
 Open a draft transaction’s **item list** and select **Edit item details** on each row to open the Turbo modal. Saving successfully re-renders only the changed row and reconciliation summary without a full-page refresh. For confirmed items, the same modal asks for a reason and creates a correction draft without touching the immutable source. Original confirmed financial records remain unchanged. If an earlier correction exists, the list links to its replacement. The accounting date comes from the parent transaction. The parent draft amount synchronizes from the user-entered item sum when items change, while confirmed entries remain immutable.
 
@@ -150,14 +150,11 @@ More: [item-level context and editing (English)](docs/ITEM_LEVEL_CONTEXT.en.md).
 On a draft item list, **+ Add a single item** opens a Turbo modal. A successful save re-renders the paginated item list and reconciliation summary, closes the modal, and displays a confirmation without a full-page refresh. Validation errors stay inside the dialog. CSV import is available from a collapsed toolbar disclosure. The established per-row edit modal and immutable confirmed records remain unchanged. See [multi-line receipts](docs/MULTI_LINE_RECEIPT.en.md).
 
 
-## Bilingual category catalog and streamlined transaction screens (M8)
+## Bilingual Tags and unified transaction screens
 
-The new **Categories** navigation entry opens `/finance/categories`, with workspace-scoped category CRUD. Every entry has a stable key, independent English and Vietnamese display names, and an active/archived state. Used categories are archived rather than deleting historical references; archived labels remain visible in reports and confirmed records. Transaction and item forms now use multi-select Tags; the first Tag remains the primary reporting classification, while original stored category keys remain unchanged.
+The **Tags** navigation entry opens `/finance/tags`, providing workspace-scoped Tag creation, editing, archival and EN/VI labels. A Tag has a stable key and may be assigned to many transactions and line items. There are **no live category fields or category tables**: `finance_transactions.category` and `finance_line_items.category` were retired after a verified backfill into relational tag links, and `finance_categories` became `finance_tags`. Reporting uses only the first associated Tag for financial allocation so each transaction and line amount is counted **once** regardless of how many Tags it has.
 
-The current transaction intake uses one shared receipt-first screen with Money in/Money out radios. The manual amount becomes the first item rather than an independently editable parent total; transaction Tags can be selected in a multi-select field. Date and description remain human-verified. Transaction details show a compact amount/status overview, up to five recent items, the full item manager link, and collapsible evidence, context and audit history. Explicit human confirmation and immutable correction behavior are preserved.
-
-See [category management and interface workflows (English)](docs/CATEGORY_MANAGEMENT.en.md). The public demo uses synthetic data and runs on CPU; the GGUF vision model is not part of these UI changes.
-
+The unified income/expense receipt-first intake has two radio options. New manual amounts become the first line item and are no longer independently editable as transaction totals. Draft edits can select multiple Tags; confirmed financial evidence is not overwritten. [Tags-only schema and migration specification](docs/TAGS_ONLY_SCHEMA.en.md) and [Tag management](docs/TAGS_MANAGEMENT.en.md).
 
 ## Upload-first receipt intake and review (M9)
 
@@ -168,18 +165,15 @@ The review page shows the actual receipt, editable transaction details and the p
 See [receipt-first workflow and AI boundaries (English)](docs/RECEIPT_FIRST_WORKFLOW.en.md).
 
 
-## Separate expense and income journeys (M10)
+## Unified income and expense intake (M10)
 
-The **New transaction** screen now has two deliberate modes: **Money out** (`kind=expense`) and **Money in** (`kind=income`), each with its own responsive layout and bilingual labels. Spending prioritizes uploading a receipt with a minimal collapsed manual fallback. Income prioritizes a three-field form (amount received, source and actual date), while category and image evidence are optional. A proof can be attached directly to an existing income draft from its dedicated income review page.
-
-Transaction-level optional time/place/purchase-detail fields are not required or displayed in the main entry flows. Existing ledger records and columns are preserved. Both review screens respect draft-only editing and separate human confirmation. Image upload works; **live GGUF inference is not yet connected** on this CPU preview. [Full UI/UX design notes (English)](docs/FINANCE_DUAL_FLOW_UX.en.md).
-
+The `/finance/transactions/new` form serves both **Money in** and **Money out** through two radio controls and a shared upload-first layout. A manual amount is entered as the first line item; optional transaction Tags and images can be added without creating a second record. Draft-only edits require human verification, and confirmed financial records remain immutable. Image upload works, but **live GGUF inference is not connected**. [Current unified intake policy](docs/UNIFIED_INTAKE_TRANSACTION_REVISIONS.en.md).
 
 ## Fast item modal, automatic totals and multi-tags (M11)
 
 The receipt-item popup defaults **quantity to 1** and displays the **shared transaction date** without offering a line-level date input. An unknown draft date stays unknown; no present-day or current-time fallback is fabricated. Item time and location are optional, and the transaction date is edited on the parent. Changing quantity or unit price updates the line total immediately with JavaScript and Rails independently recalculates the total on submission. Without a price, a manual amount can still be entered; the draft parent amount is synchronized to the human-entered line sum with audit.
 
-Each item can have **multiple Tags** selected as chips, and users can enter new comma-separated tag names in the same modal. Tag creation and item updates are atomic, workspace-scoped and protected against confirmed-ledger changes by a PostgreSQL trigger. The former category field remains as a **single primary reporting key** to prevent double-counting; the Tags catalog stores independent EN/VI names. [Fast item and multi-tag workflow](docs/QUICK_ITEM_TAGS.en.md).
+Each item can have **multiple Tags** selected as chips, and users can enter new comma-separated tag names in the same modal. Tag creation and item updates are atomic, workspace-scoped and protected against confirmed-ledger changes by a PostgreSQL trigger. There is no single-category field; a one-row-per-ledger-entry primary-Tag allocation keeps financial reporting free of double-counting. The Tags catalog stores independent EN/VI names. [Fast item and multi-tag workflow](docs/QUICK_ITEM_TAGS.en.md).
 
 
 ### Item dialog interaction refinement (M11)

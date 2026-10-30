@@ -1,5 +1,8 @@
 # Hủy bản nháp điều chỉnh, khóa tổng tiền, Tags giao dịch và so sánh bản gốc
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Phạm vi và quy tắc tài chính
 
 Giao dịch đã xác nhận là bản ghi tài chính **bất biến**. Điều chỉnh phải tạo bản nháp thay thế, giữ liên kết về nguồn và chỉ có hiệu lực báo cáo sau khi người dùng xác nhận. Ngày kế toán nằm ở transaction cha; mỗi `line_item` dùng chung ngày đó. Đợt này không triển khai heuristic đọc ảnh, parser OCR, suy đoán số tiền hoặc chạy GGUF inference mới.

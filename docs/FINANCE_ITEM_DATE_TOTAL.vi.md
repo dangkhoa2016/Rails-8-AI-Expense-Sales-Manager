@@ -1,5 +1,8 @@
 # Ngày chung theo giao dịch và đồng bộ tổng tiền có audit
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Một ngày giao dịch
 
 `finance_transactions.transaction_date` là **ngày duy nhất** của một giao dịch. Mọi khoản chi tiết hiển thị ngày này; modal Thêm/Sửa khoản không có trường ngày độc lập. Bản nháp được phép chưa có ngày khi đang nhập dữ liệu, nhưng phải bổ sung ngày giao dịch trước khi xác nhận. `occurred_time` (HH:MM) và `location_text` vẫn có thể đặt riêng cho từng khoản, đều tùy chọn; hệ thống không đoán hoặc tự điền giờ hiện tại.

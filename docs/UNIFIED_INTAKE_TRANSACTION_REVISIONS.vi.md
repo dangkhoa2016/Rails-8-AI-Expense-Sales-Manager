@@ -1,5 +1,8 @@
 # Một trang tạo Thu/Chi và lịch sử phiên bản giao dịch có kiểm toán
 
+> **Lưu ý cập nhật (30/10/2026):** Một số mô tả danh mục trong giai đoạn này là thiết kế lịch sử. Hiện hành chỉ dùng Tags; không còn cột danh mục đơn. Xem [đặc tả Tags-only](TAGS_ONLY_SCHEMA.vi.md).
+
+
 ## Một màn hình tạo giao dịch
 
 Dùng **`/finance/transactions/new`** cho cả **Thu tiền** và **Chi tiền**. Giữ bố cục ưu tiên tải ảnh chứng từ và chỉ còn hai lựa chọn radio. Loại giao dịch được gửi đúng theo radio ở cả form upload và form nhập thủ công. Đổi lựa chọn **không tải trang hoặc làm mất dữ liệu đã nhập**. Link cũ `?kind=income` và `?kind=expense` vẫn mở cùng một trang, chỉ khác giá trị chọn ban đầu.

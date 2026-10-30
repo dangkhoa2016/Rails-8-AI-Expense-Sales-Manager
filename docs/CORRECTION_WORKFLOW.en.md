@@ -1,5 +1,8 @@
 # M7 — Auditable financial correction workflow
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## Problem and invariant
 
 Confirmed transactions and their line items remain immutable, even when a user notices an incorrect amount, transaction date, description or receipt item. An in-place edit would compromise the audit trail.

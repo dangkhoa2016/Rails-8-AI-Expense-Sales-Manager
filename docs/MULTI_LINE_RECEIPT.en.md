@@ -1,5 +1,8 @@
 # M6 — Multi-line receipts and bulk import (English)
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## Data model
 
 One income/expense transaction can have **0–500 individual line items**. These are not 500 separate accounting postings. The parent `finance_transactions.amount` and `transaction_date` are human-confirmed accounting values; items are a breakdown (item description, amount, optional quantity/unit_price/category). Time/location remain optional transaction-level context.

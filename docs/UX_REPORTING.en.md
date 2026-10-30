@@ -1,5 +1,8 @@
 # UX and Financial Reporting — English
 
+> **Current schema note (2026-10-30):** References to single-category fields below describe historical milestones. The current application uses Tags only; see [Tags-only specification](TAGS_ONLY_SCHEMA.en.md).
+
+
 ## Transaction workflow
 
 Transactions provide a current-month overview of confirmed income, confirmed expenses, net cash flow, and pending drafts. The table supports tenant-scoped search, status/type filters, and pagination.
