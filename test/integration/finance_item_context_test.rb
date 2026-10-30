@@ -55,7 +55,7 @@ class FinanceItemContextTest < ActionDispatch::IntegrationTest
 
   test "CSV inherits one transaction date and preserves time and location when supplied" do
     csv = CSV.generate do |rows|
-      rows << %w[description amount quantity unit_price category occurred_time location_text]
+      rows << %w[description amount quantity unit_price tags occurred_time location_text]
       rows << ["Sweet bread", "30000", "1", "30000", "food", "08:12", "Example bakery"]
       rows << ["A4 paper", "85000", "1", "85000", "office", "", ""]
     end

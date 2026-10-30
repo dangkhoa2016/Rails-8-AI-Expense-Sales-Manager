@@ -99,7 +99,7 @@ else
       kind: "expense", status: "draft", entry_source: "manual",
       currency_code: "VND", created_by_id: user.id,
       transaction_date: Date.new(2026, 4, 26), amount: BigDecimal("30000"),
-      description: bakery_description, category: "food"
+      description: bakery_description
     )
     bakery.line_items.create!(
       position: 0, description: "Bánh mì ngọt (ví dụ giả lập)",

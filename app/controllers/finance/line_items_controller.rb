@@ -186,7 +186,7 @@ module Finance
         raise ArgumentError, "Draft only" unless locked.draft?
         @item.reload
         before = @item.attributes.slice("description", "amount", "quantity", "unit_price",
-                                         "category", "occurred_on", "occurred_time", "location_text")
+                                         "occurred_on", "occurred_time", "location_text")
         @item.update!(quick_item_params)
         apply_tags!(@item)
         Finance::SyncDraftLineTotal.call(transaction: locked, actor: @finance_actor, reason: "item_updated")
@@ -210,7 +210,7 @@ module Finance
         replacement = correction.replacement_transaction
         copied = replacement.line_items.find_by!(position: @item.position)
         before = copied.attributes.slice("description", "amount", "quantity", "unit_price",
-                                          "category", "occurred_on", "occurred_time", "location_text")
+                                          "occurred_on", "occurred_time", "location_text")
         copied.update!(quick_item_params)
         apply_tags!(copied)
         after = copied.reload.attributes.slice(*before.keys)
@@ -264,7 +264,7 @@ module Finance
 
     def item_params
       params.require(:line_item).permit(
-        :description, :amount, :category, :quantity, :unit_price,
+        :description, :amount, :quantity, :unit_price,
         :occurred_time, :location_text
       )
     end
@@ -296,24 +296,20 @@ module Finance
     end
 
     def prepare_tags!(item)
-      Finance::Category.bootstrap!(@transaction.workspace_id)
+      Finance::Tag.bootstrap!(@transaction.workspace_id)
       selected = if params.dig(:line_item, :tag_selection).to_s == "1"
         Array(params.dig(:line_item, :tag_ids)).map(&:to_s)
       elsif item.persisted?
         ids = item.tags.pluck(:id).map(&:to_s)
-        if ids.empty? && item.category.present?
-          legacy = Finance::Category.for_workspace(@transaction.workspace_id).find_by(key: item.category)
-          ids << legacy.id.to_s if legacy
-        end
         ids
       else
         []
       end
       @selected_tag_ids = selected
       @new_tag_names = params.dig(:line_item, :new_tags).to_s
-      @available_tags = Finance::Category.for_workspace(@transaction.workspace_id)
+      @available_tags = Finance::Tag.for_workspace(@transaction.workspace_id)
         .where(active: true).or(
-          Finance::Category.for_workspace(@transaction.workspace_id).where(id: selected)
+          Finance::Tag.for_workspace(@transaction.workspace_id).where(id: selected)
         ).order(:key).to_a
     end
 

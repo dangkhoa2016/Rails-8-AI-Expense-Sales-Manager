@@ -13,8 +13,7 @@ class FinanceContextTest < ActionDispatch::IntegrationTest
   test "optional time and place can accompany a manually entered expense" do
     assert_difference "Finance::TransactionContext.count", 1 do
       post finance_transactions_path, params: { finance_transaction: {
-        kind: "expense", transaction_date: "2026-04-26", amount: "30000",
-        category: "food", description: "Sweet bread for breakfast",
+        kind: "expense", transaction_date: "2026-04-26", amount: "30000", description: "Sweet bread for breakfast",
         context_attributes: {
           purchase_details: "Bought sweet bread",
           occurred_time: "08:12", location_text: "Sample bakery near a police station in Da Nang",
@@ -89,7 +88,7 @@ class FinanceContextTest < ActionDispatch::IntegrationTest
     tx = @workspace.finance_transactions.create!(
       kind: "expense", status: "draft", currency_code: "VND", entry_source: "manual",
       created_by_id: @user.id, transaction_date: Date.new(2026, 9, 26),
-      description: "Sample office supplies", category: "office", amount: 1_170_000)
+      description: "Sample office supplies", amount: 1_170_000)
     Finance::ConfirmTransaction.call(transaction: tx, actor: @user, reviewed: true)
     before = tx.attributes
     context = tx.create_context!(

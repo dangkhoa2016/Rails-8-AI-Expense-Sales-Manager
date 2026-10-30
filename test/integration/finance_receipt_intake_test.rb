@@ -45,7 +45,7 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
     assert_nil tx.amount
     assert_nil tx.transaction_date
     assert_nil tx.description
-    assert_nil tx.category
+    assert_nil tx.tags.first&.key
     assert_equal 0, tx.line_items.count
     assert_equal 0, tx.field_suggestions.count
     assert_equal 0, Finance::ExtractionRun.count
@@ -83,7 +83,7 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
       revision_reason: "Verified these draft fields against the saved image.",
       finance_transaction: {
         transaction_date: "2026-04-26", amount: "30000",
-        description: "Sweet bread", category: "food",
+        description: "Sweet bread",
         context_attributes: {purchase_details: "Breakfast", occurred_time: "08:12"}
       }
     }

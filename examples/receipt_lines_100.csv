@@ -1,4 +1,4 @@
-description,amount,quantity,unit_price,category
+description,amount,quantity,unit_price,tags
 Synthetic item 001 - Sweet bread,5000,1,5000,food
 Synthetic item 002 - Milk,14000,2,7000,food
 Synthetic item 003 - Eggs,27000,3,9000,food

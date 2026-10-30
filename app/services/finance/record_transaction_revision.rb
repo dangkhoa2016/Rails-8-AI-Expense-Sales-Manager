@@ -13,7 +13,6 @@ module Finance
           "transaction_date" => tx.transaction_date&.iso8601,
           "amount" => tx.amount&.to_s("F"),
           "description" => tx.description,
-          "category" => tx.category,
           "status" => tx.status
         },
         "context" => if (context = tx.context)
@@ -32,7 +31,7 @@ module Finance
             "description" => item.description, "amount" => item.amount&.to_s("F"),
             "quantity" => item.quantity&.to_s("F"),
             "unit_price" => item.unit_price&.to_s("F"),
-            "category" => item.category, "occurred_time" => item.occurred_time&.strftime("%H:%M"),
+"occurred_time" => item.occurred_time&.strftime("%H:%M"),
             "location_text" => item.location_text, "tag_keys" => item.tags.map(&:key).sort
           }
         end

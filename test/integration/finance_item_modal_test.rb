@@ -14,7 +14,7 @@ class FinanceItemModalTest < ActionDispatch::IntegrationTest
     )
     @item = @transaction.line_items.create!(
       position: 0, description: "Sweet bread", amount: 30_000,
-      entry_source: "manual", category: "food", occurred_on: Date.new(2026, 10, 28), occurred_time: "08:12"
+      entry_source: "manual", occurred_on: Date.new(2026, 10, 28), occurred_time: "08:12"
     )
     @other_item = @transaction.line_items.create!(
       position: 1, description: "Milk", amount: 42_000, entry_source: "manual", occurred_on: Date.new(2026, 10, 28)
@@ -49,7 +49,7 @@ class FinanceItemModalTest < ActionDispatch::IntegrationTest
     assert_difference "Finance::AuditEvent.where(event_type: 'finance_line_item_updated').count", 1 do
       patch finance_transaction_line_item_path(@transaction, @item), as: :turbo_stream,
         params: {line_item: {
-          description: "Sweet bread and coffee", amount: "45000", category: "food",
+          description: "Sweet bread and coffee", amount: "45000",
           occurred_on: "2026-10-28", occurred_time: "08:43", location_text: "Demo bakery"
         }}
       assert_response :success

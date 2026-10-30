@@ -8,7 +8,7 @@ module Finance
   class ImportLineItems
     MAX_BYTES = 512 * 1024
     MAX_ITEMS = 500
-    HEADERS = %w[description amount quantity unit_price category occurred_on occurred_time location_text].freeze
+    HEADERS = %w[description amount quantity unit_price tags occurred_on occurred_time location_text].freeze
     REQUIRED = %w[description amount].freeze
 
     def self.call(transaction:, actor:, upload:)
@@ -23,7 +23,7 @@ module Finance
       columns = table.headers
       unless columns && columns.uniq == columns && (columns - HEADERS).empty? &&
              (REQUIRED - columns).empty?
-        raise ArgumentError, "CSV requires description,amount; optional quantity,unit_price,category,occurred_time,location_text (legacy occurred_on accepted only if it matches transaction date)"
+        raise ArgumentError, "CSV requires description,amount; optional quantity,unit_price,tags,occurred_time,location_text (legacy occurred_on accepted only if it matches transaction date)"
       end
       raise ArgumentError, "CSV must contain between 1 and 500 rows" unless table.size.between?(1, MAX_ITEMS)
 
@@ -31,8 +31,8 @@ module Finance
         raise ArgumentError, "Malformed row #{i + 2}" unless row.is_a?(CSV::Row)
         description = row["description"].to_s.strip
         raise ArgumentError, "Invalid description on row #{i + 2}" if description.empty? || description.length > 500
-        category = row["category"]&.strip.presence
-        raise ArgumentError, "Category too long on row #{i + 2}" if category&.length.to_i > 100
+        tag_keys = row["tags"].to_s.split(/[;,]/).map(&:strip).reject(&:blank?).uniq
+        raise ArgumentError, "Too many Tags on row #{i + 2}" if tag_keys.size > 12
         location = row["location_text"]&.strip.presence
         raise ArgumentError, "Location too long on row #{i + 2}" if location&.length.to_i > 400
         {
@@ -40,7 +40,7 @@ module Finance
           amount: decimal(row["amount"], scale: 2, min: 0, row: i + 2, name: "amount"),
           quantity: decimal(row["quantity"], scale: 3, min: 0, row: i + 2, name: "quantity", optional: true, strictly_positive: true),
           unit_price: decimal(row["unit_price"], scale: 2, min: 0, row: i + 2, name: "unit_price", optional: true),
-          category: category,
+          tag_keys: tag_keys,
           legacy_occurred_on: row["occurred_on"]&.strip,
           occurred_time: optional_time(row["occurred_time"], row: i + 2),
           location_text: location,
@@ -52,6 +52,7 @@ module Finance
       result = nil
       Finance::Transaction.transaction do
         tx = Finance::Transaction.lock.find(transaction.id)
+        Finance::Tag.bootstrap!(tx.workspace_id) if rows.any? { |row| row[:tag_keys].any? }
         raise ArgumentError, "Only drafts accept line items" unless tx.draft?
         raise ArgumentError, "Cannot import into another workspace" unless actor && tx.workspace_id == transaction.workspace_id
         if tx.line_import_batches.exists?(sha256: sha)
@@ -65,7 +66,13 @@ module Finance
             # Older CSV files may still carry occurred_on. Validate rather than
             # silently discarding conflicting dates; never persist item dates.
             validate_legacy_date!(attrs[:legacy_occurred_on], tx.transaction_date, row: idx + 2)
-            tx.line_items.create!(attrs.except(:legacy_occurred_on).merge(position: position + idx + 1))
+            item = tx.line_items.create!(attrs.except(:legacy_occurred_on, :tag_keys).merge(position: position + idx + 1))
+            if attrs[:tag_keys].any?
+              tag_records = Finance::Tag.for_workspace(tx.workspace_id).where(key: attrs[:tag_keys]).index_by(&:key)
+              raise ArgumentError, "Unknown workspace Tag on row #{idx + 2}" unless
+                tag_records.size == attrs[:tag_keys].size && tag_records.values.all?(&:active?)
+              attrs[:tag_keys].each { |key| item.line_item_tags.create!(tag: tag_records.fetch(key)) }
+            end
           end
           Finance::SyncDraftLineTotal.call(transaction: tx, actor: actor, reason: "csv_import")
           tx.line_import_batches.create!(sha256: sha, row_count: rows.size, uploaded_by_id: actor.id)

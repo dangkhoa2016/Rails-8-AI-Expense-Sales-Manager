@@ -2,7 +2,7 @@
 
 module Finance
   class CompareTransactions
-    FIELDS = %w[transaction_date amount description category].freeze
+    FIELDS = %w[transaction_date amount description].freeze
     def self.call(original:, replacement:)
       raise ArgumentError, "Different workspaces" unless original.workspace_id == replacement.workspace_id
       fields = FIELDS.filter_map do |key|
@@ -26,9 +26,9 @@ module Finance
         a = original_by_position[position]
         b = replacement_by_position[position]
         left = a && a.attributes.slice("description", "amount", "quantity", "unit_price",
-                                      "occurred_time", "location_text", "category")
+                                      "occurred_time", "location_text")
         right = b && b.attributes.slice("description", "amount", "quantity", "unit_price",
-                                       "occurred_time", "location_text", "category")
+                                       "occurred_time", "location_text")
         left = left.merge("tags" => a.tags.map(&:key).sort) if left
         right = right.merge("tags" => b.tags.map(&:key).sort) if right
         next if left == right
@@ -45,7 +45,6 @@ module Finance
 
     def self.effective_tags(transaction)
       tags = transaction.tags.order(:key).pluck(:key)
-      tags = [transaction.category] if tags.empty? && transaction.category.present?
       tags.sort
     end
   end

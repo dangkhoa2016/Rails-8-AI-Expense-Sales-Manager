@@ -1,0 +1,51 @@
+<% content_for :title, ui("tags.title") %>
+<div class="page-heading"><div><span class="eyebrow"><%= ui("tags.eyebrow") %></span>
+<h1><%= ui("tags.title") %></h1><p class="subheading"><%= ui("tags.subtitle") %></p></div>
+<%= link_to ui("tags.back"), finance_transactions_path, class: "btn btn-secondary" %></div>
+<div class="tag-layout">
+  <section class="panel">
+    <div class="panel-heading"><div><h2><%= ui("tags.list") %></h2>
+      <p><%= ui("tags.history_note") %></p></div>
+      <span class="status-pill is-confirmed"><%= @tags.count %></span></div>
+    <div class="table-scroll tag-list-scroll"><table class="data-table tag-list-table"><thead><tr>
+      <th><%= ui("tags.key") %></th><th><%= ui("tags.name_vi") %></th>
+      <th><%= ui("tags.name_en") %></th><th><%= ui("tags.status") %></th><th><%= ui("shared.actions") %></th>
+    </tr></thead><tbody>
+    <% @tags.each do |tag| %>
+      <tr><td data-label="<%= ui("tags.key") %>"><code><%= tag.key %></code></td>
+      <td data-label="<%= ui("tags.name_vi") %>"><strong><%= tag.name_vi %></strong></td>
+      <td data-label="<%= ui("tags.name_en") %>"><%= tag.name_en %></td>
+      <td data-label="<%= ui("tags.status") %>"><span class="status-pill <%= tag.active? ? "is-confirmed" : "is-draft" %>">
+        <%= ui(tag.active? ? "tags.active" : "tags.archived_status") %></span></td>
+      <td data-label="<%= ui("shared.actions") %>"><div class="line-actions">
+        <%= link_to ui("tags.edit"), edit_finance_tag_path(tag), class: "btn btn-secondary" %>
+        <%= button_to ui("tags.delete"), finance_tag_path(tag), method: :delete,
+          class: "btn btn-minimal", form: { data: { turbo_confirm: ui("tags.delete_confirm") } } %>
+      </div></td></tr>
+    <% end %></tbody></table></div>
+  </section>
+  <aside><section class="panel tag-editor" id="tag-editor">
+    <h2><%= @tag.persisted? ? ui("tags.edit") : ui("tags.create") %></h2>
+    <p class="form-hint"><%= ui("tags.form_note") %></p>
+    <% if @tag.errors.any? %><div class="flash alert" role="alert">
+      <%= @tag.errors.full_messages.to_sentence %></div><% end %>
+    <%= form_with model: @tag, scope: :finance_tag,
+      url: @tag.persisted? ? finance_tag_path(@tag) : finance_tags_path,
+      method: @tag.persisted? ? :patch : :post do |f| %>
+      <div class="form-field"><%= f.label :key, ui("tags.key"), class: "form-label" %>
+        <%= f.text_field :key, required: true, maxlength: 50, readonly: @tag.persisted?,
+          placeholder: "bakery", pattern: "[a-z][a-z0-9_]{1,49}" %>
+        <p class="form-hint"><%= ui("tags.key_help") %></p></div>
+      <div class="form-field"><%= f.label :name_vi, ui("tags.name_vi"), class: "form-label" %>
+        <%= f.text_field :name_vi, required: true, maxlength: 120 %></div>
+      <div class="form-field"><%= f.label :name_en, ui("tags.name_en"), class: "form-label" %>
+        <%= f.text_field :name_en, required: true, maxlength: 120 %></div>
+      <% if @tag.persisted? %><div class="form-field"><label class="tag-status-toggle">
+        <%= f.check_box :active %><span><%= ui("tags.active_hint") %></span>
+      </label></div><% end %>
+      <div class="form-footer"><%= f.submit ui(@tag.persisted? ? "tags.update" : "tags.create"), class: "btn btn-primary" %>
+      <% if @tag.persisted? %><%= link_to ui("shared.cancel"), finance_tags_path, class: "btn btn-secondary" %><% end %>
+      </div>
+    <% end %>
+  </section></aside>
+</div>

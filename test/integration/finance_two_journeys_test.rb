@@ -59,7 +59,7 @@ class FinanceTwoJourneysTest < ActionDispatch::IntegrationTest
     assert tx.draft?
     assert_equal "income", tx.kind
     assert_equal BigDecimal("87000"), tx.amount
-    assert_nil tx.category
+    assert_nil tx.tags.first&.key
     assert_equal "manual", tx.entry_source
     assert_equal 0, tx.field_suggestions.count
     get review_finance_transaction_path(tx,locale:"en")

@@ -9,7 +9,10 @@ module Finance
       confirmed = finance_scope.effective_confirmed.where(transaction_date: period)
 
       @totals = confirmed.group(:kind).sum(:amount)
-      @categories = confirmed.where(kind: "expense").group(:category).sum(:amount)
+      # One amount per transaction, assigned to its first associated Tag.
+      # Additional Tags never multiply the accounting total.
+      @tag_totals = Finance::TagBreakdown.call(
+        transactions: confirmed.where(kind: "expense"), item_level: false)
       @transactions_count = confirmed.count
       @recent_transactions = confirmed.includes(:active_document_version).order(transaction_date: :desc, id: :desc).limit(8)
       @draft_count = finance_scope.where(status: "draft").count
@@ -36,11 +39,9 @@ module Finance
         expense = daily.fetch([date, "expense"], BigDecimal("0"))
         { date: date, income: income, expense: expense } if income.positive? || expense.positive?
       end
-      @item_categories = Finance::LineItem.joins(:finance_transaction)
-        .where(transaction_id: finance_scope.effective_confirmed
-          .where(kind: "expense", transaction_date: period).select(:id))
-        .group(:category).sum(:amount)
-      @item_allocation_total = @item_categories.values.sum(BigDecimal("0"))
+      @item_tag_totals = Finance::TagBreakdown.call(
+        transactions: confirmed.where(kind: "expense"), item_level: true)
+      @item_allocation_total = @item_tag_totals.values.sum(BigDecimal("0"))
       @expense_total = @totals.fetch("expense", BigDecimal("0"))
       @income_total = @totals.fetch("income", BigDecimal("0"))
       @item_allocation_difference = @expense_total - @item_allocation_total
@@ -51,13 +52,13 @@ module Finance
       month = month_parameter
       rows = finance_scope.effective_confirmed
         .where(transaction_date: month.beginning_of_month..month.end_of_month)
-        .includes(:context, :active_document_version, :correction_as_replacement)
+        .includes(:context, :active_document_version, :correction_as_replacement, :tags)
         .order(:transaction_date, :id)
       csv = CSV.generate(headers: true, encoding: "UTF-8") do |sheet|
-        sheet << %w[ID Date Kind Amount Currency Category Description DocumentSHA256 PurchaseDetails TransactionTime Location CorrectsTransactionID]
+        sheet << %w[ID Date Kind Amount Currency Tags Description DocumentSHA256 PurchaseDetails TransactionTime Location CorrectsTransactionID]
         rows.each do |tx|
           sheet << [tx.id, tx.transaction_date.iso8601, tx.kind, tx.amount.to_s("F"),
-                    tx.currency_code, safe_csv(tx.category), safe_csv(tx.description),
+                    tx.currency_code, safe_csv(tx.tags.map(&:key).join(';')), safe_csv(tx.description),
                     tx.active_document_version&.sha256,
                     safe_csv(tx.context&.purchase_details),
                     tx.context&.occurred_time&.strftime("%H:%M"),

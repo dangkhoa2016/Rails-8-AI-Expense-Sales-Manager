@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Finance
-  class Category < ApplicationRecord
-    self.table_name = "finance_categories"
+  class Tag < ApplicationRecord
+    self.table_name = "finance_tags"
 
     DEFAULTS = {
       "food" => ["Food & drinks", "Ăn uống"],
@@ -19,9 +19,9 @@ module Finance
 
     belongs_to :workspace
     has_many :line_item_tags, class_name: "Finance::LineItemTag",
-      foreign_key: :category_id, dependent: :restrict_with_exception
+      foreign_key: :tag_id, dependent: :restrict_with_exception
     has_many :transaction_tags, class_name: "Finance::TransactionTag",
-      foreign_key: :category_id, dependent: :restrict_with_exception
+      foreign_key: :tag_id, dependent: :restrict_with_exception
     validates :workspace, presence: true
     validates :key, presence: true, length: { maximum: 50 },
       format: { with: /\A[a-z][a-z0-9_]{1,49}\z/ },
@@ -37,28 +37,18 @@ module Finance
       locale.to_s == "vi" ? name_vi : name_en
     end
 
-    # Explicitly seeded defaults plus preexisting legacy keys.
-    # Insert-only, never overwrite/activate a category that a user edited or archived.
+    # Only insert baseline Tags. Existing tenant Tags are never overwritten.
     def self.bootstrap!(workspace_id)
       now = Time.current
-      keys = Finance::Transaction.for_workspace(workspace_id)
-        .where.not(category: [nil, ""]).distinct.pluck(:category)
-      keys += Finance::LineItem.joins(:finance_transaction)
-        .where(finance_transactions: { workspace_id: workspace_id })
-        .where.not(category: [nil, ""]).distinct.pluck(:category)
-      keys = (DEFAULTS.keys + keys).uniq.select { |key| key.match?(/\A[a-z][a-z0-9_]{1,49}\z/) }
-      entries = keys.map do |key|
-        names = DEFAULTS[key] || [key.tr("_", " ").capitalize, key.tr("_", " ").capitalize]
+      entries = DEFAULTS.map do |key, names|
         {workspace_id: workspace_id, key: key, name_en: names[0],
          name_vi: names[1], active: true, created_at: now, updated_at: now}
       end
-      insert_all(entries, unique_by: :idx_finance_categories_tenant_key) if entries.any?
+      insert_all(entries, unique_by: :idx_finance_tags_tenant_key)
     end
 
     def used?
-      line_item_tags.exists? || transaction_tags.exists? || Finance::Transaction.for_workspace(workspace_id).where(category: key).exists? ||
-        Finance::LineItem.joins(:finance_transaction)
-          .where(finance_transactions: {workspace_id: workspace_id}, category: key).exists?
+      line_item_tags.exists? || transaction_tags.exists?
     end
 
     private

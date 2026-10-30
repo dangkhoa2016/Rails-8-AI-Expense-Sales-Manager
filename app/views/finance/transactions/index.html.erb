@@ -74,7 +74,7 @@
             <% @transactions.each do |tx| %>
               <tr>
                 <td class="entry-cell"><%= link_to (tx.description.presence || "#{ui("shared.draft")} ##{tx.id}"), finance_transaction_path(tx), class: "entry-link" %><small>#<%= tx.id %> ·
-                  <%= tx.tags.any? ? tx.tags.map(&:label).join(" · ") : category_label(tx.category) %>
+                  <%= tags_label(tx.tags) %>
                 </small>
                   <% if tx.context&.purchase_details.present? %>
                     <small class="transaction-purpose"><%= truncate(tx.context.purchase_details, length: 96) %></small>

@@ -25,14 +25,17 @@ else
       kind: "expense", status: "draft", currency_code: "VND",
       entry_source: "manual", created_by_id: user.id,
       transaction_date: Date.new(2026, 4, 26),
-      amount: BigDecimal("175000"), description: description, category: "demo_itemized"
+      amount: BigDecimal("175000"), description: description
     )
-    rows.each_with_index do |(label, amount, time, place, category), index|
-      parent.line_items.create!(
+    Finance::Tag.bootstrap!(workspace.id)
+    rows.each_with_index do |(label, amount, time, place, tag_key), index|
+      line = parent.line_items.create!(
         position: index, description: label, amount: BigDecimal(amount),
-        entry_source: "manual", category: category,
-        occurred_time: time, location_text: place
+        entry_source: "manual", occurred_time: time, location_text: place
       )
+      tag = Finance::Tag.for_workspace(workspace.id).find_by!(key: tag_key)
+      Finance::ItemTagging.apply!(item: line, workspace_id: workspace.id,
+        tag_ids: [tag.id], new_names: "")
     end
     Finance::AuditEvent.create!(
       finance_transaction: parent, workspace_id: workspace.id, actor_id: user.id,

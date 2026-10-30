@@ -69,11 +69,11 @@ class FinanceQuickItemTagsTest < ActionDispatch::IntegrationTest
   end
 
   test "multiple existing tags plus newly created tag are saved atomically and shown in both locales" do
-    Finance::Category.bootstrap!(@workspace.id)
-    food=@workspace.finance_categories.find_by!(key:"food")
-    office=@workspace.finance_categories.find_by!(key:"office")
+    Finance::Tag.bootstrap!(@workspace.id)
+    food=@workspace.finance_tags.find_by!(key:"food")
+    office=@workspace.finance_tags.find_by!(key:"office")
     assert_difference "Finance::LineItem.count",1 do
-      assert_difference "Finance::Category.count",1 do
+      assert_difference "Finance::Tag.count",1 do
         post finance_transaction_line_items_path(@transaction), as: :turbo_stream,
           params:{line_item:{description:"Tea",quantity:"2",unit_price:"5000",amount:"0",
                              tag_selection:"1",tag_ids:[food.id.to_s,office.id.to_s],
@@ -84,8 +84,8 @@ class FinanceQuickItemTagsTest < ActionDispatch::IntegrationTest
     item=@transaction.line_items.sole
     assert_equal BigDecimal("10000"),item.amount
     assert_equal 3,item.tags.count
-    assert_equal "food",item.category
-    new_tag=@workspace.finance_categories.find_by!(name_vi:"Buổi sáng")
+    assert_equal "food",item.tags.first&.key
+    new_tag=@workspace.finance_tags.find_by!(name_vi:"Buổi sáng")
     assert_equal "Buổi sáng",new_tag.name_en # explicit fallback, not AI translation
     assert_equal [food.id,office.id,new_tag.id].sort,item.tags.pluck(:id).sort
     assert_includes response.body,"Buổi sáng"
@@ -94,11 +94,11 @@ class FinanceQuickItemTagsTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body,"Food &amp; drinks"
     assert_includes response.body,"Buổi sáng"
-    get finance_categories_path(locale:"vi")
+    get finance_tags_path(locale:"vi")
     assert_includes response.body,"Buổi sáng"
 
     # A second item reuses existing tag name instead of creating another.
-    assert_no_difference "Finance::Category.count" do
+    assert_no_difference "Finance::Tag.count" do
       post finance_transaction_line_items_path(@transaction), as: :turbo_stream,
         params:{line_item:{description:"Coffee",amount:"8000",
                            tag_selection:"1",new_tags:"Buổi sáng"}}
@@ -108,14 +108,14 @@ class FinanceQuickItemTagsTest < ActionDispatch::IntegrationTest
   end
 
   test "invalid and cross workspace tags roll back item and tag creation" do
-    foreign=Finance::Category.create!(workspace:@other_workspace,key:"secret",name_en:"Secret",name_vi:"Bí mật")
-    Finance::Category.bootstrap!(@workspace.id)
-    before=[Finance::LineItem.count,Finance::Category.count,Finance::LineItemTag.count,Finance::AuditEvent.count]
+    foreign=Finance::Tag.create!(workspace:@other_workspace,key:"secret",name_en:"Secret",name_vi:"Bí mật")
+    Finance::Tag.bootstrap!(@workspace.id)
+    before=[Finance::LineItem.count,Finance::Tag.count,Finance::LineItemTag.count,Finance::AuditEvent.count]
     post finance_transaction_line_items_path(@transaction), as: :turbo_stream,
       params:{line_item:{description:"Tampered",amount:"200",tag_selection:"1",
                          tag_ids:[foreign.id],new_tags:"DemoTag"}}
     assert_response :unprocessable_entity
-    assert_equal before,[Finance::LineItem.count,Finance::Category.count,Finance::LineItemTag.count,Finance::AuditEvent.count]
+    assert_equal before,[Finance::LineItem.count,Finance::Tag.count,Finance::LineItemTag.count,Finance::AuditEvent.count]
     assert_select "turbo-stream[action='update'][target='line_item_modal']"
     assert_includes response.body, 'role="alert"'
 
@@ -123,13 +123,13 @@ class FinanceQuickItemTagsTest < ActionDispatch::IntegrationTest
       params:{line_item:{description:"Bad tag",amount:"100",tag_selection:"1",
                          new_tags:"x"}}
     assert_response :unprocessable_entity
-    assert_equal before,[Finance::LineItem.count,Finance::Category.count,Finance::LineItemTag.count,Finance::AuditEvent.count]
+    assert_equal before,[Finance::LineItem.count,Finance::Tag.count,Finance::LineItemTag.count,Finance::AuditEvent.count]
   end
 
   test "editing tags changes only draft links; confirmed tag links DB trigger prevents mutation" do
-    Finance::Category.bootstrap!(@workspace.id)
-    food=@workspace.finance_categories.find_by!(key:"food")
-    office=@workspace.finance_categories.find_by!(key:"office")
+    Finance::Tag.bootstrap!(@workspace.id)
+    food=@workspace.finance_tags.find_by!(key:"food")
+    office=@workspace.finance_tags.find_by!(key:"office")
     item=@transaction.line_items.create!(description:"Example",amount:30000,position:0,entry_source:"manual",occurred_on:Date.new(2026,10,24))
     patch finance_transaction_line_item_path(@transaction,item), as: :turbo_stream,
       params:{line_item:{description:"Example",amount:"30000",tag_selection:"1",tag_ids:[food.id]}}
@@ -139,7 +139,7 @@ class FinanceQuickItemTagsTest < ActionDispatch::IntegrationTest
       params:{line_item:{description:"Example",amount:"30000",tag_selection:"1",tag_ids:[office.id]}}
     assert_response :success
     assert_equal [office.id],item.reload.tags.pluck(:id)
-    assert_equal "office",item.category
+    assert_equal "office",item.tags.first&.key
     Finance::ConfirmTransaction.call(transaction:@transaction,actor:@user,reviewed:true)
     assert_raises(ActiveRecord::StatementInvalid) do
       Finance::LineItemTag.transaction(requires_new: true) do
@@ -155,11 +155,11 @@ class FinanceQuickItemTagsTest < ActionDispatch::IntegrationTest
                          tag_selection:"1",tag_ids:[food.id]},
               correction_reason:"The item was assigned the wrong tags and amount."}
     assert_response :success
-    assert_equal "office",item.reload.category
+    assert_equal ["office"],item.reload.tags.pluck(:key)
     replacement=@transaction.reload.correction_as_original.replacement_transaction
     assert replacement.draft?
     copied=replacement.line_items.find_by!(position:0)
-    assert_equal "food",copied.category
+    assert_equal "food",copied.tags.first&.key
     assert_equal [food.id],copied.tags.pluck(:id)
     assert_equal BigDecimal("30000"),item.amount
   end

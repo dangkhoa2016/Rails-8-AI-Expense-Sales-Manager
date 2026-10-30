@@ -38,7 +38,7 @@
           <strong><%= source.description.presence || "—" %></strong></div>
         <div><small><%= ui("transaction_tags.title") %></small>
           <strong><% source_tags = source.tags.order(:key).to_a %>
-            <%= source_tags.any? ? source_tags.map(&:label).join(" · ") : category_label(source.category) %>
+            <%= tags_label(source.tags) %>
           </strong></div>
       </div>
 
@@ -64,7 +64,7 @@
               <div class="original-transaction-modal-item">
                 <div>
                   <strong><%= item.description %></strong>
-                  <small><%= item.tags.any? ? item.tags.map(&:label).join(" · ") : category_label(item.category) %>
+                  <small><%= item.tags.any? ? item.tags.map(&:label).join(" · ") : tags_label(item.tags) %>
                     <% if item.quantity.present? %>
                       · <%= ui("m6.quantity") %>: <%= item.quantity.to_s("F") %>
                     <% end %>

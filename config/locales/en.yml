@@ -29,7 +29,7 @@ en:
       date: Transaction date
       description: Description
       amount: Amount
-      category: Category
+      tag: Tags
       status: Status
       type: Type
       evidence: Evidence
@@ -94,8 +94,8 @@ en:
         subtitle: Monthly confirmed income and expenses (VND)
         empty: No confirmed entries in this period.
       breakdown:
-        title: Spending by category
-        subtitle: Expense category shares for the selected month.
+        title: Spending by primary Tag
+        subtitle: Expense primary Tag allocation for the selected month.
         empty: No confirmed expenses in this month.
       daily:
         title: Daily activity
@@ -111,7 +111,7 @@ en:
         positive: Surplus
         negative: Deficit
         zero: Balanced
-      category:
+      tag:
         uncategorized: Uncategorized
       legend:
         income: Income
@@ -283,7 +283,7 @@ en:
       password_reset: Password has been reset.
       password_mismatch: Passwords did not match.
       password_invalid: Password reset link is invalid or expired.
-    category:
+    tag:
       office: Office
       sales: Sales
       transport: Transport
@@ -300,7 +300,7 @@ en:
       difference: Difference (transaction − items)
       reconciliation: Adding, editing, deleting or importing draft items synchronizes the draft transaction amount to the item sum while items remain. You can still adjust the transaction amount for tax or discounts; reconcile before confirming.
       import_title: Import many items from CSV
-      import_help: UTF-8 CSV requires description,amount; quantity,unit_price,category,occurred_time,location_text are optional. Item dates use the transaction date. Older CSV occurred_on values must match that date. No OCR.
+      import_help: UTF-8 CSV requires description,amount; quantity,unit_price,tags,occurred_time,location_text are optional. Item dates use the transaction date. Older CSV occurred_on values must match that date. No OCR.
       import_limit: Up to 500 rows per file and per transaction, max 512 KiB. Invalid rows roll back the entire
         import. Re-uploading identical CSV will not duplicate entries.
       csv_label: Choose CSV file
@@ -322,7 +322,7 @@ en:
       remove_row: Remove row
       bulk_hint: For large receipts, save the draft then open the item manager to import/edit 100+ lines without
         a huge form.
-      items_report: Verified item category allocation
+      items_report: Verified item tag allocation
       items_report_hint: Item allocations are shown separately from transaction totals to avoid double-counting.
         Differences may include tax, discounts or missing rows.
       no_items_report: No confirmed itemized expenses this month.
@@ -388,7 +388,8 @@ en:
       evidence: Source receipt images and extraction history remain on the original record.
       revised: Superseded
       review: Edit replacement draft
-    categories:
+    tags:
+      none: No Tags
       title: Manage tags
       nav: Tags
       eyebrow: WORKSPACE TAGS
@@ -397,7 +398,7 @@ en:
       list: Tag library
       history_note: Archived tags remain attached to historical items.
       back: Back to transactions
-      key: Stable category key
+      key: Stable tag key
       key_help: Lowercase letters, numbers and underscores; cannot change after creation.
       name_vi: Vietnamese tag name
       name_en: English tag name
@@ -410,12 +411,12 @@ en:
       edit: Edit tag
       update: Save tag
       delete: Delete / archive
-      delete_confirm: Remove this category? Referenced categories are archived to preserve history.
-      created: Category created.
-      updated: Category updated.
-      deleted: Unused category deleted.
-      archived: Referenced category archived; history preserved.
-      select: Select category (optional)
+      delete_confirm: Remove this tag? Referenced Tags are archived to preserve history.
+      created: Tags created.
+      updated: Tags updated.
+      deleted: Unused tag deleted.
+      archived: Referenced tag archived; history preserved.
+      select: Select tag (optional)
       manage: Manage tags
     entry:
       optional: Optional information
@@ -507,7 +508,7 @@ en:
       extra_fields: More options (optional)
       income_quick_eyebrow: QUICK ENTRY
       income_quick_title: Received a payment?
-      income_quick_help: Three essential fields. You can add categories and proof later.
+      income_quick_help: Three essential fields. You can add Tags and proof later.
       income_amount: Amount received
       income_from: Received from / reason
       income_from_hint: E.g. sale to a customer, consulting fee
@@ -570,7 +571,7 @@ en:
         transaction_date: Transaction date
         amount: Amount (VND)
         description: Description
-        category: Category
+        tag: Tags
         status: Status
         purchase_details: Details
         occurred_time: Time
@@ -635,7 +636,7 @@ en:
     transaction_tags:
       title: Transaction Tags (select several)
       new: Add new Tags (optional)
-      help: Choose multiple Tags or enter names separated by commas. The first is the primary report category; secondary Tags never duplicate amounts.
+      help: Choose multiple Tags or enter names separated by commas. The first is the primary report tag; secondary Tags never duplicate amounts.
     quick_item:
       name_placeholder: E.g. coffee, paper supplies
       total: Line total (VND)
@@ -652,11 +653,11 @@ en:
       date_required: Verify the transaction date before confirmation.
   activerecord:
     attributes:
-      finance/category:
+      finance/tag:
         key: Tag key
     errors:
       models:
-        finance/category:
+        finance/tag:
           attributes:
             key:
               taken: has already been used in this workspace

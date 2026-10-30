@@ -104,16 +104,16 @@ class FinanceItemPolicyRegressionTest < ActionDispatch::IntegrationTest
   end
 
   test "tag duplicate key displays friendly translated validation in Vietnamese and English" do
-    Finance::Category.bootstrap!(@workspace.id)
-    count = Finance::Category.count
+    Finance::Tag.bootstrap!(@workspace.id)
+    count = Finance::Tag.count
     {vi: "Mã Tag đã tồn tại", en: "Tag key has already been used"}.each do |locale, expected|
-      post finance_tags_path(locale: locale), params: {finance_category: {
+      post finance_tags_path(locale: locale), params: {finance_tag: {
         key: "food", name_vi: "Trùng", name_en: "Duplicate"
       }}
       assert_response :unprocessable_entity
       assert_includes response.body, expected
       assert_not_includes response.body, "Translation missing"
-      assert_equal count, Finance::Category.count
+      assert_equal count, Finance::Tag.count
     end
   end
 
@@ -126,7 +126,7 @@ class FinanceItemPolicyRegressionTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: /Quản lý Tags/
     assert_select "table.tag-list-table tbody tr", minimum: 1
     assert_select "table.tag-list-table tbody tr td[data-label]", minimum: 5
-    get finance_categories_path(locale: "vi")
+    get finance_tags_path(locale: "vi")
     assert_response :success
     assert_select "h1", text: /Quản lý Tags/
   end

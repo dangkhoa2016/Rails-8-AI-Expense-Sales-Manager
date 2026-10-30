@@ -46,8 +46,7 @@ class FinanceItemCreateModalTest < ActionDispatch::IntegrationTest
       assert_difference "Finance::AuditEvent.where(event_type: 'finance_line_item_added').count", 1 do
         post finance_transaction_line_items_path(@transaction), as: :turbo_stream,
           params: { page: 1, line_item: {
-            description: "Bánh mì ngọt", amount: "30000", quantity: "2", unit_price: "15000",
-            category: "food", occurred_on: "2026-04-26", occurred_time: "08:12",
+            description: "Bánh mì ngọt", amount: "30000", quantity: "2", unit_price: "15000", occurred_on: "2026-04-26", occurred_time: "08:12",
             location_text: "Tiệm bánh giả lập ở Đà Nẵng"
           } }
         assert_response :success

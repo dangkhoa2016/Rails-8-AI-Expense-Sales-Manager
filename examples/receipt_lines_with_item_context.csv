@@ -1,4 +1,4 @@
-description,amount,quantity,unit_price,category,occurred_time,location_text
+description,amount,quantity,unit_price,tags,occurred_time,location_text
 Sweet bread (synthetic),30000,1,30000,food,08:12,Example bakery near a police station in Da Nang
 Fresh milk (synthetic),42000,1,42000,food,08:31,Example market in Da Nang
 A4 paper (synthetic),85000,1,85000,office,13:40,Fictional stationery shop
