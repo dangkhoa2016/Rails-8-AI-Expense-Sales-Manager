@@ -190,3 +190,9 @@ Popup Thêm/Sửa khoản chi có biểu tượng SVG đóng được căn giữ
 ### Thẻ khoản chi responsive cho màn hình nhỏ
 
 Danh sách khoản chi giữ bảng bảy cột trên desktop rộng, nhưng tự chuyển thành các thẻ gọn dưới 1.200px: tên khoản, số tiền, Tags, ngày/giờ/địa điểm và nút Sửa/Xóa đều hiển thị đầy đủ, không phải cuộn ngang. Mỗi khoản vẫn giữ một ID để Turbo Stream cập nhật đúng dòng; phân trang giữ nguyên. Xem [tài liệu khoản chi và Tags](docs/QUICK_ITEM_TAGS.vi.md).
+
+## Một trang tạo Thu/Chi và lịch sử phiên bản
+
+Tạo cả **Thu tiền** và **Chi tiền** tại **`/finance/transactions/new`**, chọn một radio phía trên cùng giao diện tải ảnh chứng từ và nhập tay. URL cũ `?kind=` chỉ dùng để chọn radio mặc định, không còn hai layout khác nhau. Mỗi lần sửa bản nháp phải có lý do; những thay đổi được ghi thành phiên bản bất biến, đánh số, có dữ liệu trước/sau, thời gian và người sửa. Giao dịch confirmed không bị ghi đè: correction dùng bản nháp thay thế, giữ nguyên bản gốc, lưu lịch sử điều chỉnh và báo cáo chỉ tính bản confirmed đang có hiệu lực.
+
+[Tài liệu một trang tạo Thu/Chi và phiên bản giao dịch](docs/UNIFIED_INTAKE_TRANSACTION_REVISIONS.vi.md).

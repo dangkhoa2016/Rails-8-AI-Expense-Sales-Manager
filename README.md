@@ -190,3 +190,9 @@ The Add/Edit receipt-item modal now uses a centered SVG close icon, a consistent
 ### Responsive item cards on smaller screens
 
 The receipt-item manager keeps its seven-column table on wide screens but switches to readable, responsive cards below 1,200px: amount, description, tags, date/time/location and full Edit/Delete buttons remain visible without horizontal scrolling. One row retains one stable Turbo Stream DOM ID, so edit updates and pagination remain compatible. See [quick item and tag documentation](docs/QUICK_ITEM_TAGS.en.md).
+
+## One income/expense intake and revision history
+
+Create both Money in and Money out at **`/finance/transactions/new`**, selecting exactly one radio above the existing receipt-first upload and manual fallback. Legacy `?kind=` URLs select the radio without changing layout. Draft edits require a written reason and store immutable, numbered before/after revisions with timestamps and actor. Confirmed ledger values are never overwritten: creating a correction starts a separate draft, preserves the original and records correction lifecycle revisions; reports count only the effective confirmed version.
+
+[Unified intake and transaction revision policy](docs/UNIFIED_INTAKE_TRANSACTION_REVISIONS.en.md).
