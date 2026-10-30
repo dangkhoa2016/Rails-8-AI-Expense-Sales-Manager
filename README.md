@@ -204,3 +204,5 @@ Pending correction copies can be **discarded with a mandatory reason**, with bot
 The correction draft now offers a read-only original-transaction popup on both edit and detail screens, preserving unsaved fields. Discard is distinctly red, and the redundant Manage Tags link was removed from the transaction form.
 
 The correction comparison banner distinguishes draft, confirmed and cancelled replacements by their actual status, and original-view modal controls have accessible, responsive neutral styling.
+
+Correction item differences now open in a focused read-only modal; the redundant aggregate comparison heading has been removed, while the financial before/after fields remain visible.
