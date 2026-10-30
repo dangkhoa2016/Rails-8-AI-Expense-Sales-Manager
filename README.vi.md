@@ -40,3 +40,15 @@ Người dùng chỉ được xem dữ liệu và ảnh thuộc workspace đã p
 ## Trạng thái triển khai
 
 Đây là nền tảng Rails có thể chạy, chưa phải phần mềm kế toán production. Chưa bật adapter llama.cpp/GGUF thực tế do model nghiên cứu chưa qua quality gate chữ viết tay khó đọc. Module tồn kho/bán hàng hoàn chỉnh, quy trình điều chỉnh giao dịch, xuất PDF, chia sẻ workspace theo vai trò và hardening production là các bước tiếp theo.
+
+
+## Xem thử qua Cloudflare Quick Tunnel
+
+Cờ chạy chỉ dành cho môi trường development sẽ cho phép hostname `*.trycloudflare.com`, tắt trang debug chi tiết của Rails khi truy cập từ tunnel và khóa chức năng tự đăng ký công khai.
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails server --binding 127.0.0.1 --port 3078
+cloudflared tunnel --no-autoupdate --url http://127.0.0.1:3078
+```
+
+Chỉ sử dụng tài khoản demo riêng và dữ liệu tổng hợp giả lập. Link Quick Tunnel có thể đổi và không thay thế cơ chế xác thực. Triển khai production phải có bảo vệ host, phân quyền và hạ tầng riêng. Adapter GGUF inference chưa được bật trong bản demo này.
