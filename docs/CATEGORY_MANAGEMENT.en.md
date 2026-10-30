@@ -16,7 +16,7 @@ Bootstrap inserts a small example catalog and discovers legacy keys already used
 
 ## UI improvements
 
-The manual entry form places type, date, amount, category dropdown and description together; the M9 new-transaction page now prioritizes receipt upload and keeps this form as an optional fallback. Optional transaction-level time/place/details live in a closed disclosure section. Drafts are saved first; receipt items and evidence are then managed from the detail page via the existing item popup, which prevents a large embedded item editor from occupying the create form.
+The transaction editing form displays a read-only total, date, description and multi-select Tags; the M9 new-transaction page now prioritizes receipt upload and keeps this form as an optional fallback. Optional transaction-level time/place/details live in a closed disclosure section. Drafts are saved first; receipt items and evidence are then managed from the detail page via the existing item popup, which prevents a large embedded item editor from occupying the create form.
 
 The transaction detail page prioritizes amount, status, category and item reconciliation. Receipt items are previewed up to five, with a prominent link to the full paginated manager. Evidence, optional context and audit history remain accessible in expandable sections; human confirmation and immutable correction workflow are preserved.
 

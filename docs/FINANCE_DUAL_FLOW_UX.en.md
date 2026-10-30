@@ -1,4 +1,6 @@
-# Two tailored financial journeys (M10)
+# Historical two-journey design (M10)
+
+**Current behavior (2026-10-30):** M10's separate entry layouts were superseded by one receipt-first `/finance/transactions/new` page with Money in/Money out radio controls. Editing transaction amounts and single-category dropdowns were also replaced by a locked, line-item-derived total and multi-select Tags. The following sections document the earlier design for historical context, **not the current UI**. See [unified intake](UNIFIED_INTAKE_TRANSACTION_REVISIONS.en.md) and [current finance corrections/Tags policy](CORRECTION_DRAFT_TAGS_LINE_TOTAL.en.md).
 
 ## Design goal
 

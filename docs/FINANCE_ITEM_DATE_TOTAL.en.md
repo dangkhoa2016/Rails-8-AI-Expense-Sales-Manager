@@ -12,7 +12,7 @@ New CSV files require only `description,amount`; optional headers include `quant
 
 ## Draft totals and immutability
 
-Adding, editing, deleting or importing draft line items synchronizes the parent draft amount to the remaining sum **if at least one item remains**. These changes are audited atomically. If the last item is removed, the manually entered amount remains; users must review any tax/discount adjustments before confirming. Confirmed transaction originals, original legacy item dates and AI proposals are unchanged.
+Adding, editing, deleting or importing draft line items synchronizes the parent draft amount to the line sum, **including zero after deleting the last item**. New app-created transactions require at least one line and matching total before confirmation. Existing legacy transaction amounts and confirmed originals remain untouched; no historical line items are fabricated. See [locked totals and correction cancellation](CORRECTION_DRAFT_TAGS_LINE_TOTAL.en.md).
 
 ## Tags and income evidence
 

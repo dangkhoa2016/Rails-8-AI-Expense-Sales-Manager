@@ -25,3 +25,8 @@ Mỗi bản gốc confirmed chỉ có tối đa một correction; các trigger b
 Regression tests bao gồm giao diện chung, radio Thu/Chi, nhập tay/upload, lý do sửa, dữ liệu trước/sau, số phiên bản, không tạo phiên bản khi không đổi, chặn cập nhật stale, bất biến dữ liệu DB, kiểm tra khác workspace và quy trình correction. Sau deploy cần kiểm tra thực tế radio trên trình duyệt và responsive.
 
 Demo CPU **chưa bật adapter AI GGUF**; không tuyên bố đã có OCR tự động hoặc đạt chứng nhận hệ thống kế toán production.
+
+
+## Cập nhật tiếp theo về tổng tiền, Tags và hủy bản điều chỉnh
+
+Sau khi hợp nhất form tạo Thu/Chi, hệ thống tiếp tục khóa tổng tiền transaction theo các khoản do người dùng nhập, bổ sung Tags nhiều lựa chọn ở cấp transaction và cho hủy mềm bản nháp điều chỉnh đang chờ với lịch sử kiểm toán. Xem [quy tắc hiện hành và ngoại lệ dữ liệu lịch sử](CORRECTION_DRAFT_TAGS_LINE_TOTAL.vi.md). Những mô tả trước đây về việc nhập tự do tổng tiền của bản nháp không còn áp dụng cho giao dịch mới tạo bởi app.
