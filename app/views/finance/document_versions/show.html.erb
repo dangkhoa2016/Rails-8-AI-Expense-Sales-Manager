@@ -1,12 +1,20 @@
-<h1>Receipt evidence version <%= @version.version_number %></h1>
-<p>Uploaded <%= @version.created_at %> · <%= @version.byte_size %> bytes · <%= @version.content_type %></p>
-<p>SHA256: <code><%= @version.sha256 %></code></p>
-<%= image_tag image_finance_transaction_document_version_path(@transaction, @version), alt: 'Private receipt evidence', style: 'max-width:100%; max-height:650px' %>
-<p><%= link_to 'Open original image for review', image_finance_transaction_document_version_path(@transaction, @version), target: '_blank', rel: 'noopener' %></p>
-<h2>AI extraction attempts for this exact image</h2>
-<ul>
-  <% @extractions.each do |run| %>
-    <li>Run #<%= run.id %> · <%= run.parse_status %> · <%= run.created_at %> · <%= run.model_sha256.first(16) %></li>
-  <% end %>
-</ul>
-<%= link_to 'Return to transaction', finance_transaction_path(@transaction) %>
+<% content_for :title, ui("evidence.title", number: @version.version_number) %>
+<div class="page-heading">
+  <div><span class="eyebrow"><%= ui("detail.documents.title") %></span>
+    <h1><%= ui("evidence.title", number: @version.version_number) %></h1>
+    <p class="subheading"><%= ui("evidence.uploaded", value: l(@version.created_at, format: :short)) %></p>
+  </div>
+  <%= link_to ui("detail.back"), finance_transaction_path(@transaction), class: "btn btn-secondary" %>
+</div>
+<div class="security-info">✓ <%= ui("evidence.warning") %></div>
+<section class="panel">
+  <div class="evidence-image-preview"><%= image_tag image_finance_transaction_document_version_path(@transaction, @version), alt: ui("evidence.title", number: @version.version_number), style: "max-width:100%;max-height:650px;object-fit:contain" %></div>
+  <dl class="record-dl"><div><dt>SHA256</dt><dd><code><%= @version.sha256 %></code></dd></div><div><dt><%= ui("shared.evidence") %></dt><dd><%= @version.byte_size %> bytes · <%= @version.content_type %></dd></div></dl>
+  <%= link_to ui("evidence.original"), image_finance_transaction_document_version_path(@transaction, @version), target: "_blank", rel: "noopener", class: "btn btn-secondary" %>
+</section>
+<section class="panel">
+  <h2><%= ui("evidence.ai.title") %></h2>
+  <% if @extractions.any? %>
+    <ul class="audit-list"><% @extractions.each do |run| %><li>#<%= run.id %> · <%= run.parse_status %> · <%= l(run.created_at, format: :short) %> · <code><%= run.model_sha256.first(16) %></code></li><% end %></ul>
+  <% else %><p class="form-hint"><%= ui("evidence.ai.empty") %></p><% end %>
+</section>

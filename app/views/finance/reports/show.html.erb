@@ -1,30 +1,90 @@
-<h1>Confirmed financial report</h1>
-<p>Only human-confirmed financial transactions are included; drafts and pending AI suggestions are excluded.</p>
-<%= form_with url: finance_reports_path, method: :get, local: true do |f| %>
-  <%= f.label :month, 'Month (YYYY-MM)' %>
-  <%= f.month_field :month, value: @month.strftime('%Y-%m') %>
-  <%= f.submit 'Filter' %>
-<% end %>
-<%= link_to 'Export confirmed data as CSV', finance_reports_export_path(month: @month.strftime('%Y-%m')) %>
-<h2><%= @month.strftime('%B %Y') %> · <%= @transactions_count %> confirmed transactions</h2>
-<% [['Income / Thu', 'income'], ['Expense / Chi', 'expense']].each do |label, kind| %>
-  <% total = @totals[kind] || BigDecimal('0') %>
-  <% percentage = ((total / @max_value) * 100).to_f.round(1) %>
-  <section>
-    <h3><%= label %>: <%= total.to_s('F') %> VND</h3>
-    <div role="img" aria-label="<%= label %> bar, <%= percentage %> percent of chart maximum"
-         style="width:100%; background:#e6e6e6; height:22px">
-      <div style="height:22px; width:<%= percentage %>%; background:#537c8e"></div>
+<% content_for :title, ui("reports.title") %>
+<div class="page-heading">
+  <div><span class="eyebrow"><%= ui("reports.eyebrow") %></span><h1><%= ui("reports.title") %></h1><p class="subheading"><%= ui("reports.subtitle") %></p></div>
+  <div class="heading-actions"><%= link_to "↓ #{ui("reports.export")}", finance_reports_export_path(month: @month.strftime("%Y-%m")), class: "btn btn-secondary" %></div>
+</div>
+<section class="report-controls">
+  <div class="report-filter">
+    <%= form_with url: finance_reports_path, method: :get, local: true do |f| %>
+      <%= f.label :month, ui("reports.period") %>
+      <div class="report-filter-row"><%= f.month_field :month, value: @month.strftime("%Y-%m"), required: true %><%= f.submit ui("shared.filter"), class: "btn btn-primary" %></div>
+    <% end %>
+  </div>
+  <div class="trust-note"><span>✓</span><%= ui("reports.evidence_note") %></div>
+</section>
+
+<div class="kpi-grid report-kpis">
+  <article class="kpi-card kpi-income"><span class="kpi-icon">↗</span><p class="kpi-label"><%= ui("reports.kpi.income") %></p><strong class="kpi-value"><%= money_vnd(@income_total) %></strong><span class="kpi-foot"><%= ui("reports.compare.title", value: money_vnd(@previous_totals.fetch("income", BigDecimal("0")))) %></span></article>
+  <article class="kpi-card kpi-expense"><span class="kpi-icon">↙</span><p class="kpi-label"><%= ui("reports.kpi.expense") %></p><strong class="kpi-value"><%= money_vnd(@expense_total) %></strong><span class="kpi-foot"><%= ui("reports.compare.title", value: money_vnd(@previous_totals.fetch("expense", BigDecimal("0")))) %></span></article>
+  <article class="kpi-card kpi-net"><span class="kpi-icon">≈</span><p class="kpi-label"><%= ui("reports.kpi.net") %></p><strong class="kpi-value"><%= money_vnd(@net) %></strong><span class="kpi-foot"><%= ui("reports.balance.#{@net.positive? ? 'positive' : (@net.negative? ? 'negative' : 'zero')}") %></span></article>
+  <article class="kpi-card kpi-drafts"><span class="kpi-icon">✓</span><p class="kpi-label"><%= ui("reports.kpi.count") %></p><strong class="kpi-value"><%= @transactions_count %></strong><span class="kpi-foot"><%= human_month(@month) %></span></article>
+</div>
+
+<div class="report-grid">
+  <section class="panel report-trend">
+    <div class="panel-heading"><div><h2><%= ui("reports.trend.title") %></h2><p><%= ui("reports.trend.subtitle") %></p></div><div class="legend"><span class="legend-income"></span><%= ui("reports.legend.income") %><span class="legend-expense"></span><%= ui("reports.legend.expense") %></div></div>
+    <div class="trend-chart" role="img" aria-label="<%= ui("reports.trend.title") %>">
+      <% @six_months.each do |m| %>
+        <div class="trend-col">
+          <div class="trend-bars">
+            <% income_pct = (m[:income] / @trend_max * 100).to_f.round(1) %>
+            <% expense_pct = (m[:expense] / @trend_max * 100).to_f.round(1) %>
+            <div class="trend-bar trend-income" style="height:<%= income_pct %>%" title="<%= "#{ui("shared.income")}: #{money_vnd(m[:income])}" %>"><span class="sr-only"><%= money_vnd(m[:income]) %></span></div>
+            <div class="trend-bar trend-expense" style="height:<%= expense_pct %>%" title="<%= "#{ui("shared.expense")}: #{money_vnd(m[:expense])}" %>"><span class="sr-only"><%= money_vnd(m[:expense]) %></span></div>
+          </div>
+          <span class="trend-label"><%= m[:date].strftime("%m/%y") %></span>
+        </div>
+      <% end %>
+    </div>
+    <div class="trend-values">
+      <% @six_months.each do |m| %>
+        <div><strong><%= m[:date].strftime("%m/%Y") %></strong><span class="income-text">+ <%= money_vnd(m[:income]) %></span><span class="expense-text">− <%= money_vnd(m[:expense]) %></span></div>
+      <% end %>
     </div>
   </section>
-<% end %>
-<h2>By category</h2>
-<table>
-  <thead><tr><th>Type</th><th>Category</th><th>Amount (VND)</th></tr></thead>
-  <tbody>
-    <% @categories.sort_by { |(kind,category),_| [kind,category.to_s] }.each do |(kind,category),amount| %>
-      <tr><td><%= kind %></td><td><%= category.presence || 'Uncategorized' %></td><td><%= amount.to_s('F') %></td></tr>
+
+  <section class="panel categories-panel">
+    <div class="panel-heading"><div><h2><%= ui("reports.breakdown.title") %></h2><p><%= ui("reports.breakdown.subtitle") %></p></div></div>
+    <% if @categories.any? && @expense_total.positive? %>
+      <div class="category-rows">
+        <% @categories.sort_by { |(_,amount)| -amount }.each do |(category,amount)| %>
+          <% pct = (amount / @expense_total * 100).to_f.round(1) %>
+          <div class="category-row"><div class="category-head"><strong><%= category_label(category) %></strong><span><%= money_vnd(amount) %> <small><%= pct %>%</small></span></div><div class="progress-track"><div class="progress-bar" style="width:<%= pct %>%"></div></div></div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state compact"><p><%= ui("reports.breakdown.empty") %></p></div>
     <% end %>
-  </tbody>
-</table>
-<p><%= link_to 'Back to transactions', finance_transactions_path %></p>
+  </section>
+
+  <section class="panel daily-panel">
+    <div class="panel-heading"><div><h2><%= ui("reports.daily.title") %></h2><p><%= ui("reports.daily.subtitle") %></p></div></div>
+    <% if @daily_rows.any? %>
+      <div class="table-scroll"><table class="data-table compact-table"><thead><tr><th><%= ui("reports.table.day") %></th><th class="align-right"><%= ui("reports.table.income") %></th><th class="align-right"><%= ui("reports.table.expense") %></th></tr></thead><tbody>
+      <% @daily_rows.each do |row| %>
+        <tr><td><%= human_day(row[:date]) %></td><td class="align-right income-text"><%= money_vnd(row[:income]) %></td><td class="align-right expense-text"><%= money_vnd(row[:expense]) %></td></tr>
+      <% end %>
+      </tbody></table></div>
+    <% else %>
+      <div class="empty-state compact"><p><%= ui("reports.daily.empty") %></p></div>
+    <% end %>
+  </section>
+
+  <section class="panel recent-panel">
+    <div class="panel-heading"><div><h2><%= ui("reports.latest.title") %></h2><p><%= ui("reports.latest.subtitle") %></p></div></div>
+    <% if @recent_transactions.any? %>
+      <div class="recent-list">
+        <% @recent_transactions.each do |tx| %>
+          <%= link_to finance_transaction_path(tx), class: "recent-entry" do %>
+            <span class="recent-bullet <%= tx.kind %>"><%= tx.kind == "income" ? "↗" : "↙" %></span>
+            <span class="recent-name"><strong><%= tx.description.presence || "##{tx.id}" %></strong><small><%= human_day(tx.transaction_date) %> · <%= category_label(tx.category) %></small></span>
+            <span class="recent-amount <%= tx.kind == "income" ? "income-text" : "expense-text" %>"><%= money_vnd(tx.amount) %></span>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state compact"><p><%= ui("reports.daily.empty") %></p></div>
+    <% end %>
+  </section>
+</div>
+<div class="report-bottom-note">✓ <%= ui("reports.evidence_note") %> · <%= ui("dashboard.kpi.drafts") %>: <strong><%= @draft_count %></strong></div>

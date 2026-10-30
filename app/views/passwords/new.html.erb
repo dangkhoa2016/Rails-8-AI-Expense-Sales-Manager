@@ -1,8 +1,10 @@
-<h1>Forgot your password?</h1>
-
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-
-<%= form_with url: passwords_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.submit "Email reset instructions" %>
-<% end %>
+<% content_for :title, ui("auth.reset_title") %>
+<div class="auth-card">
+  <h1><%= ui("auth.reset_title") %></h1>
+  <p><%= ui("auth.reset_help") %></p>
+  <%= form_with url: passwords_path do |f| %>
+    <div class="form-field"><%= f.label :email_address, ui("auth.email"), class: "form-label" %><%= f.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address] %></div>
+    <%= f.submit ui("auth.reset_send"), class: "btn btn-primary" %>
+  <% end %>
+  <%= link_to ui("auth.signin"), new_session_path %>
+</div>

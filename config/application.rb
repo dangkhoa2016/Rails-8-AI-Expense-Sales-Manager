@@ -10,6 +10,8 @@ module Rails8AiExpenseSalesManager
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
+    config.i18n.available_locales = [:en, :vi]
+    config.i18n.default_locale = :en
 
     # PostgreSQL check constraints and audit/immutability triggers must survive schema loads.
     config.active_record.schema_format = :sql

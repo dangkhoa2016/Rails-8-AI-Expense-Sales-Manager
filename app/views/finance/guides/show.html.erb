@@ -1,0 +1,16 @@
+<% content_for :title, ui("guide.title") %>
+<div class="page-heading">
+  <div><span class="eyebrow"><%= ui("guide.eyebrow") %></span><h1><%= ui("guide.title") %></h1><p class="subheading"><%= ui("guide.subtitle") %></p></div>
+  <%= link_to ui("dashboard.actions.expense"), new_finance_transaction_path(kind: "expense"), class: "btn btn-primary" %>
+</div>
+<div class="guide-grid">
+  <% (1..5).each do |n| %>
+    <article class="guide-card"><span class="guide-count"><%= format("%02d", n) %> / 05</span><h2><%= ui("guide.step#{n}.title") %></h2><p><%= ui("guide.step#{n}.body") %></p></article>
+  <% end %>
+</div>
+<section class="guide-faq">
+  <h2><%= ui("guide.faq.title") %></h2>
+  <% (1..3).each do |n| %>
+    <details><summary><%= ui("guide.faq#{n}.q") %></summary><p><%= ui("guide.faq#{n}.a") %></p></details>
+  <% end %>
+</section>

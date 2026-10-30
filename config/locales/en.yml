@@ -1,31 +1,288 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  finance:
+    app: Expense & Sales Manager
+    tagline: Human-verified finance workspace
+    nav:
+      transactions: Transactions
+      reports: Analytics
+      guide: User guide
+      new: New expense
+      logout: Sign out
+      login: Sign in
+      signup: Create account
+      workspace: Private workspace
+    footer:
+      safety: Demo only · Use synthetic data
+      review: Financial records require human review
+    shared:
+      income: Income
+      expense: Expense
+      confirmed: Confirmed
+      draft: Draft
+      all: All
+      cancel: Cancel
+      back: Back
+      unknown: Not entered
+      none: None
+      currency: VND
+      date: Transaction date
+      description: Description
+      amount: Amount
+      category: Category
+      status: Status
+      type: Type
+      evidence: Evidence
+      actions: Actions
+      month: Month
+      filter: Apply filters
+      clear: Clear filters
+      view: View details
+      previous: Previous
+      next: Next
+      not_available: Not available
+      record: Record
+    dashboard:
+      eyebrow: FINANCIAL WORKSPACE
+      title: Transactions overview
+      subtitle: Track income and spending while keeping every entry verifiable.
+      kpi:
+        income: Confirmed income · This month
+        expense: Confirmed expense · This month
+        net: Net cash flow · This month
+        drafts: Drafts awaiting review
+      actions:
+        title: Quick actions
+        expense: Record an expense
+        income: Record income
+        report: Explore analytics
+      table:
+        title: Transaction history
+        subtitle: Review each transaction or resume an unfinished draft.
+      filters:
+        search: Search descriptions
+        placeholder: Search transaction descriptions…
+        status: Review status
+        kind: Transaction type
+      pagination: Page %{page} of %{pages} · %{count} entries
+      empty:
+        title: No matching transactions
+        help: Adjust the filters or create a new expense or income entry.
+        create: Create your first entry
+      evidence_count: '%{count} versions'
+      guide:
+        title: A reliable finance workflow
+        one: Create a manual draft, even without a receipt.
+        two: Attach receipt images and review available AI suggestions.
+        three: Confirm the date and amount before the entry enters reports.
+    reports:
+      eyebrow: ANALYTICS & REPORTS
+      title: Financial performance
+      subtitle: An auditable view of human-confirmed amounts. Drafts and AI proposals are excluded.
+      period: Reporting period
+      export: Export verified CSV
+      kpi:
+        income: Total income
+        expense: Total expenses
+        net: Net cash flow
+        count: Confirmed entries
+      compare:
+        none: No previous-month entries
+        title: 'Previous month: %{value}'
+      trend:
+        title: Six-month overview
+        subtitle: Monthly confirmed income and expenses (VND)
+        empty: No confirmed entries in this period.
+      breakdown:
+        title: Spending by category
+        subtitle: Expense category shares for the selected month.
+        empty: No confirmed expenses in this month.
+      daily:
+        title: Daily activity
+        subtitle: Income and expense entries on each day of the selected month.
+        empty: No confirmed activity.
+      latest:
+        title: Recently confirmed
+        subtitle: Trace each summarized amount back to its entry and evidence.
+      evidence_note: Only confirmed transactions appear here. Values come from PostgreSQL, not from inferred
+        receipt totals.
+      no_prev: —
+      balance:
+        positive: Surplus
+        negative: Deficit
+        zero: Balanced
+      category:
+        uncategorized: Uncategorized
+      legend:
+        income: Income
+        expense: Expense
+      table:
+        day: Day
+        income: Income
+        expense: Expense
+    form:
+      eyebrow: TRANSACTION ENTRY
+      title:
+        create: New transaction
+        edit: 'Edit draft #%{id}'
+      subtitle: Complete the details manually or review available AI proposals. Nothing is posted until
+        you confirm.
+      section:
+        date: 01 · Accounting date
+        details: 02 · Transaction details
+        lines: 03 · Individual items
+        ai: 04 · AI field suggestions
+      date:
+        help: Choose the actual transaction date. If the receipt has no date, enter it yourself. Never
+          use the image upload date as a substitute.
+        ai: 'AI suggested date: %{value}. Please verify it.'
+      details:
+        help: Use VND digits without grouping punctuation, e.g. 43500. Check the amount before confirmation.
+      lines:
+        help: Line items are optional in a draft. Adjust them manually; do not assume their sum equals
+          the confirmed receipt total.
+        name: Item name
+        amount: Item amount
+        remove: Remove this draft item
+      ai:
+        help: Each field is a proposal only. Unknown fields stay blank. Marking a proposal reviewed does
+          not post a transaction.
+        accept: Mark reviewed
+        reject: Reject suggestion
+      save: Save draft
+      back: Back to transactions
+    detail:
+      eyebrow: TRANSACTION RECORD
+      title: 'Transaction #%{id}'
+      subtitle: Inspect financial details, document versions and the audit trail.
+      confirm:
+        title: Ready to confirm?
+        help: Confirm only after checking the date, type and amount. This locks the record and includes
+          it in financial reports.
+        checkbox: I have checked the transaction date, type, amount and evidence.
+        button: Confirm financial entry
+        locked: Confirmed record is locked. New images can be appended as supporting evidence without
+          changing the amount or date.
+      edit: Edit this draft
+      summary: Verified details
+      confirmed_at: Confirmed at
+      upload:
+        help: JPEG, PNG or WEBP, up to 10 MB. Previous versions remain available for review and audit.
+        button: Save image version
+        title: Add another image
+      image:
+        version: Version %{number}
+        active: Confirmed evidence
+        supplement: Supplemental evidence
+      ai:
+        unreadable: This image cannot be read reliably. Please enter the data manually or upload a clearer
+          image.
+        error: Processing failed. This does not imply the image is unreadable; you may retry or enter
+          manually.
+        partial: Some values were detected. Review each proposal and manually enter missing information.
+        manual: Manual entry is always available.
+        title: Document recognition status
+      audit:
+        empty: No audit activity yet.
+        title: Audit history
+      items:
+        empty: No line items have been entered.
+        title: Line items
+      documents:
+        empty: No receipt images uploaded yet.
+        title: Receipt versions
+      back: Back to transactions
+    evidence:
+      title: Receipt image · Version %{number}
+      uploaded: Uploaded on %{value}
+      original: Open original image
+      ai:
+        empty: No AI extraction has been run for this version.
+        title: AI extraction history
+      warning: Private evidence. Access is limited to your workspace; keep it secure.
+    auth:
+      title: Welcome back
+      subtitle: Sign in to review your verified finances and receipt evidence.
+      email: Email address
+      password: Password
+      signin: Sign in
+      forgot: Forgot your password?
+      signup:
+        subtitle: Your private finance workspace is created with your account.
+        title: Create your account
+      password_confirmation: Confirm password
+      preview:
+        disabled: Registration is disabled for the temporary demo.
+        help: Use the temporary demo credentials provided for this preview.
+      reset_title: Reset your password
+      reset_help: Enter your email to request a password reset link.
+      reset_send: Send reset instructions
+      new_password: New password
+      reset_save: Save new password
+    guide:
+      eyebrow: PRODUCT GUIDE
+      title: Understand your financial workflow
+      subtitle: Make the most of AI assistance without giving up control of financial data.
+      step1:
+        title: Start with a draft
+        body: Record income or expense without needing a receipt. Drafts can be edited and are not counted
+          in reports.
+      step2:
+        title: Attach and retain images
+        body: Each upload creates a separate evidence version with SHA256. Previous images remain accessible
+          for review and financial investigation.
+      step3:
+        title: Review each field
+        body: When approved AI inference becomes available, proposals will appear by field. Missing or
+          unreadable information stays blank and can be entered manually.
+      step4:
+        title: Confirm the actual date and amount
+        body: Transaction date is required to confirm a record. Never infer missing dates from EXIF, upload
+          timestamp or unrelated fields.
+      step5:
+        title: Use trustworthy analytics
+        body: Reports, charts and CSV reflect confirmed database values only. Drafts and AI-only proposals
+          are excluded.
+      faq:
+        title: Common questions
+      faq1:
+        q: What if a receipt is blurry or handwritten?
+        a: Upload a clearer image or use manual entry. The system should never fabricate a date or amount
+          when recognition is unreliable.
+      faq2:
+        q: Can I replace an image after confirmation?
+        a: You can add a new version, but confirmed financial values and the reference image remain locked.
+          New images are supplemental evidence.
+      faq3:
+        q: Is AI receipt extraction enabled in this demo?
+        a: No. The GGUF inference adapter remains disabled pending quality approval. Manual entry and
+          document history are usable now.
+    flash:
+      draft_created: Draft saved. Review and confirm before reporting.
+      draft_updated: Draft updated.
+      confirmed: Transaction confirmed.
+      image_saved: New image version saved. Previous versions remain available.
+      suggestion_reviewed: Suggestion reviewed. Check the form before confirming.
+      suggestion_rejected: Suggestion rejected.
+      account_created: Account created.
+      signin_failed: Check your email address or password.
+      password_sent: Password reset instructions sent (if the account exists).
+      password_reset: Password has been reset.
+      password_mismatch: Passwords did not match.
+      password_invalid: Password reset link is invalid or expired.
+    category:
+      office: Office
+      sales: Sales
+      transport: Transport
+      services: Services
+      maintenance: Maintenance
+      food: Food
+      other: Other
+  date:
+    formats:
+      default: '%d/%m/%Y'
+      short: '%d/%m/%Y'
+      month: '%m/%Y'
+  time:
+    formats:
+      default: '%d/%m/%Y %H:%M'
+      short: '%d/%m/%Y %H:%M'

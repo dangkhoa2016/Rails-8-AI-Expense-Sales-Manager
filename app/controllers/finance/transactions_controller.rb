@@ -4,7 +4,26 @@ module Finance
     before_action :find_transaction!, only: %i[show edit update confirm]
 
     def index
-      @transactions = finance_scope.order(created_at: :desc).limit(100)
+      scope = finance_scope
+      @draft_count = scope.where(status: 'draft').count
+      totals = scope.confirmed.where(transaction_date: Date.current.beginning_of_month..Date.current.end_of_month).group(:kind).sum(:amount)
+      @month_income = totals.fetch('income', BigDecimal('0'))
+      @month_expense = totals.fetch('expense', BigDecimal('0'))
+      @month_net = @month_income - @month_expense
+
+      @selected_status = %w[draft confirmed].include?(params[:status]) ? params[:status] : ''
+      @selected_kind = %w[income expense].include?(params[:kind]) ? params[:kind] : ''
+      @query = params[:q].to_s.strip.slice(0, 80)
+      scope = scope.where(status: @selected_status) if @selected_status.present?
+      scope = scope.where(kind: @selected_kind) if @selected_kind.present?
+      scope = scope.where('description ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%") if @query.present?
+      @filtered_count = scope.count
+      @per_page = 20
+      @pages = [(@filtered_count.to_f / @per_page).ceil, 1].max
+      requested_page = params[:page].to_s.match?(/\A[0-9]{1,6}\z/) ? params[:page].to_i : 1
+      @page = requested_page.clamp(1, @pages)
+      @transactions = scope.includes(:document_versions).order(created_at: :desc, id: :desc)
+                           .offset((@page - 1) * @per_page).limit(@per_page)
     end
 
     def new
@@ -24,7 +43,7 @@ module Finance
         @transaction.save!
         audit!('transaction_draft_created', { kind: @transaction.kind })
       end
-      redirect_to finance_transaction_path(@transaction), notice: 'Draft saved. Review and confirm before reporting.'
+      redirect_to finance_transaction_path(@transaction), notice: I18n.t('finance.flash.draft_created')
     rescue ActiveRecord::RecordInvalid
       @suggestions = []
       render :new, status: :unprocessable_entity
@@ -62,7 +81,7 @@ module Finance
         after = @transaction.reload.attributes.slice(*before.keys)
         audit!('transaction_draft_edited', { before: before, after: after })
       end
-      redirect_to finance_transaction_path(@transaction), notice: 'Draft updated.'
+      redirect_to finance_transaction_path(@transaction), notice: I18n.t('finance.flash.draft_updated')
     rescue ActiveRecord::RecordInvalid
       @suggestions = suggestions_for_active_version.pending.order(created_at: :desc).limit(100)
       render :edit, status: :unprocessable_entity
@@ -71,7 +90,7 @@ module Finance
     def confirm
       Finance::ConfirmTransaction.call(transaction: @transaction, actor: @finance_actor,
                                        reviewed: params[:human_confirmed] == '1')
-      redirect_to finance_transaction_path(@transaction), notice: 'Transaction confirmed.'
+      redirect_to finance_transaction_path(@transaction), notice: I18n.t('finance.flash.confirmed')
     rescue ArgumentError, ActiveRecord::RecordInvalid => e
       redirect_to finance_transaction_path(@transaction), alert: e.message
     end

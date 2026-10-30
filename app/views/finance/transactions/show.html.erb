@@ -1,74 +1,96 @@
-<h1><%= @transaction.kind == 'expense' ? 'Expense' : 'Income' %> #<%= @transaction.id %></h1>
-<p>Status: <strong><%= @transaction.status %></strong> · <%= @transaction.currency_code %></p>
-<dl>
-  <dt>Date confirmed by user</dt><dd><%= @transaction.transaction_date&.iso8601 || 'Not entered' %></dd>
-  <dt>Amount</dt><dd><%= @transaction.amount&.to_s('F') || 'Not entered' %></dd>
-  <dt>Category</dt><dd><%= @transaction.category.presence || 'Not entered' %></dd>
-  <dt>Description</dt><dd><%= @transaction.description.presence || 'Not entered' %></dd>
-  <dt>Confirmed at</dt><dd><%= @transaction.confirmed_at || 'Pending confirmation' %></dd>
-</dl>
-<% if @transaction.draft? %>
-  <%= link_to 'Edit draft and review AI suggestions', edit_finance_transaction_path(@transaction) %>
-  <section>
-    <h2>Confirm financial entry</h2>
-    <%= form_with url: confirm_finance_transaction_path(@transaction), method: :post do |f| %>
-      <%= f.check_box :human_confirmed, { required: true }, '1', '0' %>
-      <%= f.label :human_confirmed, 'I verified the date, amount, type and supporting evidence.' %>
-      <%= f.submit 'Confirm and include in reports' %>
-    <% end %>
-  </section>
-<% else %>
-  <p>This financial record is locked. New evidence can be attached, but the confirmed values cannot be silently edited.</p>
-<% end %>
-<% if @latest_extraction %>
-  <section aria-live="polite">
-    <h2>Image recognition / Nhận diện hình ảnh</h2>
-    <% case Finance::InputPolicy.ui_mode(@latest_extraction.parse_status) %>
-    <% when :manual_entry_or_better_image %>
-      <p role="alert">This receipt is too unclear for reliable recognition. No uncertain field will be filled automatically. Enter the transaction manually or upload a clearer image.</p>
-    <% when :retry_or_manual %>
-      <p role="alert">AI processing was unsuccessful; this does not mean the image is unreadable. You may retry later or enter manually.</p>
-    <% when :review_ai_fields_or_manual %>
-      <p>The AI found potential fields. Please review each suggestion and correct or enter missing values manually.</p>
+<% content_for :title, ui("detail.title", id: @transaction.id) %>
+<div class="page-heading">
+  <div><span class="eyebrow"><%= ui("detail.eyebrow") %></span><h1><%= ui("detail.title", id: @transaction.id) %> <span class="status-pill <%= @transaction.confirmed? ? "is-confirmed" : "is-draft" %>"><%= ui("shared.#{@transaction.status}") %></span></h1><p class="subheading"><%= ui("detail.subtitle") %></p></div>
+  <div class="heading-actions">
+    <% if @transaction.draft? %><%= link_to ui("detail.edit"), edit_finance_transaction_path(@transaction), class: "btn btn-primary" %><% end %>
+    <%= link_to ui("detail.back"), finance_transactions_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+<div class="record-summary">
+  <div class="summary-box"><span><%= ui("shared.date") %></span><strong><%= human_day(@transaction.transaction_date) %></strong></div>
+  <div class="summary-box"><span><%= ui("shared.type") %></span><strong><%= ui("shared.#{@transaction.kind}") %></strong></div>
+  <div class="summary-box"><span><%= ui("shared.amount") %></span><strong><%= money_vnd(@transaction.amount) %></strong></div>
+  <div class="summary-box"><span><%= ui("shared.category") %></span><strong><%= category_label(@transaction.category) %></strong></div>
+</div>
+<div class="detail-grid">
+  <div>
+    <section class="panel">
+      <h2><%= ui("detail.summary") %></h2>
+      <dl class="record-dl">
+        <div><dt><%= ui("shared.description") %></dt><dd><%= @transaction.description.presence || ui("shared.unknown") %></dd></div>
+        <div><dt><%= ui("shared.status") %></dt><dd><%= ui("shared.#{@transaction.status}") %></dd></div>
+        <div><dt><%= ui("detail.confirmed_at") %></dt><dd><%= @transaction.confirmed_at ? l(@transaction.confirmed_at, format: :short) : ui("shared.unknown") %></dd></div>
+      </dl>
+    </section>
+    <% if @transaction.draft? %>
+      <section class="panel confirm-box">
+        <h2><%= ui("detail.confirm.title") %></h2>
+        <p class="form-hint"><%= ui("detail.confirm.help") %></p>
+        <%= form_with url: confirm_finance_transaction_path(@transaction), method: :post do |f| %>
+          <label class="confirm-checkbox"><%= f.check_box :human_confirmed, required: true %><span><%= ui("detail.confirm.checkbox") %></span></label>
+          <%= f.submit ui("detail.confirm.button"), class: "btn btn-primary" %>
+        <% end %>
+      </section>
     <% else %>
-      <p>Manual entry is available regardless of recognition status.</p>
+      <div class="security-info">✓ <%= ui("detail.confirm.locked") %></div>
     <% end %>
-  </section>
-<% end %>
-<section>
-  <h2>Document versions / Lịch sử chứng từ</h2>
-  <%= form_with url: finance_transaction_document_versions_path(@transaction), scope: :document_version,
-                method: :post, multipart: true do |f| %>
-    <%= f.label :image, 'Upload another receipt image (JPEG, PNG, WEBP; up to 10MB)' %>
-    <%= f.file_field :image, accept: 'image/jpeg,image/png,image/webp', required: true %>
-    <%= f.submit 'Save new image version' %>
-  <% end %>
-  <p>Previous images remain accessible. A confirmed transaction keeps its original active evidence; later images are supplemental.</p>
-  <ol>
-    <% @versions.each do |version| %>
-      <li>
-        <%= link_to "Version #{version.version_number}", finance_transaction_document_version_path(@transaction, version) %>
-        · SHA256 <code><%= version.sha256 %></code>
-        · <%= version.created_at %>
-        <%= '(confirmed evidence snapshot)' if @transaction.active_document_version_id == version.id && @transaction.confirmed? %>
-      </li>
+
+    <% if @latest_extraction %>
+      <section class="panel">
+        <h2><%= ui("detail.ai.title") %></h2>
+        <% mode = Finance::InputPolicy.ui_mode(@latest_extraction.parse_status) %>
+        <p class="form-hint">
+          <% if mode == :manual_entry_or_better_image %><%= ui("detail.ai.unreadable") %>
+          <% elsif mode == :retry_or_manual %><%= ui("detail.ai.error") %>
+          <% elsif mode == :review_ai_fields_or_manual %><%= ui("detail.ai.partial") %>
+          <% else %><%= ui("detail.ai.manual") %><% end %>
+        </p>
+      </section>
     <% end %>
-  </ol>
-</section>
-<section>
-  <h2>Line items</h2>
-  <ul>
-    <% @transaction.line_items.order(:position).each do |line| %>
-      <li><%= line.description %> · <%= line.amount&.to_s('F') || 'Amount not entered' %> VND</li>
-    <% end %>
-  </ul>
-</section>
-<section>
-  <h2>Review history</h2>
-  <ul>
-    <% @transaction.audit_events.order(created_at: :desc).limit(50).each do |event| %>
-      <li><%= event.created_at %> · <%= event.event_type %> · actor #<%= event.actor_id %></li>
-    <% end %>
-  </ul>
-</section>
-<%= link_to 'Back to transactions', finance_transactions_path %>
+
+    <section class="panel" id="documents">
+      <h2><%= ui("detail.documents.title") %></h2>
+      <p class="form-hint"><%= ui("detail.upload.help") %></p>
+      <%= form_with url: finance_transaction_document_versions_path(@transaction), scope: :document_version, method: :post, multipart: true do |f| %>
+        <div class="form-field">
+          <%= f.label :image, ui("detail.upload.title"), class: "form-label" %>
+          <%= f.file_field :image, accept: "image/jpeg,image/png,image/webp", required: true %>
+        </div>
+        <%= f.submit ui("detail.upload.button"), class: "btn btn-primary" %>
+      <% end %>
+      <% if @versions.any? %>
+        <ol class="evidence-list">
+          <% @versions.each do |version| %>
+            <li>
+              <%= link_to ui("detail.image.version", number: version.version_number), finance_transaction_document_version_path(@transaction, version), class: "entry-link" %>
+              <% if @transaction.confirmed? && @transaction.active_document_version_id == version.id %><span class="status-pill is-confirmed"><%= ui("detail.image.active") %></span><% elsif @transaction.confirmed? %><span class="status-pill is-draft"><%= ui("detail.image.supplement") %></span><% end %>
+              <p class="form-hint"><%= l(version.created_at, format: :short) %> · SHA256 <code><%= version.sha256 %></code></p>
+            </li>
+          <% end %>
+        </ol>
+      <% else %><p class="form-hint"><%= ui("detail.documents.empty") %></p><% end %>
+    </section>
+  </div>
+  <div>
+    <section class="panel">
+      <h2><%= ui("detail.items.title") %></h2>
+      <% if @transaction.line_items.any? %>
+        <div class="recent-list">
+          <% @transaction.line_items.order(:position).each do |line| %>
+            <div class="recent-entry"><span class="recent-name"><strong><%= line.description %></strong></span><span class="recent-amount"><%= money_vnd(line.amount) %></span></div>
+          <% end %>
+        </div>
+      <% else %><p class="form-hint"><%= ui("detail.items.empty") %></p><% end %>
+    </section>
+    <section class="panel">
+      <h2><%= ui("detail.audit.title") %></h2>
+      <% if @transaction.audit_events.any? %>
+        <ul class="audit-list">
+          <% @transaction.audit_events.order(created_at: :desc).limit(50).each do |event| %>
+            <li><span class="status-pill is-confirmed">✓</span> <strong><%= event.event_type.humanize %></strong><br><small><%= l(event.created_at, format: :short) %> · #<%= event.actor_id %></small></li>
+          <% end %>
+        </ul>
+      <% else %><p class="form-hint"><%= ui("detail.audit.empty") %></p><% end %>
+    </section>
+  </div>
+</div>

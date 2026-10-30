@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= I18n.locale %>">
   <head>
     <meta charset="utf-8">
-    <title><%= content_for(:title) || "Expense & Sales Manager" %></title>
+    <title><%= content_for(:title) || ui("app") %> · <%= ui("app") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#101f30">
+    <meta name="theme-color" content="#111f35">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
@@ -13,36 +13,47 @@
   <body>
     <header class="topbar">
       <div class="topbar-inner">
-        <a class="app-brand" href="<%= root_path %>" aria-label="Expense and Sales Manager home">
-          <span class="brand-mark">↗</span>
-          <span>Expense <span class="brand-highlight">&</span> Sales <small>Rails 8 · AI Assisted</small></span>
-        </a>
-        <nav class="topnav" aria-label="Primary navigation">
-          <% if authenticated? %>
-            <%= link_to "Transactions", finance_transactions_path, class: request.path.start_with?("/finance/transactions") || request.path == root_path ? "nav-link current" : "nav-link" %>
-            <%= link_to "Reports", finance_reports_path, class: request.path.start_with?("/finance/reports") ? "nav-link current" : "nav-link" %>
-            <%= link_to "+ New expense", new_finance_transaction_path(kind: "expense"), class: "nav-new" %>
-            <%= button_to "Sign out", session_path, method: :delete, class: "nav-signout" %>
-          <% else %>
-            <%= link_to "Sign in", new_session_path, class: "nav-link current" %>
-            <% unless ENV["FINANCE_DEMO_PREVIEW"] == "1" %>
-              <%= link_to "Create account", new_registration_path, class: "nav-new" %>
+        <%= link_to root_path, class: "app-brand", aria: {label: ui("app")} do %>
+          <span class="brand-mark" aria-hidden="true">↗</span>
+          <span><%= ui("app") %><small>Rails 8 · <%= ui("tagline") %></small></span>
+        <% end %>
+        <div class="topbar-right">
+          <nav class="topnav" aria-label="Main navigation">
+            <% if authenticated? %>
+              <%= link_to ui("nav.transactions"), finance_transactions_path, class: "nav-link #{request.path.start_with?("/finance/transactions") || request.path == root_path ? 'current' : ''}" %>
+              <%= link_to ui("nav.reports"), finance_reports_path, class: "nav-link #{request.path.start_with?("/finance/reports") ? 'current' : ''}" %>
+              <%= link_to ui("nav.guide"), guide_path, class: "nav-link #{request.path == guide_path ? 'current' : ''}" %>
+              <%= link_to "+ #{ui("nav.new")}", new_finance_transaction_path(kind: "expense"), class: "nav-new" %>
+              <%= button_to ui("nav.logout"), session_path, method: :delete, class: "nav-signout" %>
+            <% else %>
+              <%= link_to ui("nav.login"), new_session_path, class: "nav-link" %>
+              <% unless ENV["FINANCE_DEMO_PREVIEW"] == "1" %>
+                <%= link_to ui("nav.signup"), new_registration_path, class: "nav-new" %>
+              <% end %>
             <% end %>
-          <% end %>
-        </nav>
+          </nav>
+          <div class="locale-switch" role="group" aria-label="Language">
+            <%= link_to "EN", locale_switch_url("en"), lang: "en", hreflang: "en", class: I18n.locale == :en ? "chosen" : "" %>
+            <span aria-hidden="true">/</span>
+            <%= link_to "VI", locale_switch_url("vi"), lang: "vi", hreflang: "vi", class: I18n.locale == :vi ? "chosen" : "" %>
+          </div>
+        </div>
       </div>
     </header>
-    <main class="content-shell">
+    <% if ENV["FINANCE_DEMO_PREVIEW"] == "1" %>
+      <div class="demo-ribbon"><span class="ribbon-indicator"></span><%= ui("footer.safety") %></div>
+    <% end %>
+    <main class="content-shell" id="main-content">
       <% if authenticated? && current_workspace %>
-        <div class="workspace-context"><span class="dot"></span> <%= current_workspace.name %> <span class="context-note">/ Secure finance workspace</span></div>
+        <div class="workspace-context"><span class="workspace-dot"></span><strong><%= current_workspace.name %></strong><span><%= ui("nav.workspace") %></span></div>
       <% end %>
       <% if flash[:notice].present? %><div class="flash notice" role="status"><%= flash[:notice] %></div><% end %>
       <% if flash[:alert].present? %><div class="flash alert" role="alert"><%= flash[:alert] %></div><% end %>
       <%= yield %>
     </main>
     <footer class="app-footer">
-      <span>Expense & Sales Manager · Rails 8</span>
-      <span><%= ENV["FINANCE_DEMO_PREVIEW"] == "1" ? "Temporary demo · Use sample data only" : "Human-verified finance records" %></span>
+      <span><%= ui("app") %> · Rails 8</span>
+      <span><%= ui("footer.review") %></span>
     </footer>
   </body>
 </html>

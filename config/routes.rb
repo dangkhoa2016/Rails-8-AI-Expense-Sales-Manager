@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
 
   get "up" => "rails/health#show", as: :rails_health_check
+  get "guide", to: "finance/guides#show", as: :guide
   draw :finance
   root "finance/transactions#index"
 end
