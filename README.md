@@ -40,3 +40,15 @@ The system never parses image text using handcrafted OCR or amount/date heuristi
 ## Implementation status
 
 This repository contains a functional Rails foundation, not a production accounting release. A live llama.cpp/GGUF adapter is not enabled; the available research model did not pass the difficult-handwriting quality gate. Inventory/sales fulfillment, correction/reversal workflows, PDF exports, team membership and production hardening remain planned.
+
+
+## Temporary Cloudflare Quick Tunnel preview
+
+The development-only preview flag permits `*.trycloudflare.com` hostnames, suppresses detailed Rails debug errors, and disables public self-registration.
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails server --binding 127.0.0.1 --port 3078
+cloudflared tunnel --no-autoupdate --url http://127.0.0.1:3078
+```
+
+Create a dedicated non-production preview account and use *synthetic* data only. Quick Tunnel URLs are temporary and not authentication. Production deployments must configure their own security and host policy. The GGUF inference adapter remains disabled in this preview.
