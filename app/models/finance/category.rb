@@ -20,6 +20,8 @@ module Finance
     belongs_to :workspace
     has_many :line_item_tags, class_name: "Finance::LineItemTag",
       foreign_key: :category_id, dependent: :restrict_with_exception
+    has_many :transaction_tags, class_name: "Finance::TransactionTag",
+      foreign_key: :category_id, dependent: :restrict_with_exception
     validates :workspace, presence: true
     validates :key, presence: true, length: { maximum: 50 },
       format: { with: /\A[a-z][a-z0-9_]{1,49}\z/ },
@@ -54,7 +56,7 @@ module Finance
     end
 
     def used?
-      line_item_tags.exists? || Finance::Transaction.for_workspace(workspace_id).where(category: key).exists? ||
+      line_item_tags.exists? || transaction_tags.exists? || Finance::Transaction.for_workspace(workspace_id).where(category: key).exists? ||
         Finance::LineItem.joins(:finance_transaction)
           .where(finance_transactions: {workspace_id: workspace_id}, category: key).exists?
     end

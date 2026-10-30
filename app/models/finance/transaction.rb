@@ -18,12 +18,18 @@ module Finance
       }
 
 
-    has_one :correction_as_original, class_name: "Finance::Correction",
-      foreign_key: :original_transaction_id, inverse_of: :original_transaction,
-      dependent: :restrict_with_exception
+    has_many :correction_history, class_name: "Finance::Correction",
+      foreign_key: :original_transaction_id, dependent: :restrict_with_exception
+    has_one :correction_as_original, -> { where(status: %w[draft confirmed]) },
+      class_name: "Finance::Correction", foreign_key: :original_transaction_id,
+      inverse_of: :original_transaction, dependent: :restrict_with_exception
     has_one :correction_as_replacement, class_name: "Finance::Correction",
       foreign_key: :replacement_transaction_id, inverse_of: :replacement_transaction,
       dependent: :restrict_with_exception
+
+    has_many :transaction_tags, class_name: "Finance::TransactionTag", foreign_key: :transaction_id,
+      inverse_of: :finance_transaction, dependent: :restrict_with_exception
+    has_many :tags, through: :transaction_tags, source: :category
 
     has_many :line_import_batches, class_name: 'Finance::LineImportBatch', foreign_key: :transaction_id, dependent: :restrict_with_exception
 
@@ -31,8 +37,9 @@ module Finance
       reject_if: ->(attrs) { attrs['description'].blank? && attrs['amount'].blank? }
 
     validates :workspace_id, :created_by_id, presence: true
+    validates :line_total_managed, inclusion: {in: [true, false]}
     validates :kind, inclusion: { in: %w[income expense] }
-    validates :status, inclusion: { in: %w[draft confirmed] }
+    validates :status, inclusion: { in: %w[draft confirmed cancelled] }
     validates :currency_code, inclusion: { in: %w[VND] }
     validates :entry_source, inclusion: { in: %w[manual ai_assisted] }
     validates :amount, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
@@ -52,6 +59,7 @@ module Finance
 
     def confirmed? = status == 'confirmed'
     def draft? = status == 'draft'
+    def cancelled? = status == 'cancelled'
 
     private
 

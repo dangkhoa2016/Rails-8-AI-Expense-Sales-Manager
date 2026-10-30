@@ -66,9 +66,9 @@ class FinanceTwoJourneysTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: /Review income/
     assert_select ".income-review-layout", count: 1
-    assert_select ".income-amount-control", count: 1
+    assert_select ".locked-transaction-total", count: 1
     assert_select "details.income-evidence-panel", minimum: 1
-    assert_select "form[action='#{finance_transaction_path(tx)}'] input[name='finance_transaction[amount]']"
+    assert_select "form[action='#{finance_transaction_path(tx)}'] input[name='finance_transaction[amount]']", count: 0
     assert_select "form[action='#{finance_transaction_path(tx)}'] input[name='return_to_review'][value='1']"
     assert_select "form[action='#{finance_transaction_document_versions_path(tx)}'] input[name='document_version[image]']"
     assert_select ".income-review-layout img.receipt-review-image", count: 0

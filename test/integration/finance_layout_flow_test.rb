@@ -29,7 +29,7 @@ class FinanceLayoutFlowTest < ActionDispatch::IntegrationTest
     tx = @workspace.finance_transactions.order(:id).last
     assert tx.draft?
     6.times do |i|
-      tx.line_items.create!(position: i, description: "Item #{i + 1}",
+      tx.line_items.create!(position: i + 1, description: "Item #{i + 1}",
         entry_source: "manual", amount: 1000, occurred_on: Date.new(2026, 10, 30))
     end
     get finance_transaction_path(tx, locale: "en")
@@ -50,7 +50,7 @@ class FinanceLayoutFlowTest < ActionDispatch::IntegrationTest
       amount: 30000, category: "food", description: "Initial")
     get edit_finance_transaction_path(tx,locale:"vi")
     assert_response :success
-    assert_select "select[name='finance_transaction[category]'] option[value='food'][selected]"
+    assert_select "fieldset.transaction-tag-picker input[name='transaction_tag_ids[]'][checked]", count: 1
     patch finance_transaction_path(tx), params:{revision_reason: "The amount and transaction day need correction.",finance_transaction:{
       amount: "45000", description: "Updated", category:"food",
       transaction_date:"2026-10-29"

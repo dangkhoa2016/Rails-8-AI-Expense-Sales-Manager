@@ -25,6 +25,7 @@ module Finance
         else
           nil
         end,
+        "tags" => tx.tags.order(:key).pluck(:key),
         "line_items" => tx.line_items.includes(:tags).order(:position, :id).map do |item|
           {
             "id" => item.id, "position" => item.position,

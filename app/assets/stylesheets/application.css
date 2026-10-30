@@ -703,3 +703,27 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
   margin:3px 0 0;overflow-wrap:anywhere;font-size:.83rem;
   border:1px solid #e1eaf2;background:#f4f8fc;border-radius:8px;padding:8px;
 }
+
+/* Reasoned correction copies: unmistakable provenance, readable side-by-side differences. */
+.correction-origin-notice{border:2px solid #f2d5a1;background:#fffaf0;margin-bottom:20px}
+.correction-origin-notice h2{margin:10px 0 8px}
+.correction-comparison-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.correction-comparison-summary>div{display:flex;flex-direction:column;gap:5px;padding:12px;border:1px solid #ecd9b7;border-radius:11px;background:#fff}
+.correction-comparison-summary small{color:#586b79;overflow-wrap:anywhere}
+.correction-differences{border-top:1px solid #e9d8bc;padding-top:12px}
+.comparison-diff-row{display:grid;grid-template-columns:minmax(0,1fr) repeat(2,minmax(0,1fr));gap:10px;padding:10px 0;border-bottom:1px solid #e7dbca;overflow-wrap:anywhere}
+.comparison-diff-row strong{font-size:.78rem}
+.comparison-item-list{max-height:350px;overflow-y:auto;padding-left:22px}
+.comparison-item-list li{margin:10px 0}
+.comparison-item-list pre{max-height:170px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.correction-cancel-panel{border:1px solid #edbcaa;background:#fffaf7}
+.cancellation-readonly-notice{border:1px solid #dfa88a}
+.locked-transaction-total{display:flex;align-items:center;gap:9px;padding:12px;border:1px solid #dbe5f0;background:#f3f7fc;border-radius:10px;min-height:44px}
+.locked-transaction-total strong{font-size:1.13rem}
+.transaction-tag-picker{min-width:0}
+@media(max-width:620px){
+  .correction-comparison-summary{grid-template-columns:1fr}
+  .comparison-diff-row{grid-template-columns:1fr;gap:4px}
+  .comparison-diff-row span{padding:7px;border:1px solid #f2e6d5;background:white;border-radius:7px}
+}
+.correction-origin-reason{border-left:3px solid #d9a755;padding-left:10px;overflow-wrap:anywhere}

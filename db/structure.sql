@@ -10,6 +10,60 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: finance_deny_cancelled_context_mutation(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.finance_deny_cancelled_context_mutation() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM finance_transactions WHERE
+    id=CASE WHEN TG_OP='DELETE' THEN OLD.transaction_id ELSE NEW.transaction_id END
+    AND status='cancelled') THEN
+    RAISE EXCEPTION 'cancelled finance context cannot be changed';
+  END IF;
+  RETURN CASE WHEN TG_OP='DELETE' THEN OLD ELSE NEW END;
+END;
+$$;
+
+
+--
+-- Name: finance_deny_cancelled_item_mutation(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.finance_deny_cancelled_item_mutation() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM finance_transactions WHERE
+     id=CASE WHEN TG_OP='DELETE' THEN OLD.transaction_id ELSE NEW.transaction_id END
+     AND status='cancelled')
+     OR (TG_OP='UPDATE' AND EXISTS (SELECT 1 FROM finance_transactions
+     WHERE id=OLD.transaction_id AND status='cancelled')) THEN
+    RAISE EXCEPTION 'cancelled finance items cannot be changed';
+  END IF;
+  RETURN CASE WHEN TG_OP='DELETE' THEN OLD ELSE NEW END;
+END;
+$$;
+
+
+--
+-- Name: finance_deny_cancelled_transaction_mutation(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.finance_deny_cancelled_transaction_mutation() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF OLD.status = 'cancelled' THEN
+    RAISE EXCEPTION 'cancelled correction draft cannot be modified or deleted';
+  END IF;
+  RETURN CASE WHEN TG_OP='DELETE' THEN OLD ELSE NEW END;
+END;
+$$;
+
+
+--
 -- Name: finance_deny_confirmed_line_item_mutation(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -73,8 +127,8 @@ BEGIN
     RAISE EXCEPTION 'finance corrections cannot be deleted';
   END IF;
   IF TG_OP = 'UPDATE' THEN
-    IF OLD.status = 'confirmed' THEN
-      RAISE EXCEPTION 'confirmed finance correction cannot be modified';
+    IF OLD.status IN ('confirmed','cancelled') THEN
+      RAISE EXCEPTION 'completed finance correction cannot be modified';
     END IF;
     IF NEW.original_transaction_id <> OLD.original_transaction_id
       OR NEW.replacement_transaction_id <> OLD.replacement_transaction_id
@@ -160,6 +214,38 @@ BEGIN
     END IF;
   END IF;
   RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: finance_guard_transaction_tags(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.finance_guard_transaction_tags() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  parent_workspace bigint;
+  parent_status text;
+  tag_workspace bigint;
+BEGIN
+  SELECT workspace_id, status INTO parent_workspace, parent_status
+    FROM finance_transactions
+    WHERE id = CASE WHEN TG_OP = 'DELETE' THEN OLD.transaction_id ELSE NEW.transaction_id END;
+  IF parent_workspace IS NULL OR parent_status <> 'draft' THEN
+    RAISE EXCEPTION 'Only editable draft transactions can change tags';
+  END IF;
+  IF TG_OP = 'UPDATE' THEN
+    RAISE EXCEPTION 'Transaction tag links are immutable; delete and insert instead';
+  END IF;
+  IF TG_OP = 'INSERT' THEN
+    SELECT workspace_id INTO tag_workspace FROM finance_categories WHERE id = NEW.category_id;
+    IF tag_workspace IS DISTINCT FROM parent_workspace THEN
+      RAISE EXCEPTION 'Transaction tag must belong to same workspace';
+    END IF;
+  END IF;
+  RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
 END;
 $$;
 
@@ -369,7 +455,7 @@ CREATE TABLE public.finance_corrections (
     CONSTRAINT finance_corrections_confirm_check CHECK ((((status)::text <> 'confirmed'::text) OR ((confirmed_by_id IS NOT NULL) AND (confirmed_at IS NOT NULL)))),
     CONSTRAINT finance_corrections_distinct_check CHECK ((original_transaction_id <> replacement_transaction_id)),
     CONSTRAINT finance_corrections_reason_check CHECK (((char_length(btrim(reason)) >= 10) AND (char_length(btrim(reason)) <= 2000))),
-    CONSTRAINT finance_corrections_status_check CHECK (((status)::text = ANY (ARRAY[('draft'::character varying)::text, ('confirmed'::character varying)::text])))
+    CONSTRAINT finance_corrections_status_check CHECK (((status)::text = ANY ((ARRAY['draft'::character varying, 'confirmed'::character varying, 'cancelled'::character varying])::text[])))
 );
 
 
@@ -697,6 +783,38 @@ ALTER SEQUENCE public.finance_transaction_revisions_id_seq OWNED BY public.finan
 
 
 --
+-- Name: finance_transaction_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.finance_transaction_tags (
+    id bigint NOT NULL,
+    transaction_id bigint NOT NULL,
+    category_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: finance_transaction_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.finance_transaction_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: finance_transaction_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.finance_transaction_tags_id_seq OWNED BY public.finance_transaction_tags.id;
+
+
+--
 -- Name: finance_transactions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -718,11 +836,12 @@ CREATE TABLE public.finance_transactions (
     lock_version integer DEFAULT 0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
+    line_total_managed boolean DEFAULT false NOT NULL,
     CONSTRAINT finance_transactions_amount_check CHECK (((amount IS NULL) OR (amount >= (0)::numeric))),
     CONSTRAINT finance_transactions_confirm_check CHECK ((((status)::text <> 'confirmed'::text) OR ((transaction_date IS NOT NULL) AND (amount > (0)::numeric) AND (confirmed_by_id IS NOT NULL) AND (confirmed_at IS NOT NULL)))),
     CONSTRAINT finance_transactions_kind_check CHECK (((kind)::text = ANY (ARRAY[('income'::character varying)::text, ('expense'::character varying)::text]))),
     CONSTRAINT finance_transactions_source_check CHECK (((entry_source)::text = ANY (ARRAY[('manual'::character varying)::text, ('ai_assisted'::character varying)::text]))),
-    CONSTRAINT finance_transactions_status_check CHECK (((status)::text = ANY (ARRAY[('draft'::character varying)::text, ('confirmed'::character varying)::text])))
+    CONSTRAINT finance_transactions_status_check CHECK (((status)::text = ANY ((ARRAY['draft'::character varying, 'confirmed'::character varying, 'cancelled'::character varying])::text[])))
 );
 
 
@@ -950,6 +1069,13 @@ ALTER TABLE ONLY public.finance_transaction_revisions ALTER COLUMN id SET DEFAUL
 
 
 --
+-- Name: finance_transaction_tags id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_tags ALTER COLUMN id SET DEFAULT nextval('public.finance_transaction_tags_id_seq'::regclass);
+
+
+--
 -- Name: finance_transactions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1098,6 +1224,14 @@ ALTER TABLE ONLY public.finance_transaction_revisions
 
 
 --
+-- Name: finance_transaction_tags finance_transaction_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_tags
+    ADD CONSTRAINT finance_transaction_tags_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: finance_transactions finance_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1148,7 +1282,7 @@ CREATE UNIQUE INDEX idx_finance_categories_tenant_key ON public.finance_categori
 -- Name: idx_finance_correction_original; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX idx_finance_correction_original ON public.finance_corrections USING btree (original_transaction_id);
+CREATE UNIQUE INDEX idx_finance_correction_original ON public.finance_corrections USING btree (original_transaction_id) WHERE ((status)::text = ANY ((ARRAY['draft'::character varying, 'confirmed'::character varying])::text[]));
 
 
 --
@@ -1198,6 +1332,13 @@ CREATE UNIQUE INDEX idx_finance_transaction_revision_version ON public.finance_t
 --
 
 CREATE INDEX idx_finance_transaction_revision_workspace_time ON public.finance_transaction_revisions USING btree (workspace_id, created_at);
+
+
+--
+-- Name: idx_finance_transaction_tags_unique; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_finance_transaction_tags_unique ON public.finance_transaction_tags USING btree (transaction_id, category_id);
 
 
 --
@@ -1341,6 +1482,20 @@ CREATE INDEX index_finance_transaction_revisions_on_workspace_id ON public.finan
 
 
 --
+-- Name: index_finance_transaction_tags_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finance_transaction_tags_on_category_id ON public.finance_transaction_tags USING btree (category_id);
+
+
+--
+-- Name: index_finance_transaction_tags_on_transaction_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finance_transaction_tags_on_transaction_id ON public.finance_transaction_tags USING btree (transaction_id);
+
+
+--
 -- Name: index_sessions_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1359,6 +1514,27 @@ CREATE UNIQUE INDEX index_users_on_email_address ON public.users USING btree (em
 --
 
 CREATE INDEX index_workspaces_on_owner_id ON public.workspaces USING btree (owner_id);
+
+
+--
+-- Name: finance_transaction_contexts deny_cancelled_finance_context_mutation; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER deny_cancelled_finance_context_mutation BEFORE INSERT OR DELETE OR UPDATE ON public.finance_transaction_contexts FOR EACH ROW EXECUTE FUNCTION public.finance_deny_cancelled_context_mutation();
+
+
+--
+-- Name: finance_line_items deny_cancelled_finance_line_item_mutation; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER deny_cancelled_finance_line_item_mutation BEFORE INSERT OR DELETE OR UPDATE ON public.finance_line_items FOR EACH ROW EXECUTE FUNCTION public.finance_deny_cancelled_item_mutation();
+
+
+--
+-- Name: finance_transactions deny_cancelled_finance_transaction_mutation; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER deny_cancelled_finance_transaction_mutation BEFORE DELETE OR UPDATE ON public.finance_transactions FOR EACH ROW EXECUTE FUNCTION public.finance_deny_cancelled_transaction_mutation();
 
 
 --
@@ -1429,6 +1605,13 @@ CREATE TRIGGER guard_finance_line_item_tags BEFORE INSERT OR DELETE OR UPDATE ON
 --
 
 CREATE TRIGGER guard_finance_transaction_context_mutation BEFORE DELETE OR UPDATE ON public.finance_transaction_contexts FOR EACH ROW EXECUTE FUNCTION public.finance_guard_transaction_context_mutation();
+
+
+--
+-- Name: finance_transaction_tags guard_finance_transaction_tags; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER guard_finance_transaction_tags BEFORE INSERT OR DELETE OR UPDATE ON public.finance_transaction_tags FOR EACH ROW EXECUTE FUNCTION public.finance_guard_transaction_tags();
 
 
 --
@@ -1568,6 +1751,14 @@ ALTER TABLE ONLY public.finance_corrections
 
 
 --
+-- Name: finance_transaction_tags fk_rails_b42314e058; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_tags
+    ADD CONSTRAINT fk_rails_b42314e058 FOREIGN KEY (category_id) REFERENCES public.finance_categories(id);
+
+
+--
 -- Name: active_storage_attachments fk_rails_c3b3935057; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1632,6 +1823,14 @@ ALTER TABLE ONLY public.finance_transactions
 
 
 --
+-- Name: finance_transaction_tags fk_rails_e784589ad6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finance_transaction_tags
+    ADD CONSTRAINT fk_rails_e784589ad6 FOREIGN KEY (transaction_id) REFERENCES public.finance_transactions(id);
+
+
+--
 -- Name: finance_field_suggestions fk_rails_e806ccf9fd; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1646,6 +1845,7 @@ ALTER TABLE ONLY public.finance_field_suggestions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261030175000'),
 ('20261030142000'),
 ('20261030110000'),
 ('20261030090000'),

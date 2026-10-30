@@ -1,0 +1,17 @@
+<% if @correction_incoming&.draft? && @comparison_source %>
+  <section class="panel correction-cancel-panel" id="discard-correction">
+    <h2><%= ui("correction_drafts.cancel_title") %></h2>
+    <p class="form-hint"><%= ui("correction_drafts.cancel_help") %></p>
+    <%= form_with url: cancel_finance_transaction_correction_path(@comparison_source),
+      method: :post do |f| %>
+      <div class="form-field">
+        <%= f.label :reason, ui("correction_drafts.cancel_reason"), class: "form-label" %>
+        <%= f.text_area :reason, required: true, minlength: 10, maxlength: 2000,
+          rows: 3, placeholder: ui("correction_drafts.cancel_reason_example") %>
+      </div>
+      <%= f.submit ui("correction_drafts.cancel_action"),
+        class: "btn btn-secondary",
+        data: {turbo_confirm: ui("correction_drafts.cancel_confirm")} %>
+    <% end %>
+  </section>
+<% end %>

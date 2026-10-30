@@ -6,7 +6,8 @@ module Finance
     def self.call(transaction:, actor:, reason:)
       raise ArgumentError, "Draft only" unless transaction.draft?
       count = transaction.line_items.count
-      return transaction if count.zero? # An empty breakdown does not erase a manual amount.
+      # Every itemized draft follows its line-item sum, including removing
+      # its last item. Old confirmed records are never touched.
       total = transaction.line_items.sum(:amount)
       prior = transaction.amount
       return transaction if prior == total

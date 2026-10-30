@@ -29,9 +29,9 @@ class FinanceCategoriesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Bánh ngọt"
     get new_finance_transaction_path(kind: "expense",locale: "vi")
     assert_response :success
-    assert_select "select[name='finance_transaction[category]'] option[value='bakery']", text: "Bánh ngọt"
+    assert_select "input[name='transaction_tag_ids[]'][value='#{record.id}'] + span", text: "Bánh ngọt"
     get new_finance_transaction_path(locale: "en")
-    assert_select "select[name='finance_transaction[category]'] option[value='bakery']", text: "Baked goods"
+    assert_select "input[name='transaction_tag_ids[]'][value='#{record.id}'] + span", text: "Baked goods"
 
     get edit_finance_category_path(record,locale:"vi")
     assert_response :success
@@ -43,7 +43,7 @@ class FinanceCategoriesTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_equal "Tiệm bánh", record.reload.name_vi
     get new_finance_transaction_path(locale:"en")
-    assert_select "select[name='finance_transaction[category]'] option[value='bakery']", text: "Bakery & pastry"
+    assert_select "input[name='transaction_tag_ids[]'][value='#{record.id}'] + span", text: "Bakery & pastry"
 
     assert_difference "Finance::Category.count", -1 do
       delete finance_category_path(record)
@@ -67,7 +67,7 @@ class FinanceCategoriesTest < ActionDispatch::IntegrationTest
     assert_not category.reload.active?
     assert_equal "office", tx.reload.category
     get new_finance_transaction_path(locale: "en")
-    assert_select "select[name='finance_transaction[category]'] option[value='office']", count: 0
+    assert_select "input[name='transaction_tag_ids[]'][value='#{category.id}']", count: 0
     get finance_transaction_path(tx,locale:"vi")
     assert_response :success
     assert_includes response.body, "Văn phòng phẩm"
@@ -78,7 +78,7 @@ class FinanceCategoriesTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert category.reload.active?
     get new_finance_transaction_path(locale:"vi")
-    assert_select "option[value='office']", text: "Đồ dùng văn phòng"
+    assert_select "input[name='transaction_tag_ids[]'][value='#{category.id}'] + span", text: "Đồ dùng văn phòng"
   end
 
   test "legacy free-text category is available for selection and translated without changing ledger" do
@@ -95,7 +95,7 @@ class FinanceCategoriesTest < ActionDispatch::IntegrationTest
     assert_response :success
     get edit_finance_transaction_path(tx,locale:"en")
     assert_response :success
-    assert_select "select[name='finance_transaction[category]'] option[value='legacy_custom'][selected]"
+    assert_select "input[name='transaction_tag_ids[]'][value='#{cat.id}'][checked]"
   end
 
   test "other tenant cannot edit delete or see categories" do

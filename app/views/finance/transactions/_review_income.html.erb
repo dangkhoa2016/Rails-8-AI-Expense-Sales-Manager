@@ -14,12 +14,9 @@
         <%= hidden_field_tag :return_to_review, "1" %>
         <div class="income-primary-fields">
           <div class="form-field income-amount-field">
-            <%= f.label :amount, ui("new_ux.income_amount"), class: "form-label" %>
-            <div class="income-amount-control">
-              <%= f.number_field :amount, min: 0, step: 1,
-                inputmode: "numeric", placeholder: "250000" %>
-              <span>VND</span>
-            </div>
+            <span class="form-label"><%= ui("transaction_total.title") %> (VND)</span>
+            <div class="locked-transaction-total"><strong><%= money_vnd(@transaction.amount) %></strong></div>
+            <p class="form-hint"><%= ui("transaction_total.readonly_help") %></p>
           </div>
           <div class="form-field">
             <%= f.label :description, ui("new_ux.income_from"), class: "form-label" %>
@@ -33,12 +30,7 @@
         </div>
         <details class="entry-optional-fields">
           <summary><%= ui("new_ux.extra_fields") %></summary>
-          <div class="form-field">
-            <%= f.label :category, ui("shared.category"), class: "form-label" %>
-            <%= f.select :category,
-              options_for_select(category_options(selected: @transaction.category), @transaction.category),
-              {include_blank: ui("categories.select")} %>
-          </div>
+          <%= render "finance/transactions/tag_picker" %>
         </details>
         <div class="form-field transaction-revision-reason">
           <%= label_tag :revision_reason, ui("revisions.reason"), class: "form-label" %>

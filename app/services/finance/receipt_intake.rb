@@ -16,6 +16,7 @@ module Finance
         transaction = Finance::Transaction.create!(
           workspace_id: workspace.id, created_by_id: actor.id,
           kind: kind, status: "draft", currency_code: "VND",
+          line_total_managed: true,
           entry_source: "manual"
         )
         version = Finance::UploadDocument.call(
