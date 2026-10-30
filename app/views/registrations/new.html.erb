@@ -1,0 +1,12 @@
+<main class="container">
+  <h1>Create account</h1>
+  <p>Each account starts with a private workspace. Financial records are visible only to their authorized owner.</p>
+  <% if @user.errors.any? %><div role="alert"><%= @user.errors.full_messages.to_sentence %></div><% end %>
+  <%= form_with model: @user, url: registration_path do |f| %>
+    <%= f.label :email_address, "Email address" %><%= f.email_field :email_address, required: true, autocomplete: "email" %>
+    <%= f.label :password %><%= f.password_field :password, required: true, autocomplete: "new-password" %>
+    <%= f.label :password_confirmation %><%= f.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
+    <%= f.submit "Create account" %>
+  <% end %>
+  <%= link_to "Sign in", new_session_path %>
+</main>

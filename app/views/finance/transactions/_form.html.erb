@@ -1,0 +1,71 @@
+<%# Host layout supplies CSRF token, authenticated session and CSS. %>
+<h1><%= @transaction.persisted? ? 'Edit draft' : 'New income / expense' %></h1>
+<p>Enter data manually, or check the AI proposals below. The date and amount must be confirmed before posting.</p>
+<% if @transaction.errors.any? %>
+  <div role="alert"><%= @transaction.errors.full_messages.to_sentence %></div>
+<% end %>
+<% date_proposal = Array(@suggestions).find { |s| s.field_key == 'transaction_date_iso' && s.review_status == 'pending' } %>
+<% amount_proposal = Array(@suggestions).find { |s| s.field_key == 'transaction_amount_vnd' && s.review_status == 'pending' } %>
+<% description_proposal = Array(@suggestions).find { |s| s.field_key == 'transaction_description' && s.review_status == 'pending' } %>
+<% category_proposal = Array(@suggestions).find { |s| s.field_key == 'transaction_category' && s.review_status == 'pending' } %>
+<%= form_with model: @transaction, scope: :finance_transaction,
+              url: @transaction.persisted? ? finance_transaction_path(@transaction) : finance_transactions_path,
+              method: @transaction.persisted? ? :patch : :post do |f| %>
+  <fieldset>
+    <legend>1. Transaction date / Ngày thu chi</legend>
+    <%= f.label :transaction_date, 'Transaction date (required for confirmation)' %>
+    <%= f.date_field :transaction_date,
+          value: @transaction.transaction_date || date_proposal&.proposed_value %>
+    <% if date_proposal %><p>AI date proposal from document: <%= date_proposal.proposed_value %>. Confirm or change this date.</p><% end %>
+    <p>If no date appears on the receipt, enter the actual transaction date manually. Never substitute image EXIF or upload date.</p>
+  </fieldset>
+  <fieldset>
+    <legend>2. Transaction / Thu hoặc chi</legend>
+    <%= f.label :kind, 'Type' %>
+    <%= f.select :kind, [['Expense / Chi', 'expense'], ['Income / Thu', 'income']], {}, disabled: @transaction.persisted? %>
+    <%= f.label :description, 'Description / Tên khoản thu chi' %>
+    <%= f.text_area :description, rows: 2, value: @transaction.description.presence || description_proposal&.proposed_value %>
+    <%= f.label :amount, 'Total amount / Số tiền (VND)' %>
+    <%= f.number_field :amount, min: 0, step: '1', inputmode: 'decimal', placeholder: '43500', value: @transaction.amount || amount_proposal&.proposed_value %>
+    <p>Use digits for the value (example: 43500, not 43.500). Model-provided normalized amount can prefill this draft; the user must review and confirm it. Raw receipt literals are never parsed locally.</p>
+    <%= f.label :category, 'Category / Danh mục' %>
+    <%= f.text_field :category, maxlength: 100, value: @transaction.category.presence || category_proposal&.proposed_value %>
+  </fieldset>
+  <fieldset>
+    <legend>3. Line items / Các khoản trong ảnh</legend>
+    <p>Individual AI-recognized line items appear in the suggestion sections below. Add or correct these values manually.</p>
+    <%= f.fields_for :line_items do |line| %>
+      <section>
+        <%= line.hidden_field :id if line.object.persisted? %>
+        <%= line.hidden_field :position, value: line.object.position || 0 %>
+        <%= line.label :description, "Line #{line.index} description" %>
+        <%= line.text_field :description %>
+        <%= line.label :amount, "Line #{line.index} amount (VND)" %>
+        <%= line.number_field :amount, min: 0, step: '1', placeholder: 'Enter manually' %>
+        <% if line.object.persisted? %><%= line.check_box :_destroy %> <%= line.label :_destroy, 'Remove this draft line' %><% end %>
+      </section>
+    <% end %>
+  </fieldset>
+  <%= f.submit 'Save draft / Lưu nháp' %>
+<% end %>
+<% if @transaction.persisted? && Array(@suggestions).any? %>
+  <section aria-labelledby="ai-suggestions">
+    <h2 id="ai-suggestions">4. AI proposals by field / Các trường AI đã đọc</h2>
+    <p>Each field has an independent status. Null or missing fields must be entered manually. An AI proposal is not an approved financial record.</p>
+    <% Array(@suggestions).group_by { |s| s.field_key.split('.').first }.each do |group, suggestions| %>
+      <section>
+        <h3><%= group.humanize %></h3>
+        <ul>
+          <% suggestions.each do |suggestion| %>
+            <li><strong><%= suggestion.field_key %></strong>: <%= suggestion.proposed_value %> (<%= suggestion.review_status %>)
+              <% if suggestion.review_status == 'pending' && @transaction.draft? %>
+                <%= button_to 'Mark reviewed', accept_finance_transaction_field_suggestion_path(@transaction, suggestion), method: :post %>
+                <%= button_to 'Reject', reject_finance_transaction_field_suggestion_path(@transaction, suggestion), method: :post %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+  </section>
+<% end %>

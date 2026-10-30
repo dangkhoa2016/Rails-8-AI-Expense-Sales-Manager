@@ -1,0 +1,74 @@
+<h1><%= @transaction.kind == 'expense' ? 'Expense' : 'Income' %> #<%= @transaction.id %></h1>
+<p>Status: <strong><%= @transaction.status %></strong> · <%= @transaction.currency_code %></p>
+<dl>
+  <dt>Date confirmed by user</dt><dd><%= @transaction.transaction_date&.iso8601 || 'Not entered' %></dd>
+  <dt>Amount</dt><dd><%= @transaction.amount&.to_s('F') || 'Not entered' %></dd>
+  <dt>Category</dt><dd><%= @transaction.category.presence || 'Not entered' %></dd>
+  <dt>Description</dt><dd><%= @transaction.description.presence || 'Not entered' %></dd>
+  <dt>Confirmed at</dt><dd><%= @transaction.confirmed_at || 'Pending confirmation' %></dd>
+</dl>
+<% if @transaction.draft? %>
+  <%= link_to 'Edit draft and review AI suggestions', edit_finance_transaction_path(@transaction) %>
+  <section>
+    <h2>Confirm financial entry</h2>
+    <%= form_with url: confirm_finance_transaction_path(@transaction), method: :post do |f| %>
+      <%= f.check_box :human_confirmed, { required: true }, '1', '0' %>
+      <%= f.label :human_confirmed, 'I verified the date, amount, type and supporting evidence.' %>
+      <%= f.submit 'Confirm and include in reports' %>
+    <% end %>
+  </section>
+<% else %>
+  <p>This financial record is locked. New evidence can be attached, but the confirmed values cannot be silently edited.</p>
+<% end %>
+<% if @latest_extraction %>
+  <section aria-live="polite">
+    <h2>Image recognition / Nhận diện hình ảnh</h2>
+    <% case Finance::InputPolicy.ui_mode(@latest_extraction.parse_status) %>
+    <% when :manual_entry_or_better_image %>
+      <p role="alert">This receipt is too unclear for reliable recognition. No uncertain field will be filled automatically. Enter the transaction manually or upload a clearer image.</p>
+    <% when :retry_or_manual %>
+      <p role="alert">AI processing was unsuccessful; this does not mean the image is unreadable. You may retry later or enter manually.</p>
+    <% when :review_ai_fields_or_manual %>
+      <p>The AI found potential fields. Please review each suggestion and correct or enter missing values manually.</p>
+    <% else %>
+      <p>Manual entry is available regardless of recognition status.</p>
+    <% end %>
+  </section>
+<% end %>
+<section>
+  <h2>Document versions / Lịch sử chứng từ</h2>
+  <%= form_with url: finance_transaction_document_versions_path(@transaction), scope: :document_version,
+                method: :post, multipart: true do |f| %>
+    <%= f.label :image, 'Upload another receipt image (JPEG, PNG, WEBP; up to 10MB)' %>
+    <%= f.file_field :image, accept: 'image/jpeg,image/png,image/webp', required: true %>
+    <%= f.submit 'Save new image version' %>
+  <% end %>
+  <p>Previous images remain accessible. A confirmed transaction keeps its original active evidence; later images are supplemental.</p>
+  <ol>
+    <% @versions.each do |version| %>
+      <li>
+        <%= link_to "Version #{version.version_number}", finance_transaction_document_version_path(@transaction, version) %>
+        · SHA256 <code><%= version.sha256 %></code>
+        · <%= version.created_at %>
+        <%= '(confirmed evidence snapshot)' if @transaction.active_document_version_id == version.id && @transaction.confirmed? %>
+      </li>
+    <% end %>
+  </ol>
+</section>
+<section>
+  <h2>Line items</h2>
+  <ul>
+    <% @transaction.line_items.order(:position).each do |line| %>
+      <li><%= line.description %> · <%= line.amount&.to_s('F') || 'Amount not entered' %> VND</li>
+    <% end %>
+  </ul>
+</section>
+<section>
+  <h2>Review history</h2>
+  <ul>
+    <% @transaction.audit_events.order(created_at: :desc).limit(50).each do |event| %>
+      <li><%= event.created_at %> · <%= event.event_type %> · actor #<%= event.actor_id %></li>
+    <% end %>
+  </ul>
+</section>
+<%= link_to 'Back to transactions', finance_transactions_path %>
