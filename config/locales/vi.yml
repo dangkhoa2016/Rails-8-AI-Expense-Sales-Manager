@@ -19,6 +19,7 @@ vi:
       expense: Chi
       confirmed: Đã xác nhận
       draft: Bản nháp
+      cancelled: Đã hủy
       all: Tất cả
       cancel: Hủy
       back: Quay lại
@@ -557,6 +558,7 @@ vi:
         transaction: Thông tin giao dịch
         context: Ngữ cảnh / địa điểm
         line_items: Các khoản chi tiết
+        tags: Tags của giao dịch
         correction: Liên kết điều chỉnh
       labels:
         kind: Loại giao dịch
@@ -572,9 +574,43 @@ vi:
         draft_edited: Sửa bản nháp
         correction_requested: Yêu cầu điều chỉnh
         correction_confirmed: Xác nhận bản thay thế
+        correction_cancelled: Hủy bản nháp điều chỉnh
       start_correction: Sửa giao dịch đã xác nhận
       confirmed_help: Không thể ghi đè giao dịch đã chốt. Nhập lý do để tạo bản nháp thay thế, sau đó sửa và xác nhận riêng. Giao dịch gốc vẫn được giữ.
       create_correction: Tạo bản nháp điều chỉnh
+    correction_drafts:
+      copy_badge: BẢN NHÁP ĐIỀU CHỈNH
+      copy_title: Đây là bản sao của giao dịch đã xác nhận
+      copy_notice: 'Bạn đang sửa bản nháp sao chép từ giao dịch gốc #%{source}. Bản gốc đã khóa và không bị thay đổi.'
+      request_reason: Lý do tạo bản điều chỉnh
+      requested_at: Thời điểm bắt đầu điều chỉnh
+      edit_only_copy: Các sửa đổi chỉ có hiệu lực sau khi bạn xác nhận bản thay thế; báo cáo vẫn tính bản gốc trong thời gian chờ.
+      open_original: Xem giao dịch gốc đã khóa
+      original: Giao dịch gốc
+      replacement: Bản nháp thay thế
+      compare_title: So sánh với giao dịch gốc
+      changes_count: '%{count} thay đổi'
+      item_changes: '%{count} khoản chi tiết khác bản gốc'
+      no_changes: Chưa có khác biệt. Bạn có thể chỉnh sửa ngày, nội dung, Tags và các khoản chi tiết.
+      cancel_title: Hủy bản nháp điều chỉnh
+      cancel_help: Hủy bản nháp này khỏi danh sách giao dịch hoạt động. Bản gốc đã xác nhận vẫn được giữ nguyên. Lịch sử hủy được lưu để điều tra; sau đó bạn có thể tạo bản điều chỉnh mới.
+      cancel_reason: Lý do hủy bản nháp
+      cancel_reason_example: 'Ví dụ: Tạo nhầm bản điều chỉnh và chưa muốn thay đổi giao dịch gốc.'
+      cancel_action: Hủy và bỏ bản nháp này
+      cancel_confirm: Xác nhận hủy bản nháp thay thế? Dữ liệu sẽ chỉ còn đọc để tra cứu và không thể khôi phục về nháp đang sửa.
+      cancelled: Đã hủy bản nháp điều chỉnh; bản gốc không thay đổi.
+      cancelled_title: Bản nháp điều chỉnh đã hủy
+      cancelled_help: Bản sao này chỉ lưu để kiểm toán và không còn tính trong danh sách làm việc. Giao dịch gốc vẫn được giữ nguyên.
+    transaction_total:
+      title: Tổng tiền giao dịch (chỉ đọc)
+      readonly_help: Tổng tiền do hệ thống tính từ các dòng chi tiết. Hãy thêm hoặc sửa từng khoản để thay đổi tổng; giao dịch cũ chưa có dòng vẫn được bảo toàn.
+      first_item_amount: Số tiền của khoản đầu tiên (VND)
+      initial_item_help: Khi lưu, khoản này sẽ được tạo thành dòng chi tiết đầu tiên; tổng tiền của giao dịch được tính từ các dòng.
+      first_item: Khoản nhập đầu tiên
+    transaction_tags:
+      title: Tags của giao dịch (chọn nhiều)
+      new: Tạo Tag mới (tùy chọn)
+      help: Có thể chọn nhiều Tag hoặc nhập tên mới, ngăn cách bằng dấu phẩy. Tag đầu tiên là nhóm phân loại chính để báo cáo không cộng trùng số tiền.
     quick_item:
       name_placeholder: 'Ví dụ: cà phê, giấy in'
       total: Thành tiền (VND)

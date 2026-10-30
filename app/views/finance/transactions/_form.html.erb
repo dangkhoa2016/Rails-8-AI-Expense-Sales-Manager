@@ -8,6 +8,8 @@
 <% if @transaction.errors.any? %>
   <div class="flash alert" role="alert"><%= @transaction.errors.full_messages.to_sentence %></div>
 <% end %>
+<%= render "finance/transactions/correction_comparison" %>
+<%= render "finance/transactions/cancel_correction" %>
 <div class="transaction-form-shell">
   <div class="transaction-entry-main">
     <%= form_with model: @transaction, scope: :finance_transaction,
@@ -31,15 +33,15 @@
             <p class="form-hint"><%= ui("form.date.help") %></p>
           </div>
           <div class="form-field entry-amount">
-            <%= f.label :amount, "#{ui("shared.amount")} (VND)", class: "form-label" %>
-            <%= f.number_field :amount, min: 0, step: 1, inputmode: "numeric",
-              placeholder: "30000", required: false %>
+            <span class="form-label"><%= ui("transaction_total.title") %> (VND)</span>
+            <div class="locked-transaction-total">
+              <span aria-hidden="true">🔒</span>
+              <strong><%= money_vnd(@transaction.amount) %></strong>
+            </div>
+            <p class="form-hint"><%= ui("transaction_total.readonly_help") %></p>
           </div>
-          <div class="form-field">
-            <%= f.label :category, ui("shared.category"), class: "form-label" %>
-            <%= f.select :category, options_for_select(category_options(selected: @transaction.category), @transaction.category),
-              {include_blank: ui("categories.select")} %>
-            <%= link_to ui("categories.manage"), finance_tags_path, class: "text-action" %>
+          <div class="form-field entry-full">
+            <%= render "finance/transactions/tag_picker" %>
           </div>
           <div class="form-field entry-full">
             <%= f.label :description, ui("shared.description"), class: "form-label" %>

@@ -20,7 +20,7 @@ module Finance
           kind: source.kind, status: "draft", entry_source: "manual",
           currency_code: source.currency_code, transaction_date: source.transaction_date,
           amount: source.amount, description: source.description,
-          category: source.category
+          category: source.category, line_total_managed: source.line_items.exists?
         )
         source.line_items.order(:position).each do |line|
           copied = replacement.line_items.build(
@@ -34,6 +34,14 @@ module Finance
           line.line_item_tags.each do |association|
             copied.line_item_tags.create!(category_id: association.category_id)
           end
+        end
+        source.transaction_tags.each do |link|
+          replacement.transaction_tags.create!(category_id: link.category_id)
+        end
+        if source.transaction_tags.empty? && source.category.present?
+          legacy_tag = Finance::Category.for_workspace(source.workspace_id)
+            .find_by(key: source.category)
+          replacement.transaction_tags.create!(category: legacy_tag) if legacy_tag
         end
         if (context = source.context)
           replacement.create_context!(

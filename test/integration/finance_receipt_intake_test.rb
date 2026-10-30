@@ -59,7 +59,8 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: /Kiểm tra hóa đơn/
     assert_select "img.receipt-review-image", count: 1
-    assert_select "input[name='finance_transaction[amount]']", count: 1
+    assert_select "input[name='finance_transaction[amount]']", count: 0
+    assert_select ".locked-transaction-total", count: 1
     assert_includes response.body, "Chưa kết nối AI"
     assert_select "a[href='#{finance_transaction_line_items_path(tx)}']", minimum: 1
     assert_select "form[action='#{finance_transaction_path(tx)}']", count: 1
@@ -73,6 +74,10 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
 
   test "reviewed edits persist in draft; missing fields remain unknown and cannot auto-confirm" do
     tx = upload_draft
+    post finance_transaction_line_items_path(tx), params: {line_item: {
+      description: "Sweet bread", amount: "30000"
+    }}
+    assert_response :redirect
     patch finance_transaction_path(tx), params: {
       return_to_review: "1",
       revision_reason: "Verified these draft fields against the saved image.",

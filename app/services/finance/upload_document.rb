@@ -9,6 +9,7 @@ module Finance
     TYPES = %w[image/jpeg image/png image/webp].freeze
 
     def self.call(transaction:, upload:, actor:)
+      raise ArgumentError, "Cancelled correction drafts are read-only" if transaction.cancelled?
       raise ArgumentError, 'Image is required' if upload.blank?
       raise ArgumentError, 'Image exceeds 10 MB' if upload.size.to_i <= 0 || upload.size.to_i > MAX_BYTES
       raise ArgumentError, 'Authenticated actor required' if actor.nil?

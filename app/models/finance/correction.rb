@@ -9,7 +9,7 @@ module Finance
     belongs_to :requested_by, class_name: "User"
     belongs_to :confirmed_by, class_name: "User", optional: true
 
-    validates :status, inclusion: { in: %w[draft confirmed] }
+    validates :status, inclusion: { in: %w[draft confirmed cancelled] }
     validates :reason, presence: true, length: { minimum: 10, maximum: 2000 }
     validates :workspace_id, :requested_by_id, presence: true
     validate :consistent_transactions
@@ -19,6 +19,7 @@ module Finance
 
     def draft? = status == "draft"
     def confirmed? = status == "confirmed"
+    def cancelled? = status == "cancelled"
 
     private
 
@@ -33,7 +34,7 @@ module Finance
     end
 
     def confirmed_record_readonly
-      errors.add(:base, "Confirmed corrections are immutable") if status_in_database == "confirmed"
+      errors.add(:base, "Completed corrections are immutable") if %w[confirmed cancelled].include?(status_in_database)
     end
   end
 end

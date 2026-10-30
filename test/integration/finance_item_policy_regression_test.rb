@@ -37,7 +37,7 @@ class FinanceItemPolicyRegressionTest < ActionDispatch::IntegrationTest
     assert_select "tr#finance_line_item_#{item.id} td.line-cell-date", text: /30\/10\/2026/
   end
 
-  test "time is optional, not auto-guessed, and amount synchronization retains the manual empty total" do
+  test "time is optional, not auto-guessed, and amount synchronization zeroes the draft after removing the final line" do
     post finance_transaction_line_items_path(@transaction), as: :turbo_stream,
       params: {line_item: {description: "No specific time", amount: "1000", occurred_on: ""}}
     assert_response :success
@@ -57,7 +57,7 @@ class FinanceItemPolicyRegressionTest < ActionDispatch::IntegrationTest
     delete finance_transaction_line_item_path(@transaction, item)
     assert_response :redirect
     assert_equal 0, @transaction.line_items.count
-    assert_equal BigDecimal("2500"), @transaction.reload.amount
+    assert_equal BigDecimal("0"), @transaction.reload.amount
   end
 
   test "CSV without dates imports and replays once; conflicting legacy item dates roll back" do

@@ -1,0 +1,21 @@
+<fieldset class="quick-item-tags transaction-tag-picker">
+  <legend class="form-label"><%= ui("transaction_tags.title") %></legend>
+  <%= hidden_field_tag :transaction_tag_selection, "1" %>
+  <div class="quick-tag-list">
+    <% @available_transaction_tags.each do |tag| %>
+      <label class="quick-tag-choice">
+        <%= check_box_tag "transaction_tag_ids[]", tag.id,
+          @selected_transaction_tag_ids.include?(tag.id.to_s),
+          id: "transaction_tag_#{tag.id}" %>
+        <span><%= tag.label %></span>
+      </label>
+    <% end %>
+  </div>
+  <div class="form-field quick-new-tags">
+    <%= label_tag :transaction_new_tags, ui("transaction_tags.new"), class: "form-label" %>
+    <%= text_field_tag :transaction_new_tags, @new_transaction_tag_names,
+      maxlength: 480, placeholder: ui("quick_item.new_tags_placeholder") %>
+    <p class="form-hint"><%= ui("transaction_tags.help") %></p>
+    <%= link_to ui("categories.manage"), finance_tags_path, class: "text-action" %>
+  </div>
+</fieldset>

@@ -49,8 +49,9 @@
         <%= hidden_field_tag :entry_mode, (@transaction.kind == "income" ? "quick_income" : ""),
           data: {finance_kind_selector_target: "entryMode"} %>
         <div class="form-field entry-amount">
-          <%= f.label :amount, ui("shared.amount"), class: "form-label" %>
+          <%= f.label :amount, ui("transaction_total.first_item_amount"), class: "form-label" %>
           <%= f.number_field :amount, min: 0, step: 1, inputmode: "numeric", placeholder: "30000" %>
+          <p class="form-hint"><%= ui("transaction_total.initial_item_help") %></p>
         </div>
         <div class="form-field">
           <%= f.label :description, ui("unified_intake.purpose"), class: "form-label" %>
@@ -65,13 +66,8 @@
               <%= f.label :transaction_date, ui("shared.date"), class: "form-label" %>
               <%= f.date_field :transaction_date %>
             </div>
-            <div class="form-field">
-              <%= f.label :category, ui("shared.category"), class: "form-label" %>
-              <%= f.select :category,
-                options_for_select(category_options(selected: @transaction.category), @transaction.category),
-                {include_blank: ui("categories.select")} %>
-            </div>
           </div>
+          <%= render "finance/transactions/tag_picker" %>
         </details>
         <div class="intake-submit">
           <p class="form-hint"><%= ui("intake.manual_note") %></p>

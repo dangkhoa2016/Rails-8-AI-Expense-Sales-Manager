@@ -17,18 +17,15 @@
         <div class="fields-grid">
           <div class="form-field"><%= f.label :transaction_date, ui("shared.date"), class: "form-label" %>
             <%= f.date_field :transaction_date %></div>
-          <div class="form-field"><%= f.label :amount, "#{ui('shared.amount')} (VND)", class: "form-label" %>
-            <%= f.number_field :amount, min: 0, step: 1, inputmode: "numeric" %></div>
+          <div class="form-field"><span class="form-label"><%= ui("transaction_total.title") %> (VND)</span>
+            <div class="locked-transaction-total"><strong><%= money_vnd(@transaction.amount) %></strong></div>
+            <p class="form-hint"><%= ui("transaction_total.readonly_help") %></p></div>
           <div class="form-field full"><%= f.label :description, ui("shared.description"), class: "form-label" %>
             <%= f.text_area :description, rows: 2 %></div>
         </div>
         <details class="entry-optional-fields intake-review-optional">
           <summary><%= ui("new_ux.extra_fields") %></summary>
-          <div class="form-field"><%= f.label :category, ui("shared.category"), class: "form-label" %>
-            <%= f.select :category,
-              options_for_select(category_options(selected: @transaction.category), @transaction.category),
-              {include_blank: ui("categories.select")} %>
-          </div>
+          <%= render "finance/transactions/tag_picker" %>
         </details>
         <div class="form-field transaction-revision-reason">
           <%= label_tag :revision_reason, ui("revisions.reason"), class: "form-label" %>

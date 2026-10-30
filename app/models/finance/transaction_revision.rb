@@ -11,7 +11,7 @@ module Finance
 
     validates :version_number, numericality: { only_integer: true, greater_than: 0 }
     validates :reason, presence: true, length: { minimum: 10, maximum: 2000 }
-    validates :action, inclusion: { in: %w[draft_edited correction_requested correction_confirmed] }
+    validates :action, inclusion: { in: %w[draft_edited correction_requested correction_confirmed correction_cancelled] }
     validate :workspace_matches_transaction
 
     def readonly? = persisted?

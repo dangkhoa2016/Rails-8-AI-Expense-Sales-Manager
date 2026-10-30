@@ -2,7 +2,7 @@
 
 module Finance
   class CorrectionsController < BaseController
-    before_action :find_source!, only: :create
+    before_action :find_source!, only: %i[create cancel]
 
     def create
       target = @source.line_items.find(params[:line_item_id]) if params[:line_item_id].present?
@@ -19,6 +19,17 @@ module Finance
       end
     rescue ArgumentError, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
       redirect_to finance_transaction_path(@source), alert: e.message
+    end
+
+    def cancel
+      correction = @source.correction_as_original
+      raise ActionController::RoutingError, "Not Found" unless correction&.draft?
+      Finance::CancelCorrection.call(correction: correction, actor: @finance_actor,
+        reason: params[:reason])
+      redirect_to finance_transaction_path(@source),
+        notice: I18n.t("finance.correction_drafts.cancelled"), status: :see_other
+    rescue ArgumentError, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+      redirect_to finance_transaction_path(@source), alert: e.message, status: :see_other
     end
 
     private

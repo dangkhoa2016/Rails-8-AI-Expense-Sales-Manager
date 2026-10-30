@@ -3,6 +3,7 @@ module Finance
   class FieldSuggestionsController < BaseController
     before_action :load_finance_transaction!
     before_action :find_suggestion!
+    before_action :require_not_cancelled!
 
     def accept
       Finance::ReviewSuggestion.call(suggestion: @suggestion, actor: @finance_actor, decision: 'accept')
@@ -19,6 +20,10 @@ module Finance
     end
 
     private
+    def require_not_cancelled!
+      raise ActionController::RoutingError, "Not Found" if @transaction.cancelled?
+    end
+
     def review_destination
       if params[:scope] == "line_items"
         proposals_finance_transaction_line_items_path(@transaction, page: params[:page])

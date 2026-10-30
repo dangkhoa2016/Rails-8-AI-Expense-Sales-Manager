@@ -1,0 +1,75 @@
+<% if @comparison_source %>
+  <section class="panel correction-origin-notice" id="correction-origin">
+    <span class="status-pill is-draft"><%= ui("correction_drafts.copy_badge") %></span>
+    <h2><%= ui("correction_drafts.copy_title") %></h2>
+    <p><%= ui("correction_drafts.copy_notice", source: @comparison_source.id) %></p>
+    <p class="correction-origin-reason">
+      <strong><%= ui("correction_drafts.request_reason") %>:</strong>
+      <%= @correction_incoming.reason %>
+    </p>
+    <p class="form-hint">
+      <%= ui("correction_drafts.requested_at") %>:
+      <%= @correction_incoming.created_at.in_time_zone("Asia/Ho_Chi_Minh").strftime("%d/%m/%Y %H:%M:%S %Z") %>
+    </p>
+    <% if @transaction.cancelled? %>
+      <p class="form-hint"><%= ui("correction_drafts.cancelled_help") %></p>
+    <% else %>
+      <p class="form-hint"><%= ui("correction_drafts.edit_only_copy") %></p>
+    <% end %>
+    <p><%= link_to ui("correction_drafts.open_original"),
+      finance_transaction_path(@comparison_source), class: "btn btn-secondary" %></p>
+    <div class="correction-comparison-summary">
+      <div><small><%= ui("correction_drafts.original") %></small>
+        <strong>#<%= @comparison_source.id %> · <%= money_vnd(@comparison_source.amount) %></strong>
+        <small><%= human_day(@comparison_source.transaction_date) %> ·
+          <%= @comparison[:source_count] %> <%= ui("m6.count") %></small></div>
+      <div><small><%= ui("correction_drafts.replacement") %></small>
+        <strong>#<%= @transaction.id %> · <%= money_vnd(@transaction.amount) %></strong>
+        <small><%= human_day(@transaction.transaction_date) %> ·
+          <%= @comparison[:draft_count] %> <%= ui("m6.count") %></small></div>
+    </div>
+    <details class="correction-differences" open>
+      <summary><%= ui("correction_drafts.compare_title") %> ·
+        <%= ui("correction_drafts.changes_count",
+          count: @comparison[:fields].size + @comparison[:item_differences].size +
+            (@comparison[:source_tags] == @comparison[:draft_tags] ? 0 : 1)) %></summary>
+      <% if @comparison[:fields].empty? && @comparison[:item_differences].empty? &&
+            @comparison[:source_tags] == @comparison[:draft_tags] %>
+        <p class="form-hint"><%= ui("correction_drafts.no_changes") %></p>
+      <% end %>
+      <% @comparison[:fields].each do |change| %>
+        <div class="comparison-diff-row">
+          <strong><%= ui("revisions.labels.#{change[:field]}", default: change[:field].humanize) %></strong>
+          <span><%= change[:before].presence || "—" %></span>
+          <span><%= change[:after].presence || "—" %></span>
+        </div>
+      <% end %>
+      <% if @comparison[:source_tags] != @comparison[:draft_tags] %>
+        <div class="comparison-diff-row"><strong>Tags</strong>
+          <span><%= @comparison[:source_tags].join(", ").presence || "—" %></span>
+          <span><%= @comparison[:draft_tags].join(", ").presence || "—" %></span></div>
+      <% end %>
+      <% if @comparison[:item_differences].any? %>
+        <details class="comparison-items">
+          <summary><%= ui("correction_drafts.item_changes",
+            count: @comparison[:item_differences].size) %></summary>
+          <ol class="comparison-item-list">
+            <% @comparison[:item_differences].each do |change| %>
+              <li>
+                <strong>#<%= change[:position] + 1 %> ·
+                  <%= change[:replacement]&.fetch("description", nil) ||
+                      change[:original]&.fetch("description", nil) %></strong>
+                <div class="revision-pair">
+                  <div><small><%= ui("correction_drafts.original") %></small>
+                    <pre><%= JSON.pretty_generate(change[:original]) %></pre></div>
+                  <div><small><%= ui("correction_drafts.replacement") %></small>
+                    <pre><%= JSON.pretty_generate(change[:replacement]) %></pre></div>
+                </div>
+              </li>
+            <% end %>
+          </ol>
+        </details>
+      <% end %>
+    </details>
+  </section>
+<% end %>

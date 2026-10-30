@@ -10,7 +10,9 @@ namespace :finance do
       post :confirm
       get :review
     end
-    resource :correction, only: :create, controller: :corrections
+    resource :correction, only: :create, controller: :corrections do
+      post :cancel, on: :member
+    end
     resources :line_items, only: %i[index new edit create update destroy] do
       collection do
         post :import

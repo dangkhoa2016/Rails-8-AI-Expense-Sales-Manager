@@ -22,6 +22,17 @@
   </div>
 </div>
 
+<%= render "finance/transactions/correction_comparison" %>
+<% if @transaction.cancelled? %>
+  <section class="panel cancellation-readonly-notice">
+    <h2><%= ui("correction_drafts.cancelled_title") %></h2>
+    <p><%= ui("correction_drafts.cancelled_help") %></p>
+    <% if @comparison_source %>
+      <%= link_to ui("correction_drafts.open_original"),
+        finance_transaction_path(@comparison_source), class: "btn btn-secondary" %>
+    <% end %>
+  </section>
+<% end %>
 <section class="detail-hero panel">
   <div class="detail-hero-main">
     <span class="eyebrow"><%= ui("detail_view.amount_label") %></span>
@@ -37,7 +48,10 @@
   </div>
   <div class="detail-hero-meta">
     <div><span><%= ui("shared.date") %></span><strong><%= human_day(@transaction.transaction_date) %></strong></div>
-    <div><span><%= ui("shared.category") %></span><strong><%= category_label(@transaction.category) %></strong></div>
+    <div><span><%= ui("transaction_tags.title") %></span><strong>
+      <% tags = @transaction.tags.order(:key).to_a %>
+      <%= tags.any? ? tags.map(&:label).join(" · ") : category_label(@transaction.category) %>
+    </strong></div>
     <div><span><%= ui("m6.count") %></span><strong><%= @line_items_count %></strong></div>
     <div><span><%= ui("m6.difference") %></span><strong><%= money_vnd(@line_items_delta) %></strong></div>
   </div>
@@ -101,6 +115,8 @@
         <% end %>
       </section>
     <% end %>
+
+    <%= render "finance/transactions/cancel_correction" %>
 
     <% if @transaction.draft? %>
       <section class="panel detail-confirm-panel">

@@ -19,6 +19,7 @@ en:
       expense: Expense
       confirmed: Confirmed
       draft: Draft
+      cancelled: Discarded
       all: All
       cancel: Cancel
       back: Back
@@ -562,6 +563,7 @@ en:
         transaction: Transaction details
         context: Context / location
         line_items: Item breakdown
+        tags: Transaction Tags
         correction: Correction link
       labels:
         kind: Transaction type
@@ -577,9 +579,43 @@ en:
         draft_edited: Draft edited
         correction_requested: Correction requested
         correction_confirmed: Replacement confirmed
+        correction_cancelled: Correction draft discarded
       start_correction: Correct a confirmed transaction
       confirmed_help: Confirmed financial records cannot be overwritten. Explain why to create an editable replacement draft, then confirm it separately. The original is preserved.
       create_correction: Create correction draft
+    correction_drafts:
+      copy_badge: CORRECTION DRAFT
+      copy_title: This is an editable copy of a confirmed transaction
+      copy_notice: 'You are editing a copy of locked original transaction #%{source}. The original cannot be changed.'
+      request_reason: Reason this correction was requested
+      requested_at: Correction started at
+      edit_only_copy: Changes only become effective after separately confirming the replacement; reports still use the original while this draft is pending.
+      open_original: Open locked original
+      original: Original transaction
+      replacement: Replacement draft
+      compare_title: Compare with original
+      changes_count: '%{count} changes'
+      item_changes: '%{count} item differences'
+      no_changes: No differences yet. You can edit the date, details, Tags and line items.
+      cancel_title: Discard correction draft
+      cancel_help: Remove this draft from active work while preserving the immutable original and an auditable cancellation trail. Another correction can then be started.
+      cancel_reason: Reason for discarding
+      cancel_reason_example: 'E.g. Started a correction by mistake and decided not to change the original.'
+      cancel_action: Discard this draft
+      cancel_confirm: Discard this replacement draft? It will become read-only evidence and cannot be reopened for edits.
+      cancelled: Correction draft discarded; original unchanged.
+      cancelled_title: Discarded correction draft
+      cancelled_help: This copy is read-only, retained for audit and excluded from the active transaction list. The original remains unchanged.
+    transaction_total:
+      title: Transaction total (read-only)
+      readonly_help: Total is calculated from line items. Add or edit individual items to change it. Older records without items are preserved.
+      first_item_amount: First line-item amount (VND)
+      initial_item_help: Saving creates your first line item; the transaction total is then calculated from its items.
+      first_item: Initial item
+    transaction_tags:
+      title: Transaction Tags (select several)
+      new: Add new Tags (optional)
+      help: Choose multiple Tags or enter names separated by commas. The first is the primary report category; secondary Tags never duplicate amounts.
     quick_item:
       name_placeholder: E.g. coffee, paper supplies
       total: Line total (VND)

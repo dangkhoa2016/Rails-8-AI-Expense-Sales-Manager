@@ -7,6 +7,11 @@ module Finance
       Finance::Transaction.transaction do
         transaction.lock!
         raise ArgumentError, 'Only drafts can be confirmed' unless transaction.draft?
+        if transaction.line_total_managed?
+          raise ArgumentError, "Add at least one line item before confirmation" if transaction.line_items.empty?
+          total = transaction.line_items.sum(:amount)
+          raise ArgumentError, "Transaction total must match the line-item sum" unless transaction.amount == total
+        end
         unless Finance::InputPolicy.confirmable?(date: transaction.transaction_date, amount: transaction.amount,
                                                   actor_id: actor.id, human_confirmed: reviewed)
           raise ArgumentError, 'Confirmed date and positive amount required'
