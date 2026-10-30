@@ -1,0 +1,30 @@
+<h1>Confirmed financial report</h1>
+<p>Only human-confirmed financial transactions are included; drafts and pending AI suggestions are excluded.</p>
+<%= form_with url: finance_reports_path, method: :get, local: true do |f| %>
+  <%= f.label :month, 'Month (YYYY-MM)' %>
+  <%= f.month_field :month, value: @month.strftime('%Y-%m') %>
+  <%= f.submit 'Filter' %>
+<% end %>
+<%= link_to 'Export confirmed data as CSV', finance_reports_export_path(month: @month.strftime('%Y-%m')) %>
+<h2><%= @month.strftime('%B %Y') %> · <%= @transactions_count %> confirmed transactions</h2>
+<% [['Income / Thu', 'income'], ['Expense / Chi', 'expense']].each do |label, kind| %>
+  <% total = @totals[kind] || BigDecimal('0') %>
+  <% percentage = ((total / @max_value) * 100).to_f.round(1) %>
+  <section>
+    <h3><%= label %>: <%= total.to_s('F') %> VND</h3>
+    <div role="img" aria-label="<%= label %> bar, <%= percentage %> percent of chart maximum"
+         style="width:100%; background:#e6e6e6; height:22px">
+      <div style="height:22px; width:<%= percentage %>%; background:#537c8e"></div>
+    </div>
+  </section>
+<% end %>
+<h2>By category</h2>
+<table>
+  <thead><tr><th>Type</th><th>Category</th><th>Amount (VND)</th></tr></thead>
+  <tbody>
+    <% @categories.sort_by { |(kind,category),_| [kind,category.to_s] }.each do |(kind,category),amount| %>
+      <tr><td><%= kind %></td><td><%= category.presence || 'Uncategorized' %></td><td><%= amount.to_s('F') %></td></tr>
+    <% end %>
+  </tbody>
+</table>
+<p><%= link_to 'Back to transactions', finance_transactions_path %></p>

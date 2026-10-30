@@ -1,0 +1,22 @@
+<h1>Income &amp; Expense Manager</h1>
+<nav>
+  <%= link_to 'New expense', new_finance_transaction_path(kind: 'expense') %> |
+  <%= link_to 'New income', new_finance_transaction_path(kind: 'income') %> |
+  <%= link_to 'Monthly report', finance_reports_path %>
+</nav>
+<p>Drafts are excluded from financial reports. Uploads and manual entries are both supported.</p>
+<table>
+  <thead><tr><th>Transaction</th><th>Date</th><th>Type</th><th>Amount</th><th>Status</th><th>Evidence</th></tr></thead>
+  <tbody>
+    <% @transactions.each do |tx| %>
+      <tr>
+        <td><%= link_to (tx.description.presence || "Draft ##{tx.id}"), finance_transaction_path(tx) %></td>
+        <td><%= tx.transaction_date&.iso8601 || 'Not entered' %></td>
+        <td><%= tx.kind %></td>
+        <td><%= tx.amount&.to_s('F') || 'Not entered' %> <%= tx.currency_code %></td>
+        <td><%= tx.status %></td>
+        <td><%= tx.document_versions.count %> image versions</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

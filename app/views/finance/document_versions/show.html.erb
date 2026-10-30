@@ -1,0 +1,12 @@
+<h1>Receipt evidence version <%= @version.version_number %></h1>
+<p>Uploaded <%= @version.created_at %> · <%= @version.byte_size %> bytes · <%= @version.content_type %></p>
+<p>SHA256: <code><%= @version.sha256 %></code></p>
+<%= image_tag image_finance_transaction_document_version_path(@transaction, @version), alt: 'Private receipt evidence', style: 'max-width:100%; max-height:650px' %>
+<p><%= link_to 'Open original image for review', image_finance_transaction_document_version_path(@transaction, @version), target: '_blank', rel: 'noopener' %></p>
+<h2>AI extraction attempts for this exact image</h2>
+<ul>
+  <% @extractions.each do |run| %>
+    <li>Run #<%= run.id %> · <%= run.parse_status %> · <%= run.created_at %> · <%= run.model_sha256.first(16) %></li>
+  <% end %>
+</ul>
+<%= link_to 'Return to transaction', finance_transaction_path(@transaction) %>
