@@ -35,3 +35,11 @@ Use test migrations and integration/browser tests before applying the migration 
 On a replacement correction draft's **Edit** and **Detail** screens, both **Open locked original** and **Original transaction (immutable)** open the same read-only native dialog without navigating away. The modal displays the original's confirmed status, amount/date/type, description, localized Tags, context, complete line-item list, linked evidence and recorded revision reasons. The evidence links open a **separate tab**; the unsaved replacement form remains untouched. Users close the modal explicitly using the centered X or Close details button; backdrop clicks and Escape do not dismiss it. Focus returns to the original trigger. The modal is responsive on narrow screens.
 
 The **Discard this draft** submit button uses a conspicuous red destructive style; the reason and explicit confirmation remain required. Transaction Tag selection remains available, but the redundant **Manage Tags** link is removed from the transaction form (the global Tags navigation is unchanged). These UI changes do not add accounting writes, change correction states, or relax tenant authorization.
+
+## Status-aware correction banner and neutral modal controls
+
+The correction comparison banner now derives its heading, status badge and descriptive guidance from the **actual replacement transaction state** rather than assuming every replacement remains a draft. A pending draft clearly says it is an editable copy; a confirmed replacement says **Confirmed correction transaction** and explains that it is effective in reporting while the locked original remains preserved; a cancelled correction shows a separate discarded/archived notice. Both the original source and confirmed replacement continue to be read-only.
+
+The original transaction modal's **Close details** action and the original-source trigger buttons use locally scoped neutral button styles: white background, dark-blue text, visibly centered labels, a minimum 44px hit area, an explicit hover/focus indicator and responsive width. This avoids accidental inheritance from generic blue button styling. Closing the modal still keeps the current transaction URL and form state intact.
+
+These are read-only UI and language changes; no migration, transaction mutation, correction lifecycle change or AI/OCR extraction was introduced.

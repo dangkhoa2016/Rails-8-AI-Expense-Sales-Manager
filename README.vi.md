@@ -202,3 +202,5 @@ Tạo cả **Thu tiền** và **Chi tiền** tại **`/finance/transactions/new`
 Có thể **hủy bản nháp điều chỉnh chưa xác nhận** khi nhập lý do; hệ thống xóa mềm bản sao khỏi danh sách đang làm việc nhưng giữ bản confirmed gốc và lịch sử. Tổng tiền nháp chỉ đọc và lấy từ các khoản do người dùng nhập; draft mới phải có ít nhất một dòng trước khi xác nhận, còn tổng tiền của dữ liệu lịch sử được bảo toàn. Transaction hỗ trợ chọn nhiều Tags tương tự các khoản chi tiết. Form bản sao luôn có cảnh báo và so sánh trực tiếp với bản gốc đã khóa. Xem [quy tắc và giới hạn chi tiết](docs/CORRECTION_DRAFT_TAGS_LINE_TOTAL.vi.md).
 
 Màn hình bản nháp điều chỉnh có modal chỉ đọc để xem giao dịch gốc ngay tại chỗ, không mất nội dung chưa lưu. Nút hủy bản nháp có màu đỏ và form transaction không còn link Quản lý Tags dư thừa.
+
+Thông báo giao dịch điều chỉnh phản ánh đúng ba trạng thái nháp/đã xác nhận/đã hủy; các nút xem giao dịch gốc và “Đóng chi tiết” có CSS trung tính, căn giữa và responsive.

@@ -35,3 +35,11 @@ Chạy migrations trên database test, regression tests và kiểm thử giao di
 Trong màn hình **Sửa** và **Chi tiết** của bản nháp điều chỉnh, hai nút **Xem giao dịch gốc đã khóa** và **Giao dịch gốc (bất biến)** cùng mở **một modal chỉ đọc** mà không điều hướng sang trang khác. Modal hiển thị trạng thái đã xác nhận, số tiền, ngày, loại giao dịch, nội dung, Tags theo ngôn ngữ, ngữ cảnh, **toàn bộ các khoản chi tiết**, chứng từ và lý do của các phiên bản lịch sử của bản gốc. Liên kết chứng từ mở **tab riêng** để bản nháp đang nhập không bị thay đổi. Đóng modal bằng nút X hoặc **Đóng chi tiết**; không tự đóng khi bấm bên ngoài hoặc nhấn Escape. Sau khi đóng, focus quay lại nút đã mở modal. Giao diện tương thích màn hình nhỏ.
 
 Nút **Hủy và bỏ bản nháp này** có màu **đỏ** rõ ràng để phân biệt thao tác phá hủy trạng thái, nhưng vẫn yêu cầu nhập lý do và xác nhận. Form transaction tiếp tục cho chọn/tạo nhiều Tags, chỉ bỏ liên kết **Quản lý Tags** không cần thiết ngay trong form; menu Tags toàn ứng dụng giữ nguyên. Các thay đổi giao diện không tự cập nhật tài chính, không đổi trạng thái correction và không nới quyền workspace.
+
+## Thông báo theo trạng thái thực tế và CSS nút modal
+
+Khối so sánh giao dịch điều chỉnh hiện xác định tiêu đề, nhãn trạng thái và mô tả theo **trạng thái thực của transaction thay thế**, không mặc định mọi bản thay thế đều là nháp. Nếu còn `draft`, giao diện ghi rõ đó là bản sao đang sửa. Nếu `confirmed`, hiển thị **“Giao dịch điều chỉnh đã xác nhận”**, giải thích rằng giao dịch thay thế đã có hiệu lực trong báo cáo, còn giao dịch gốc luôn được lưu để kiểm toán. Nếu `cancelled`, hiển thị cảnh báo bản đã hủy/lưu trữ riêng. Cả giao dịch gốc và bản thay thế đã xác nhận đều không cho sửa trực tiếp.
+
+Hai nút xem giao dịch gốc và nút **“Đóng chi tiết”** trong modal được sửa CSS riêng: nền trắng, chữ xanh đậm, căn giữa, vùng nhấn tối thiểu 44px, hover/focus rõ ràng và responsive trên điện thoại. Không phụ thuộc kiểu button xanh toàn cục. Đóng modal không đổi URL hoặc làm mất nội dung form hiện tại.
+
+Đây chỉ là thay đổi UI/ngôn ngữ: không tạo migration, không sửa transaction, correction, lịch sử, và không thêm OCR/AI inference.
