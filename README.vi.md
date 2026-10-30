@@ -64,3 +64,14 @@ Chỉ sử dụng tài khoản demo riêng và dữ liệu tổng hợp giả l�
 **Chi tiết:** [Giao diện và báo cáo thu chi (Tiếng Việt)](docs/UX_REPORTING.vi.md).
 
 Bản demo Cloudflare hiện tại chỉ sử dụng dữ liệu giả lập. AI GGUF chưa được bật; ứng dụng chưa tuyên bố đạt chuẩn kế toán production.
+
+
+## Dữ liệu demo nhiều tháng (tùy chọn)
+
+Script chỉ chạy trong môi trường development, tạo các khoản thu/chi giả lập đã xác nhận cho giai đoạn tháng 5–10/2026 ở workspace demo được chỉ định. Có thể chạy lại mà không tạo trùng. Script không tạo tài khoản, không tạo ảnh hóa đơn và không sửa giao dịch đã tồn tại.
+
+```bash
+FINANCE_DEMO_PREVIEW=1 bin/rails runner script/seed_demo_reporting.rb
+```
+
+Script tự từ chối môi trường production và yêu cầu đúng tài khoản/workspace demo có sẵn. Chỉ chạy thủ công, không gọi từ seed mặc định. Mọi giá trị đều do chúng ta tạo để kiểm thử, không phải lịch sử tài chính thật.
