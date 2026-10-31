@@ -348,6 +348,8 @@ en:
       removed: Line item removed.
       list_title: Itemized breakdown
       filter_title: Filter line items
+      filter_all: Not applied
+      filter_selected_count: '%{count} selected'
       filter_name: Item name contains
       filter_name_placeholder: Search by item name
       filter_time_from: Time from (HH:MM)

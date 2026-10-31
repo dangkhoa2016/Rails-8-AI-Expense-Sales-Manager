@@ -5,120 +5,136 @@
       <p><%= ui("m6.page_of", page: page, pages: pages) %></p>
     </div>
   </div>
-  <%= form_with url: finance_transaction_line_items_path(transaction), method: :get,
-    local: true, class: "line-item-filter-controls", role: "search",
-    aria: { label: ui("m6.filter_title") } do %>
-    <h3 class="line-item-filter-title"><%= ui("m6.filter_title") %></h3>
-    <%= hidden_field_tag :sort, sorting.field %>
-    <%= hidden_field_tag :direction, sorting.direction %>
-    <div class="line-item-filter-grid">
-      <div class="line-item-filter-field line-item-filter-name">
-        <%= label_tag :name, ui("m6.filter_name") %>
-        <%= text_field_tag :name, filtering.name, placeholder: ui("m6.filter_name_placeholder"),
-          maxlength: 200, autocomplete: "off" %>
-      </div>
-      <div class="line-item-filter-field">
-        <%= label_tag :time_from, ui("m6.filter_time_from") %>
-        <%= time_field_tag :time_from, filtering.time_from, step: 60 %>
-      </div>
-      <div class="line-item-filter-field">
-        <%= label_tag :time_to, ui("m6.filter_time_to") %>
-        <%= time_field_tag :time_to, filtering.time_to, step: 60 %>
-      </div>
-      <div class="line-item-filter-field">
-        <%= label_tag :amount_min, ui("m6.filter_amount_min") %>
-        <%= number_field_tag :amount_min, filtering.amount_min, min: 0, step: "0.01",
-          placeholder: "0", inputmode: "decimal" %>
-      </div>
-      <div class="line-item-filter-field">
-        <%= label_tag :amount_max, ui("m6.filter_amount_max") %>
-        <%= number_field_tag :amount_max, filtering.amount_max, min: 0, step: "0.01",
-          placeholder: "0", inputmode: "decimal" %>
-      </div>
-    </div>
-    <%= render "finance/shared/tag_filter_fields", tag_filter: filtering.tag_filter,
-      hint_key: "m6.filter_tags_hint" %>
-    <p class="line-item-filter-hint"><%= ui("m6.filter_hint") %></p>
-    <div class="line-item-filter-actions">
-      <%= submit_tag ui("m6.filter_apply"), class: "btn btn-primary" %>
-      <% if filtering.active? %>
-        <%= link_to ui("m6.filter_clear"), finance_transaction_line_items_path(transaction,
-          sorting.query_params.merge(anchor: "line_item_list")), class: "btn btn-secondary" %>
+  <div class="line-item-filter-toolbar">
+    <details class="line-item-filter-disclosure">
+      <summary class="line-item-filter-toggle">
+        <span class="line-item-filter-toggle-label"><%= ui("m6.filter_title") %></span>
+        <% if filtering.active? %>
+          <span class="line-item-filter-count"><%= ui("m6.filter_selected_count",
+            count: filtering.query_params.except(:tag_ids).size + filtering.tag_filter.selected_ids.size) %></span>
+        <% else %>
+          <span class="line-item-filter-count"><%= ui("m6.filter_all") %></span>
+        <% end %>
+        <span class="line-item-filter-chevron" aria-hidden="true">▾</span>
+      </summary>
+      <%= form_with url: finance_transaction_line_items_path(transaction, anchor: "line_item_results"), method: :get,
+        local: true, class: "line-item-filter-controls", role: "search",
+        data: { turbo: false },
+        aria: { label: ui("m6.filter_title") } do %>
+        <%= hidden_field_tag :sort, sorting.field %>
+        <%= hidden_field_tag :direction, sorting.direction %>
+        <div class="line-item-filter-grid">
+          <div class="line-item-filter-field line-item-filter-name">
+            <%= label_tag :name, ui("m6.filter_name") %>
+            <%= text_field_tag :name, filtering.name, placeholder: ui("m6.filter_name_placeholder"),
+              maxlength: 200, autocomplete: "off" %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :time_from, ui("m6.filter_time_from") %>
+            <%= time_field_tag :time_from, filtering.time_from, step: 60 %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :time_to, ui("m6.filter_time_to") %>
+            <%= time_field_tag :time_to, filtering.time_to, step: 60 %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :amount_min, ui("m6.filter_amount_min") %>
+            <%= number_field_tag :amount_min, filtering.amount_min, min: 0, step: "0.01",
+              placeholder: "0", inputmode: "decimal" %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :amount_max, ui("m6.filter_amount_max") %>
+            <%= number_field_tag :amount_max, filtering.amount_max, min: 0, step: "0.01",
+              placeholder: "0", inputmode: "decimal" %>
+          </div>
+        </div>
+        <%= render "finance/shared/tag_filter_fields", tag_filter: filtering.tag_filter,
+          hint_key: "m6.filter_tags_hint" %>
+        <p class="line-item-filter-hint"><%= ui("m6.filter_hint") %></p>
+        <div class="line-item-filter-actions">
+          <%= submit_tag ui("m6.filter_apply"), class: "btn btn-primary" %>
+        </div>
       <% end %>
-    </div>
-  <% end %>
-  <% if filtering.active? %>
-    <p class="line-item-filter-results" role="status">
-      <%= ui("m6.filter_results", count: matched_count, total: total_count,
-        sum: money_vnd(matched_sum)) %>
-    </p>
-  <% end %>
-  <% if items.any? %>
-    <div class="table-scroll line-item-table-scroll">
-      <table class="data-table line-item-table">
-        <caption class="line-item-table-caption"><%= ui("m6.list_title") %></caption>
-        <thead>
-          <tr>
-            <% [
-              ["position", "#"],
-              ["description", ui("form.lines.name")],
-              ["amount", ui("form.lines.amount")]
-            ].each do |field, heading| %>
-              <th aria-sort="<%= sorting.field == field ? (sorting.direction == "asc" ? "ascending" : "descending") : "none" %>">
-                <%= link_to finance_transaction_line_items_path(transaction,
-                    filtering.query_params.merge(
-                      sort: field, direction: sorting.next_direction(field), anchor: "line_item_list")),
-                  class: "line-item-sort-link" do %>
-                  <span><%= heading %></span>
-                  <span class="line-item-sort-indicator" aria-hidden="true"><%= sorting.field == field ? (sorting.direction == "asc" ? "↑" : "↓") : "↕" %></span>
-                  <span class="sr-only"><%= ui("m6.sort_column", column: ui("m6.sort_fields.#{field}")) %></span>
-                <% end %>
-              </th>
+    </details>
+    <% if filtering.active? %>
+      <%= link_to ui("m6.filter_clear"), finance_transaction_line_items_path(transaction,
+        sorting.query_params.merge(anchor: "line_item_results")), class: "btn btn-secondary line-item-filter-clear" %>
+    <% end %>
+  </div>
+  <div id="line_item_results" class="line-item-results" tabindex="-1">
+    <% if filtering.active? %>
+      <p class="line-item-filter-results" role="status">
+        <%= ui("m6.filter_results", count: matched_count, total: total_count,
+          sum: money_vnd(matched_sum)) %>
+      </p>
+    <% end %>
+    <% if items.any? %>
+      <div class="table-scroll line-item-table-scroll">
+        <table class="data-table line-item-table">
+          <caption class="line-item-table-caption"><%= ui("m6.list_title") %></caption>
+          <thead>
+            <tr>
+              <% [
+                ["position", "#"],
+                ["description", ui("form.lines.name")],
+                ["amount", ui("form.lines.amount")]
+              ].each do |field, heading| %>
+                <th aria-sort="<%= sorting.field == field ? (sorting.direction == "asc" ? "ascending" : "descending") : "none" %>">
+                  <%= link_to finance_transaction_line_items_path(transaction,
+                      filtering.query_params.merge(
+                        sort: field, direction: sorting.next_direction(field), anchor: "line_item_results")),
+                    class: "line-item-sort-link" do %>
+                    <span><%= heading %></span>
+                    <span class="line-item-sort-indicator" aria-hidden="true"><%= sorting.field == field ? (sorting.direction == "asc" ? "↑" : "↓") : "↕" %></span>
+                    <span class="sr-only"><%= ui("m6.sort_column", column: ui("m6.sort_fields.#{field}")) %></span>
+                  <% end %>
+                </th>
+              <% end %>
+              <% [
+                ["occurred_time", ui("m6.item_time")],
+                ["location_text", ui("m6.item_place")]
+              ].each do |field, heading| %>
+                <th aria-sort="<%= sorting.field == field ? (sorting.direction == "asc" ? "ascending" : "descending") : "none" %>">
+                  <%= link_to finance_transaction_line_items_path(transaction,
+                      filtering.query_params.merge(
+                        sort: field, direction: sorting.next_direction(field), anchor: "line_item_results")),
+                    class: "line-item-sort-link" do %>
+                    <span><%= heading %></span>
+                    <span class="line-item-sort-indicator" aria-hidden="true"><%= sorting.field == field ? (sorting.direction == "asc" ? "↑" : "↓") : "↕" %></span>
+                    <span class="sr-only"><%= ui("m6.sort_column", column: ui("m6.sort_fields.#{field}")) %></span>
+                  <% end %>
+                </th>
+              <% end %>
+              <th><%= ui("shared.actions") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% items.each do |item| %>
+              <%= render "finance/line_items/line_item_row",
+                item: item, transaction: transaction, sorting: sorting, filtering: filtering, page: page %>
             <% end %>
-            <% [
-              ["occurred_time", ui("m6.item_time")],
-              ["location_text", ui("m6.item_place")]
-            ].each do |field, heading| %>
-              <th aria-sort="<%= sorting.field == field ? (sorting.direction == "asc" ? "ascending" : "descending") : "none" %>">
-                <%= link_to finance_transaction_line_items_path(transaction,
-                    filtering.query_params.merge(
-                      sort: field, direction: sorting.next_direction(field), anchor: "line_item_list")),
-                  class: "line-item-sort-link" do %>
-                  <span><%= heading %></span>
-                  <span class="line-item-sort-indicator" aria-hidden="true"><%= sorting.field == field ? (sorting.direction == "asc" ? "↑" : "↓") : "↕" %></span>
-                  <span class="sr-only"><%= ui("m6.sort_column", column: ui("m6.sort_fields.#{field}")) %></span>
-                <% end %>
-              </th>
-            <% end %>
-            <th><%= ui("shared.actions") %></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% items.each do |item| %>
-            <%= render "finance/line_items/line_item_row",
-              item: item, transaction: transaction, sorting: sorting, filtering: filtering, page: page %>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-    <div class="table-pagination">
-      <span><%= ui("m6.page_of", page: page, pages: pages) %></span>
-      <div class="pagination-links">
-        <% if page > 1 %>
-          <%= link_to ui("shared.previous"),
-            finance_transaction_line_items_path(transaction,
-              sorting.query_params.merge(filtering.query_params, page: page - 1, anchor: "line_item_list")),
-            class: "btn btn-secondary" %>
-        <% end %>
-        <% if page < pages %>
-          <%= link_to ui("shared.next"),
-            finance_transaction_line_items_path(transaction,
-              sorting.query_params.merge(filtering.query_params, page: page + 1, anchor: "line_item_list")),
-            class: "btn btn-secondary" %>
-        <% end %>
+          </tbody>
+        </table>
       </div>
-    </div>
-  <% else %>
-    <p class="form-hint"><%= ui(filtering.active? ? "m6.filter_empty" : "detail.items.empty") %></p>
-  <% end %>
+      <div class="table-pagination">
+        <span><%= ui("m6.page_of", page: page, pages: pages) %></span>
+        <div class="pagination-links">
+          <% if page > 1 %>
+            <%= link_to ui("shared.previous"),
+              finance_transaction_line_items_path(transaction,
+                sorting.query_params.merge(filtering.query_params, page: page - 1, anchor: "line_item_results")),
+              class: "btn btn-secondary" %>
+          <% end %>
+          <% if page < pages %>
+            <%= link_to ui("shared.next"),
+              finance_transaction_line_items_path(transaction,
+                sorting.query_params.merge(filtering.query_params, page: page + 1, anchor: "line_item_results")),
+              class: "btn btn-secondary" %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <p class="form-hint"><%= ui(filtering.active? ? "m6.filter_empty" : "detail.items.empty") %></p>
+    <% end %>
+  </div>
 </section>

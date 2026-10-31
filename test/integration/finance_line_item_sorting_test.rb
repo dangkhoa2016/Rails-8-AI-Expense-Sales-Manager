@@ -33,6 +33,10 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_equal original_ids.first(25), ids_in_table
     assert_select "form.line-item-sort-controls", count: 0
     assert_select "form.line-item-filter-controls", count: 1
+    assert_select "details.line-item-filter-disclosure:not([open])", count: 1
+    assert_select "#line_item_results[tabindex='-1']", count: 1
+    assert_select ".line-item-filter-toggle", text: /Chưa áp dụng/, count: 1
+    assert_select "form.line-item-filter-controls[action$='#line_item_results']", count: 1
     assert_select "table.line-item-table th[aria-sort='ascending']", count: 1
     assert_select "table.line-item-table th", count: 6
     assert_select "table.line-item-table th a.line-item-sort-link", count: 5
@@ -142,6 +146,9 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_equal expected, ids_in_table
     assert_equal 3, expected.length
     assert_select ".line-item-filter-results", text: /3\/52/
+    assert_select ".line-item-filter-toggle .line-item-filter-count", text: /1 điều kiện/, count: 1
+    assert_select "details.line-item-filter-disclosure:not([open])", count: 1
+    assert_select ".line-item-filter-clear[href$='#line_item_results']", count: 1
     assert_select ".line-item-filter-controls input[name='name'][value='expense 5']", count: 1
     assert_select "table.line-item-table th", count: 6
     assert_equal before, @tx.line_items.order(:id).pluck(:id, :description, :amount)
@@ -185,7 +192,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_equal 25, ids_in_table.length
     assert_select ".pagination-links a[href*='page=2'][href*='name=Expense'][href*='time_from=08%3A30']", count: 1
     assert_select "th a.line-item-sort-link[href*='name=Expense'][href*='sort=amount']", count: 1
-    assert_select ".line-item-filter-actions a[href*='sort=description']:not([href*='name='])", count: 1
+    assert_select ".line-item-filter-clear[href*='sort=description']:not([href*='name='])", count: 1
     assert_select ".line-item-filter-controls input[name='name'][value='Expense']", count: 1
     assert_select ".line-item-filter-controls input[name='time_from'][value='08:30']", count: 1
 
@@ -274,6 +281,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_select ".line-item-filter-results", text: /3 of 52/
     assert_select ".line-item-filter-results", text: /3,003/
     assert_select ".finance-tags-filter input[name='tag_ids[]'][checked]", count: 2
+    assert_select ".line-item-filter-count", text: /2 selected/, count: 1
     assert_select ".line-item-filter-controls .finance-tags-disclosure[open]", count: 1
     assert_select ".line-item-sort-controls", count: 0
     assert_equal original_amounts, @tx.line_items.order(:id).pluck(:id, :amount)
@@ -338,7 +346,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_equal 25, ids_in_table.length
     assert_select ".pagination-links a[href*='tag_ids%5B%5D='][href*='page=2']", count: 1
     assert_select "th a.line-item-sort-link[href*='tag_ids%5B%5D='][href*='sort=description']", count: 1
-    assert_select ".line-item-filter-actions a[href*='sort=amount']:not([href*='tag_ids'])", count: 1
+    assert_select ".line-item-filter-clear[href*='sort=amount']:not([href*='tag_ids'])", count: 1
     assert_select ".line-item-sort-controls", count: 0
     get finance_transaction_line_items_path(@tx, tag_ids: [tag.id.to_s], page: 2,
       sort: "amount", direction: "desc")
@@ -372,6 +380,19 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
 
   def assign_filter_tag(item, tag)
     Finance::LineItemTag.create!(line_item: item, tag: tag)
+  end
+
+  test "compact filter disclosure and result anchor remain visible for zero matches" do
+    get finance_transaction_line_items_path(@tx, name: "No such item", tag_ids: [])
+    assert_response :success
+    assert_select "details.line-item-filter-disclosure:not([open])", count: 1
+    assert_select "summary.line-item-filter-toggle", count: 1
+    assert_select "form.line-item-filter-controls[action$='#line_item_results']", count: 1
+    assert_select "#line_item_results .line-item-filter-results", count: 1
+    assert_select "#line_item_results .form-hint", text: /No items match/
+    assert_select ".line-item-filter-clear[href$='#line_item_results']", count: 1
+    assert_select ".line-item-filter-results", text: /0 of 52/
+    assert_select "#line_items_summary .kpi-value", text: /52/
   end
 
   test "confirmed transactions may sort and remain immutable" do

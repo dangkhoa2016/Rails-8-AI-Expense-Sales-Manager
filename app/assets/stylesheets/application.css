@@ -1255,14 +1255,44 @@ button.btn.correction-item-diff-trigger:focus-visible,
 #line_item_list th[aria-sort=descending] .line-item-sort-indicator{
   color:#1a649e;font-weight:850;
 }
-/* Read-only line-item filters: keep the six-column list and separate
-   transaction totals from the matched subset's count and sum. */
-#line_item_list .line-item-filter-controls {
-  padding:16px;margin:0 0 12px;border:1px solid #d7e5f1;
-  border-radius:12px;background:#f6faff;min-width:0;
+/* Compact disclosure: the list stays immediately accessible after filtering. */
+#line_item_list .line-item-filter-toolbar {
+  display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px;
+  margin:0 0 10px;min-width:0;
 }
-#line_item_list .line-item-filter-title {
-  margin:0 0 12px;color:#24425f;font-size:1rem;font-weight:800;
+#line_item_list .line-item-filter-disclosure {
+  min-width:0;flex:1 1 280px;border:1px solid #d7e5f1;
+  border-radius:10px;background:#f8fbfe;
+}
+#line_item_list .line-item-filter-toggle {
+  display:flex;align-items:center;gap:10px;min-height:44px;
+  padding:9px 13px;cursor:pointer;list-style:none;
+  color:#254b70;font-size:.84rem;
+}
+#line_item_list .line-item-filter-toggle::-webkit-details-marker {display:none}
+#line_item_list .line-item-filter-toggle:focus-visible {
+  outline:3px solid #8cbbea;outline-offset:2px;border-radius:8px;
+}
+#line_item_list .line-item-filter-toggle-label {font-weight:800;min-width:0}
+#line_item_list .line-item-filter-count {
+  display:inline-flex;align-items:center;min-width:0;
+  font-size:.77rem;color:#54718a;overflow-wrap:anywhere;
+}
+#line_item_list .line-item-filter-chevron {
+  font-size:1.02rem;margin-left:auto;transition:transform .15s;
+}
+#line_item_list .line-item-filter-disclosure[open] .line-item-filter-chevron {
+  transform:rotate(180deg);
+}
+#line_item_list .line-item-filter-disclosure[open] .line-item-filter-toggle {
+  border-bottom:1px solid #e2eaf2;
+}
+#line_item_list .line-item-filter-clear {
+  min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  white-space:normal;
+}
+#line_item_list .line-item-filter-controls {
+  margin:0;padding:14px;background:#f8fbfe;min-width:0;
 }
 #line_item_list .line-item-filter-grid {
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
@@ -1291,25 +1321,24 @@ button.btn.correction-item-diff-trigger:focus-visible,
 #line_item_list .line-item-filter-actions {
   display:flex;flex-wrap:wrap;align-items:center;gap:10px;
 }
-#line_item_list .line-item-filter-actions .btn,
 #line_item_list .line-item-filter-actions input[type=submit] {
   display:inline-flex;align-items:center;justify-content:center;
   min-height:44px;white-space:normal;
 }
+#line_item_list .line-item-results {min-width:0;scroll-margin-top:12px}
+#line_item_list .line-item-results:focus {outline:none}
 #line_item_list .line-item-filter-results {
-  padding:10px 12px;margin:0 0 12px;border-left:3px solid #4085b9;
-  background:#f2f7fb;color:#25445e;font-size:.85rem;
-  line-height:1.5;font-weight:650;
+  margin:0 0 8px;padding:0;color:#46637b;font-size:.8rem;
+  line-height:1.5;font-weight:650;overflow-wrap:anywhere;
 }
 @media(max-width:600px){
   #line_item_list .line-item-filter-grid{grid-template-columns:minmax(0,1fr);gap:10px}
   #line_item_list .line-item-filter-controls{padding:12px}
-  #line_item_list .line-item-filter-actions .btn,
-  #line_item_list .line-item-filter-actions input[type=submit]{flex:1 1 145px;min-width:0}
+  #line_item_list .line-item-filter-actions input[type=submit]{width:100%}
 }
 @media(max-width:420px){
-  #line_item_list .line-item-filter-actions .btn,
-  #line_item_list .line-item-filter-actions input[type=submit]{flex:1 1 100%;width:100%}
+  #line_item_list .line-item-filter-disclosure{flex:1 1 100%}
+  #line_item_list .line-item-filter-clear{flex:1 1 100%}
 }
 
 /* One transaction date per item-list page, never repeated in each item row. */

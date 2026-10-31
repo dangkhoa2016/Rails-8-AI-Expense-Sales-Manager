@@ -347,6 +347,8 @@ vi:
       removed: Đã xóa khoản chi tiết.
       list_title: Danh sách khoản chi tiết
       filter_title: Lọc các khoản chi tiết
+      filter_all: Chưa áp dụng
+      filter_selected_count: '%{count} điều kiện'
       filter_name: Tên khoản chứa
       filter_name_placeholder: Tìm theo tên khoản thu/chi
       filter_time_from: Giờ từ (HH:MM)
