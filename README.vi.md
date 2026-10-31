@@ -186,7 +186,7 @@ Popup Thêm/Sửa khoản chi có biểu tượng SVG đóng được căn giữ
 
 ### Thẻ khoản chi responsive cho màn hình nhỏ
 
-Danh sách khoản chi giữ bảng bảy cột trên desktop rộng, nhưng tự chuyển thành các thẻ gọn dưới 1.200px: tên khoản, số tiền, Tags, ngày/giờ/địa điểm và nút Sửa/Xóa đều hiển thị đầy đủ, không phải cuộn ngang. Mỗi khoản vẫn giữ một ID để Turbo Stream cập nhật đúng dòng; phân trang giữ nguyên. Xem [tài liệu khoản chi và Tags](docs/QUICK_ITEM_TAGS.vi.md).
+Danh sách khoản chi giữ bảng sáu cột trên desktop rộng, nhưng tự chuyển thành các thẻ gọn dưới 1.200px: tên khoản, số tiền, Tags, ngày/giờ/địa điểm và nút Sửa/Xóa đều hiển thị đầy đủ, không phải cuộn ngang. Mỗi khoản vẫn giữ một ID để Turbo Stream cập nhật đúng dòng; phân trang giữ nguyên. Xem [tài liệu khoản chi và Tags](docs/QUICK_ITEM_TAGS.vi.md).
 
 ## Một trang tạo Thu/Chi và lịch sử phiên bản
 
@@ -219,3 +219,5 @@ Lịch sử và Báo cáo đã bổ sung chọn nhiều Tags theo OR (Tag cấp 
 Sắp xếp khoản chi tiết (31/10/2026): danh sách các khoản trong giao dịch cho phép chọn thứ tự gốc, tên, số tiền, giờ và địa điểm, tăng/giảm; hỗ trợ mobile và không sửa dữ liệu. [Hướng dẫn](docs/LINE_ITEM_SORTING.vi.md).
 
 Ngày giao dịch (dùng chung) đã được đưa lên đầu trang danh sách khoản chi tiết, không còn lặp lại ở từng dòng hay thẻ mobile. Bảng còn 6 cột và giữ nguyên chức năng sắp xếp.
+
+Lọc khoản chi tiết (31/10/2026): trang danh sách từng giao dịch hỗ trợ tìm tên khoản không phân biệt hoa/thường, lọc khoảng giờ–phút và khoảng tiền bao gồm hai đầu, kết hợp trước khi sắp xếp/phân trang; tổng giao dịch không thay đổi. [Hướng dẫn](docs/LINE_ITEM_FILTERING.vi.md).
