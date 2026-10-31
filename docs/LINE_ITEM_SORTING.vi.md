@@ -28,3 +28,9 @@ Cột Ngày không có lựa chọn sắp xếp vì mọi khoản dùng chung ng
 ## Kiểm thử
 
 Rails integration tests kiểm tra các cột, hai chiều, giờ/địa điểm rỗng, dữ liệu vượt 25 khoản, tham số không hợp lệ, modal thêm/sửa, xóa và khả năng xem giao dịch đã khóa. Chromium có đăng nhập kiểm tra transaction #14 với 100 khoản ở màn hình 375, 414, 768, 1024, 1366 và 1472px, bao gồm sắp xếp tiền giảm dần, tên tăng dần, phân trang và responsive.
+
+## Ngày giao dịch dùng chung ở đầu trang
+
+Thông tin **Ngày giao dịch (dùng chung)** nay chỉ hiển thị một lần trong dải thông tin gọn ngay dưới tiêu đề trang, phía trên các chỉ số tổng hợp. Mỗi khoản chi tiết đều dùng ngày của giao dịch cha, vì vậy đã bỏ cột Ngày lặp lại trong bảng desktop và các thẻ trên mobile. Bảng còn sáu cột: thứ tự gốc, tên khoản, số tiền, giờ tùy chọn, địa điểm tùy chọn và thao tác.
+
+Không có ngày riêng của từng khoản, không sửa dữ liệu ngày. Các chức năng sắp xếp, phân trang 25 dòng, modal chỉnh sửa và thứ tự gốc đều giữ nguyên.

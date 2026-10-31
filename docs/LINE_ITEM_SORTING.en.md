@@ -28,3 +28,9 @@ The shared transaction date is not a sortable item attribute. Original receipt p
 ## Evidence
 
 Integration tests cover ascending/descending, all sortable keys, missing values, cross-page ordering, invalid inputs, Turbo modal add/edit, deletion redirect and confirmed immutability. Authenticated Chromium verified transaction #14 (100 item rows) at 375, 414, 768, 1024, 1366 and 1472px, with responsive layout, numeric descending sort, name ascending sort and pagination state.
+
+## Shared transaction date in the page header
+
+The **Shared transaction date** now appears once, in a dedicated compact information strip directly under the page heading and above the item totals. Each item inherits this value from the parent transaction, so the repeated Date column was removed from the desktop table and responsive item cards. The item table now contains six columns: original row number, item name, amount, optional time, optional location and actions.
+
+No individual item date is introduced or modified. Existing sorting, 25-row paging, Turbo modal editing and original receipt positions are unchanged.
