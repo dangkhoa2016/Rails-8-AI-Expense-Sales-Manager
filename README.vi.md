@@ -209,3 +209,5 @@ Cải tiến UI ngày 31/10/2026: modal thêm khoản chi dùng nhãn **Lý do c
 Cải tiến chứng từ (31/10/2026): trang chi tiết transaction hiển thị ảnh thu nhỏ của các phiên bản chứng từ, kèm SHA256 và đường dẫn xem ảnh có kiểm tra quyền. [Chi tiết](docs/RECEIPT_VERSION_PREVIEW_20261031.vi.md).
 
 Bộ lọc khoảng ngày (31/10/2026): Lịch sử giao dịch và Báo cáo dùng chung Từ ngày–Đến ngày, các mẫu tuần/2 tuần đầu-cuối tháng/tháng trước, đồng bộ KPI, báo cáo và CSV. [Hướng dẫn tiếng Việt](docs/DATE_RANGE_FILTERS.vi.md).
+
+Bộ lọc ngày ở Báo cáo đã responsive trên desktop/tablet/mobile, đồng bộ dữ liệu server và cảnh báo khi ngày được chọn nhưng chưa bấm Áp dụng lọc.
