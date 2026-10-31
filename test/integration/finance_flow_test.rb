@@ -69,6 +69,24 @@ class FinanceFlowTest < ActionDispatch::IntegrationTest
     end
     assert_equal [1, 2], tx.document_versions.order(:version_number).pluck(:version_number)
     assert_equal first.id, tx.reload.active_document_version_id
+    get finance_transaction_path(tx, locale: "vi")
+    assert_response :success
+    assert_select "details#documents[open]", count: 1
+    assert_select "ol.evidence-preview-list li.evidence-preview-card", count: 2
+    assert_select "ol.evidence-preview-list img.evidence-preview-thumb", count: 2
+    tx.document_versions.each do |version|
+      assert_select "a.evidence-preview-image-link[href*='/finance/transactions/#{tx.id}/document_versions/#{version.id}']", count: 1
+      assert_select "img.evidence-preview-thumb[src*='/finance/transactions/#{tx.id}/document_versions/#{version.id}/image']", count: 1
+    end
+    tx.document_versions.each do |version|
+      get image_finance_transaction_document_version_path(tx, version)
+      assert_response :success
+      assert_equal "image/png", response.media_type
+      assert_equal version.sha256, Digest::SHA256.hexdigest(response.body)
+    end
+    get finance_transaction_path(tx, locale: "vi")
+    assert_select "details#documents .evidence-preview-current", count: 1
+
     assert_equal BigDecimal("43500"), tx.amount
   end
 

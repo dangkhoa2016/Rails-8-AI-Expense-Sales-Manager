@@ -195,6 +195,10 @@ vi:
         empty: Chưa có khoản chi tiết.
         title: Các khoản chi tiết
       documents:
+        view_version: Xem ảnh chứng từ phiên bản %{number}
+        image_alt: Ảnh chứng từ phiên bản %{number}
+        file_unavailable: File ảnh không có trong bản lưu trữ.
+        current_version: Ảnh đang chọn
         empty: Chưa tải ảnh chứng từ.
         title: Các phiên bản chứng từ
       back: Quay lại danh sách

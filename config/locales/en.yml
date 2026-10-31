@@ -195,6 +195,10 @@ en:
         empty: No line items have been entered.
         title: Line items
       documents:
+        view_version: View receipt image version %{number}
+        image_alt: Receipt image version %{number}
+        file_unavailable: Image file unavailable in storage.
+        current_version: Current image
         empty: No receipt images uploaded yet.
         title: Receipt versions
       back: Back to transactions

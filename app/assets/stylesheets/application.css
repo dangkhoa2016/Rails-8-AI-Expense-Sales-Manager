@@ -962,3 +962,80 @@ button.btn.correction-item-diff-trigger:focus-visible,
   button.btn.correction-item-diff-trigger,
   .correction-item-differences-footer button.btn {width:100%}
 }
+
+/* Receipt versions are backed by immutable document bytes. Show thumbnails,
+   not only database metadata, on the transaction detail screen. */
+.evidence-preview-list {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+  align-items:stretch;
+  gap:14px;
+  margin:0 0 18px;
+}
+.evidence-preview-list li.evidence-preview-card {
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  border:1px solid #dce6ef;
+  border-radius:12px;
+  overflow:hidden;
+  padding:0;
+  background:#fff;
+}
+.evidence-preview-image-link {
+  display:grid;
+  place-items:center;
+  min-height:170px;
+  background:#f4f8fc;
+  padding:10px;
+  border-bottom:1px solid #e2ebf2;
+}
+.evidence-preview-image-link:hover{background:#eaf3fd}
+.evidence-preview-image-link:focus-visible{
+  outline:3px solid #8db9e8;
+  outline-offset:-3px;
+}
+.evidence-preview-thumb {
+  display:block;
+  max-width:100%;
+  width:auto;
+  max-height:220px;
+  height:auto;
+  object-fit:contain;
+}
+.evidence-preview-meta {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:7px;
+  min-width:0;
+  padding:13px;
+}
+.evidence-preview-meta small,.evidence-preview-meta code{
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.evidence-preview-current {
+  display:inline-block;
+  border-radius:99px;
+  padding:4px 9px;
+  font-size:.73rem;
+  font-weight:700;
+  background:#e8f5ed;
+  color:#286247;
+}
+.evidence-preview-unavailable {
+  display:grid;
+  place-items:center;
+  text-align:center;
+  min-height:170px;
+  padding:14px;
+  background:#fff5f1;
+  color:#8b3924;
+  font-size:.8rem;
+}
+@media (max-width:590px) {
+  .evidence-preview-list{grid-template-columns:1fr}
+  .evidence-preview-image-link{min-height:140px}
+}

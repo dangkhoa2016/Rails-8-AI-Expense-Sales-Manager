@@ -88,6 +88,9 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
     assert_select "a[href='#{edit_finance_transaction_path(tx)}']", count: 1
     assert_select "details#documents", count: 1
     assert_select "details#documents .evidence-list li", count: 1
+    assert_select "details#documents[open]", count: 1
+    assert_select "details#documents img.evidence-preview-thumb", count: 1
+
     assert_equal 1, tx.document_versions.count
   end
 

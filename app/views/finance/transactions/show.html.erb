@@ -135,7 +135,7 @@
       </section>
     <% end %>
 
-    <details class="panel detail-disclosure" id="documents">
+    <details class="panel detail-disclosure" id="documents" <%= "open" if @versions.any? %>>
       <summary><strong><%= ui("detail.documents.title") %></strong>
         <span><%= @versions.count %> · <%= ui("detail_view.expand") %></span></summary>
       <p class="form-hint"><%= ui("detail.upload.help") %></p>
@@ -146,11 +146,29 @@
         <%= f.submit ui("detail.upload.button"), class: "btn btn-secondary" %>
       <% end %>
       <% if @versions.any? %>
-        <ol class="evidence-list">
+        <ol class="evidence-list evidence-preview-list">
           <% @versions.each do |version| %>
-            <li><%= link_to ui("detail.image.version", number: version.version_number),
-              finance_transaction_document_version_path(@transaction, version), class: "entry-link" %>
-              <small>SHA256: <code><%= version.sha256 %></code></small>
+            <li class="evidence-preview-card">
+              <% if version.image.attached? %>
+                <%= link_to finance_transaction_document_version_path(@transaction, version),
+                    class: "evidence-preview-image-link",
+                    aria: { label: ui("detail.documents.view_version", number: version.version_number) } do %>
+                  <%= image_tag image_finance_transaction_document_version_path(@transaction, version),
+                    alt: ui("detail.documents.image_alt", number: version.version_number),
+                    class: "evidence-preview-thumb", loading: "lazy" %>
+                <% end %>
+              <% else %>
+                <div class="evidence-preview-unavailable"><%= ui("detail.documents.file_unavailable") %></div>
+              <% end %>
+              <div class="evidence-preview-meta">
+                <strong><%= link_to ui("detail.image.version", number: version.version_number),
+                  finance_transaction_document_version_path(@transaction, version), class: "entry-link" %></strong>
+                <% if @transaction.active_document_version_id == version.id %>
+                  <span class="evidence-preview-current"><%= ui("detail.documents.current_version") %></span>
+                <% end %>
+                <small><%= version.original_filename %></small>
+                <small>SHA256: <code><%= version.sha256 %></code></small>
+              </div>
             </li>
           <% end %>
         </ol>
