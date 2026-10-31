@@ -204,3 +204,5 @@ Correction item differences now open in a focused read-only modal; the redundant
 Minor UI updates (2026-10-31): expense-item modal labels the description **Reason for expense**, receipt-review action is reserved for receipt-first drafts, and monthly income/expense KPI arrows are swapped. [Details](docs/FINANCE_UI_REFINEMENTS_20261031.en.md).
 
 Evidence UX (2026-10-31): transaction detail pages show responsive thumbnails of stored receipt versions and their SHA256, with authenticated original-image access. [Details](docs/RECEIPT_VERSION_PREVIEW_20261031.en.md).
+
+Date-range filters (2026-10-31): both Transactions and Reports support inclusive From/To dates and shared quick presets (week, first/last two weeks, previous month, etc.), with consistent financial aggregates and CSV export. [English guide](docs/DATE_RANGE_FILTERS.en.md).

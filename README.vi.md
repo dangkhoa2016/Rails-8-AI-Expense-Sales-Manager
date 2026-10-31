@@ -207,3 +207,5 @@ Các khoản chi tiết khác giao dịch gốc hiện mở trong modal chỉ đ
 Cải tiến UI ngày 31/10/2026: modal thêm khoản chi dùng nhãn **Lý do chi**, chỉ bản nháp tạo bằng quy trình tải hóa đơn trước hiển thị nút kiểm tra chứng từ ở đầu trang, và hai mũi tên KPI thu/chi được hoán đổi. [Chi tiết](docs/FINANCE_UI_REFINEMENTS_20261031.vi.md).
 
 Cải tiến chứng từ (31/10/2026): trang chi tiết transaction hiển thị ảnh thu nhỏ của các phiên bản chứng từ, kèm SHA256 và đường dẫn xem ảnh có kiểm tra quyền. [Chi tiết](docs/RECEIPT_VERSION_PREVIEW_20261031.vi.md).
+
+Bộ lọc khoảng ngày (31/10/2026): Lịch sử giao dịch và Báo cáo dùng chung Từ ngày–Đến ngày, các mẫu tuần/2 tuần đầu-cuối tháng/tháng trước, đồng bộ KPI, báo cáo và CSV. [Hướng dẫn tiếng Việt](docs/DATE_RANGE_FILTERS.vi.md).
