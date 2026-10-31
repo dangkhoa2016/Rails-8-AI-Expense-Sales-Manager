@@ -33,7 +33,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_equal original_ids.first(25), ids_in_table
     assert_select "form.line-item-sort-controls", count: 0
     assert_select "form.line-item-filter-controls", count: 1
-    assert_select "details.line-item-filter-disclosure:not([open])", count: 1
+    assert_select "details.line-item-filter-disclosure[open]", count: 1
     assert_select "#line_item_results[tabindex='-1']", count: 1
     assert_select ".line-item-filter-toggle", text: /Chưa áp dụng/, count: 1
     assert_select "form.line-item-filter-controls[action$='#line_item_results']", count: 1
@@ -148,7 +148,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_equal 3, expected.length
     assert_select ".line-item-filter-results", text: /3\/52/
     assert_select ".line-item-filter-toggle .line-item-filter-count", text: /1 điều kiện/, count: 1
-    assert_select "details.line-item-filter-disclosure:not([open])", count: 1
+    assert_select "details.line-item-filter-disclosure[open]", count: 1
     assert_select ".line-item-filter-clear[href$='#line_item_results']", count: 1
     assert_select ".line-item-filter-controls input[name='name'][value='expense 5']", count: 1
     assert_select "table.line-item-table th", count: 6
@@ -386,7 +386,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
   test "compact filter disclosure and result anchor remain visible for zero matches" do
     get finance_transaction_line_items_path(@tx, name: "No such item", tag_ids: [])
     assert_response :success
-    assert_select "details.line-item-filter-disclosure:not([open])", count: 1
+    assert_select "details.line-item-filter-disclosure[open]", count: 1
     assert_select "summary.line-item-filter-toggle", count: 1
     assert_select "form.line-item-filter-controls[action$='#line_item_results']", count: 1
     assert_select "#line_item_results .line-item-filter-results", count: 1

@@ -401,6 +401,8 @@ vi:
       item_edit: Sửa chi tiết khoản
       item_edit_hint: Sửa các trường của khoản này. Khi lưu khoản trong bản nháp, tổng tiền giao dịch được đồng bộ từ tổng các dòng.
       item_on: Ngày giao dịch (dùng chung)
+      table_time: Thời gian
+      table_place: Địa điểm
       item_time: Giờ của khoản chi (tùy chọn)
       item_place: Địa điểm của khoản chi (tùy chọn)
       item_place_placeholder: 'Ví dụ: Tiệm bánh gần đồn cảnh sát Đà Nẵng'

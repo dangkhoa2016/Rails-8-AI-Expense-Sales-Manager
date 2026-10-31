@@ -403,6 +403,8 @@ en:
       item_edit: Edit item details
       item_edit_hint: Edit this item's details. Saving a draft item also synchronizes its parent draft transaction amount to the item sum.
       item_on: Shared transaction date
+      table_time: Time
+      table_place: Location
       item_time: Item time (optional)
       item_place: Item location (optional)
       item_place_placeholder: e.g. Bakery near the Da Nang police station
