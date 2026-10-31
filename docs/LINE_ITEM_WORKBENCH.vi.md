@@ -15,3 +15,7 @@ Thanh điều hướng chung, workspace, ngày giao dịch gốc và các số l
 Kiểm tra các độ rộng 375, 414, 768, 959, 960, 1024, 1199, 1280, 1366 và 1472px: không tràn ngang toàn trang, khoản đầu tiên xuất hiện trong viewport đầu, đúng thứ tự sidebar, bảng cuộn ngang độc lập ở độ rộng trung bình, lọc nhiều Tags không đổi, GET tự chuyển đến kết quả, và đầy đủ chế độ nháp/đã xác nhận. Chạy Rails full suite cùng kiểm tra tĩnh/bằng trình duyệt.
 
 Đây chỉ là thay đổi giao diện: không chạy suy luận AI, không migration, không sửa giao dịch đã xác nhận và không tuyên bố đạt chuẩn production.
+
+## Khoảng cách sidebar và tiêu đề cột (31/10/2026)
+
+Ở màn hình 960–1279px, bộ lọc và thông tin giao dịch được gom vào cùng sidebar trái độc lập nên không còn khoảng trống lớn do hàng Grid bị kéo cao bằng bảng. Hai tiêu đề cột đổi thành **Thời gian** và **Địa điểm**, còn tên các trường trong form thêm/sửa không đổi. Bộ lọc **mở sẵn** mặc định. Trên màn hình hẹp, form được giới hạn chiều cao, cuộn bên trong và giữ nút Áp dụng ở cuối để danh sách vẫn dễ tiếp cận. Quy tắc lọc, số tiền và mục tiêu Turbo Stream không thay đổi.

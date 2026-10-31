@@ -222,3 +222,5 @@ Item filtering (2026-10-31): the transaction itemized list supports case-insensi
 Compact item filters (2026-10-31): the filter disclosure stays collapsed after apply, selected criteria remain visible in a small summary, and GET filtering jumps directly to matching rows. [Guide](docs/LINE_ITEM_FILTERING.en.md).
 
 Line-item workbench (2026-10-31): the six-column item table now starts directly under the page heading, with filters in a left sidebar and transaction context in a right sidebar on wide screens. Tablet and mobile reorganize the rails without document-wide overflow. [Layout guide](docs/LINE_ITEM_WORKBENCH.en.md).
+
+Sidebar spacing update (2026-10-31): medium-width item pages now group filter and transaction context in one sidebar, avoiding large gaps. The table headings are Time and Location; the filter expands by default with a mobile height limit. [Guide](docs/LINE_ITEM_WORKBENCH.en.md).

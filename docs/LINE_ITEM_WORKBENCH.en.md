@@ -15,3 +15,7 @@ The global navigation, workspace context, original transaction date and full rec
 Validate at 375, 414, 768, 959, 960, 1024, 1199, 1280, 1366 and 1472px. Check for no document-wide horizontal overflow, visible first item in the first viewport, correct sidebar ordering, internal table scrolling on medium widths, preserved filter and Tag selection, anchored GET submissions, and draft/confirmed behavior. Run the full Rails suite and targeted static/browser UI checks.
 
 This is a presentation-only change: no model inference, data migration, mutation of confirmed transactions or production certification.
+
+## Sidebar spacing and labels (2026-10-31)
+
+At 960–1279px the filter and transaction context share an independently sized left sidebar, avoiding the earlier tall Grid row's blank space. The two table headings now read **Time** and **Location**; form labels retain their optional-field descriptions. The filter starts **expanded** by default. On narrow screens its form has a limited scrollable height and a sticky Apply action to keep the item list accessible. Filtering rules, accounting sums and Turbo refresh targets are unchanged.
