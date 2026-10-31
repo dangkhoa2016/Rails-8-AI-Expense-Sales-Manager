@@ -205,3 +205,5 @@ Thông báo giao dịch điều chỉnh phản ánh đúng ba trạng thái nhá
 Các khoản chi tiết khác giao dịch gốc hiện mở trong modal chỉ đọc; đã bỏ tiêu đề tổng hợp so sánh bị lặp, vẫn giữ những trường trước/sau thực sự thay đổi.
 
 Cải tiến UI ngày 31/10/2026: modal thêm khoản chi dùng nhãn **Lý do chi**, chỉ bản nháp tạo bằng quy trình tải hóa đơn trước hiển thị nút kiểm tra chứng từ ở đầu trang, và hai mũi tên KPI thu/chi được hoán đổi. [Chi tiết](docs/FINANCE_UI_REFINEMENTS_20261031.vi.md).
+
+Cải tiến chứng từ (31/10/2026): trang chi tiết transaction hiển thị ảnh thu nhỏ của các phiên bản chứng từ, kèm SHA256 và đường dẫn xem ảnh có kiểm tra quyền. [Chi tiết](docs/RECEIPT_VERSION_PREVIEW_20261031.vi.md).
