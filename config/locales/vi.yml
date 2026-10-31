@@ -76,6 +76,7 @@ vi:
         two: Tải ảnh chứng từ và kiểm tra gợi ý từ AI khi có.
         three: Xác nhận ngày và số tiền trước khi đưa vào báo cáo.
     date_ranges:
+      pending: 'Bạn đã đổi khoảng ngày nhưng chưa áp dụng. Nhấn “Áp dụng lọc” để cập nhật dữ liệu.'
       open_history: Xem lịch sử trong khoảng ngày này
       preset: Chọn khoảng thời gian nhanh
       from: Từ ngày

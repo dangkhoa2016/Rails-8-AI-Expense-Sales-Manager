@@ -32,6 +32,8 @@ class FinanceDateRangeTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_select "input[name='from'][value='2026-10-18']"
       assert_select "input[name='to'][value='2026-10-31']"
+      assert_select "form[data-controller='date-range'][data-date-range-applied-preset-value='last_two_weeks_this_month'][data-date-range-applied-from-value='2026-10-18'][data-date-range-applied-to-value='2026-10-31']", count: 1
+      assert_select ".date-range-pending[hidden]", count: 1
       assert_select ".table-pagination", text: /22 giao dịch/
       assert_select ".data-table tbody tr", count: 20
       refute_includes response.body, "Out of window"
@@ -54,6 +56,8 @@ class FinanceDateRangeTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_select ".report-filter input[name='from'][value='2026-10-18']"
       assert_select ".report-filter input[name='to'][value='2026-10-31']"
+      assert_select "form[data-controller='date-range'][data-date-range-applied-preset-value='last_two_weeks_this_month'][data-date-range-applied-from-value='2026-10-18'][data-date-range-applied-to-value='2026-10-31']", count: 1
+      assert_select ".date-range-pending[hidden]", count: 1
       assert_select ".report-kpis .kpi-income .kpi-value", text: /8.000/
       assert_select ".report-kpis .kpi-expense .kpi-value", text: /22.000/
       assert_select ".report-kpis .kpi-drafts", text: /1/

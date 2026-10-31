@@ -76,6 +76,7 @@ en:
         two: Attach receipt images and review available AI suggestions.
         three: Confirm the date and amount before the entry enters reports.
     date_ranges:
+      pending: 'Date selection changed but is not applied yet. Select “Apply filter” to update results.'
       open_history: View history for this range
       preset: Quick date range
       from: From date

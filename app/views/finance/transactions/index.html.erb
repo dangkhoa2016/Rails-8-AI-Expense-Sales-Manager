@@ -47,7 +47,11 @@
       <%= link_to ui("dashboard.actions.report"), finance_reports_path(@date_range.active? ? @date_range.query_params : {}), class: "text-action" %>
     </div>
     <%= form_with url: finance_transactions_path, method: :get, class: "filter-form", local: true,
-      data: { controller: "date-range", date_range_today_value: Time.find_zone!("Asia/Ho_Chi_Minh").today.iso8601 } do |f| %>
+      data: { controller: "date-range",
+              date_range_today_value: Time.find_zone!("Asia/Ho_Chi_Minh").today.iso8601,
+              date_range_applied_preset_value: @date_range.preset,
+              date_range_applied_from_value: (@date_range.from_date&.iso8601).to_s,
+              date_range_applied_to_value: (@date_range.to_date&.iso8601).to_s } do |f| %>
       <div class="filter-field filter-search">
         <%= f.label :q, ui("dashboard.filters.search") %>
         <%= f.search_field :q, value: @query, placeholder: ui("dashboard.filters.placeholder"), maxlength: 80 %>
@@ -61,6 +65,7 @@
         <%= f.select :kind, [[ui("shared.all"), ""], [ui("shared.income"), "income"], [ui("shared.expense"), "expense"]], { selected: @selected_kind } %>
       </div>
       <%= render "finance/shared/date_range_fields", f: f, date_range: @date_range, reports: false %>
+      <p class="date-range-pending" data-date-range-pending-note role="status" aria-live="polite" hidden><%= ui("date_ranges.pending") %></p>
       <div class="filter-buttons">
         <%= f.submit ui("shared.filter"), class: "btn btn-primary" %>
         <%= link_to ui("shared.clear"), finance_transactions_path, class: "btn btn-minimal" %>

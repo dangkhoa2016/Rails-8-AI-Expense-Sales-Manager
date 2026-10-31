@@ -9,7 +9,11 @@
 <section class="report-controls">
   <div class="report-filter">
     <%= form_with url: finance_reports_path, method: :get, local: true,
-      data: { controller: "date-range", date_range_today_value: Time.find_zone!("Asia/Ho_Chi_Minh").today.iso8601 } do |f| %>
+      data: { controller: "date-range",
+              date_range_today_value: Time.find_zone!("Asia/Ho_Chi_Minh").today.iso8601,
+              date_range_applied_preset_value: @date_range.preset,
+              date_range_applied_from_value: (@date_range.from_date&.iso8601).to_s,
+              date_range_applied_to_value: (@date_range.to_date&.iso8601).to_s } do |f| %>
       <%= render "finance/shared/date_range_fields", f: f, date_range: @date_range, reports: true %>
       <div class="report-filter-actions">
         <%= f.submit ui("shared.filter"), class: "btn btn-primary" %>
@@ -18,6 +22,7 @@
     <% end %>
     <p class="date-range-current"><%= ui("date_ranges.current",
       from: human_day(@date_range.from_date), to: human_day(@date_range.to_date)) %></p>
+    <p class="date-range-pending" data-date-range-pending-note role="status" aria-live="polite" hidden><%= ui("date_ranges.pending") %></p>
   </div>
   <div class="trust-note"><span>✓</span><%= ui("reports.evidence_note") %></div>
 </section>
