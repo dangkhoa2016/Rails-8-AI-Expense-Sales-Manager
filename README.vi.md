@@ -211,3 +211,5 @@ Cải tiến chứng từ (31/10/2026): trang chi tiết transaction hiển th�
 Bộ lọc khoảng ngày (31/10/2026): Lịch sử giao dịch và Báo cáo dùng chung Từ ngày–Đến ngày, các mẫu tuần/2 tuần đầu-cuối tháng/tháng trước, đồng bộ KPI, báo cáo và CSV. [Hướng dẫn tiếng Việt](docs/DATE_RANGE_FILTERS.vi.md).
 
 Bộ lọc ngày ở Báo cáo đã responsive trên desktop/tablet/mobile, đồng bộ dữ liệu server và cảnh báo khi ngày được chọn nhưng chưa bấm Áp dụng lọc.
+
+Lịch sử và Báo cáo đã bổ sung chọn nhiều Tags theo OR (Tag cấp giao dịch và từng khoản chi tiết), giữ nguyên bộ lọc ngày khi chuyển trang và xuất CSV. Nút xem lịch sử ở Báo cáo đã cải thiện CSS responsive. Xem [hướng dẫn lọc ngày và Tags](docs/DATE_RANGE_FILTERS.vi.md).

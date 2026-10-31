@@ -35,3 +35,13 @@ Bộ lọc trang Báo cáo có bố cục grid responsive: trên desktop rộng,
 Preset và hai ngày trong URL là **khoảng ngày đã áp dụng** ở server. Trình duyệt có thể tự phục hồi nội dung form chưa gửi sau khi chuyển trang. Vì vậy, Stimulus đồng bộ lại ba điều khiển từ giá trị **server đã render** khi kết nối và khi khôi phục trang từ back/forward cache. Không tự động tính một preset khác lúc tải trang. Nếu người dùng chủ động đổi preset hoặc ngày nhưng chưa bấm **Áp dụng lọc**, form hiển thị thông báo **chưa áp dụng**, trong khi KPI, báo cáo và CSV vẫn tính theo khoảng server đã xác nhận.
 
 Đã kiểm tra bằng Chromium có đăng nhập ở các viewport 375, 414, 768, 1024, 1366 và 1472px trên cả hai trang, bao gồm đồng nhất giá trị, tràn/đè CSS và thông báo chưa áp dụng. Không có migration, không sửa khoản tiền, và không thay đổi cách tính báo cáo.
+
+## Lọc nhiều Tags (31/10/2026)
+
+Cả **Lịch sử giao dịch** và **Báo cáo** đều có thể chọn **nhiều Tags** cùng với khoảng ngày. Mở mục **Lọc theo nhiều Tags**, tích các Tags cần xem (tối đa 50). Tags đã ngừng sử dụng vẫn xuất hiện để tra cứu giao dịch cũ. Nếu không tích Tag nào, hệ thống hiển thị cả giao dịch không có Tag.
+
+Quy tắc khớp là **BẤT KỲ (OR)**: một giao dịch được chọn nếu có ít nhất một Tag trong các Tags đã chọn **ở cấp giao dịch**, hoặc có Tag ở **bất kỳ line item nào**. Khi khớp, hệ thống lấy **toàn bộ số tiền đã lưu của giao dịch** và **chỉ cộng một lần**, kể cả khi giao dịch khớp nhiều Tags hay nhiều dòng. Đây là lọc theo giao dịch, **không phải** phân bổ lại số tiền theo từng dòng. Biểu đồ phân bổ Tags chính giữ quy tắc dùng Tag đầu tiên, nên có thể hiện Tag chính khác với Tag đã dùng để tìm thấy giao dịch.
+
+Lịch sử giao dịch kết hợp Tags với ngày, trạng thái, Thu/Chi, tìm kiếm, phân trang; KPI tiền và số bản nháp ở đây cũng theo tập giao dịch được lọc. Báo cáo dùng cùng tập giao dịch confirmed có hiệu lực cho các KPI tiền, so sánh kỳ trước có cùng số ngày, phân bổ Tags chính, phân bổ dòng chi tiết, biểu đồ, giao dịch gần đây và **CSV**. Số bản nháp trên Báo cáo vẫn là chỉ số vận hành của toàn workspace như trước.
+
+Nút **Xem lịch sử trong khoảng ngày này** đã được chỉnh thành nút có nền, viền, icon và CSS responsive. Khi bấm, cả Tags và khoảng ngày đã chọn đều được giữ lại. Nút xuất CSV cũng giữ nguyên bộ lọc. Tag ID phải thuộc workspace đang đăng nhập; ID sai hoặc của tenant khác bị từ chối HTTP 400. Không có migration hay sửa dữ liệu tiền, chứng từ và lịch sử bất biến.
