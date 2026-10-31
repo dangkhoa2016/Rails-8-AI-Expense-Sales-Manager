@@ -97,7 +97,8 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     }
     assert_response :success
     assert_select "turbo-stream[action='replace'][target='line_item_list']", count: 1
-    assert_select "section#line_item_list .line-item-filter-controls input[name='sort'][value='amount']", count: 1
+    assert_select "turbo-stream[action='replace'][target='line_item_list'] section#line_item_list .line-item-filter-controls", count: 0
+    assert_select "section#line_item_list tbody tr", count: 25
     assert_select "section#line_item_list tbody tr", count: 25
     assert_includes response.body, "sort=amount"
     assert_includes response.body, "View the newly added item"
@@ -176,7 +177,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_select ".line-item-filter-controls input[name='amount_min'][value='1000']", count: 1
     assert_select ".line-item-filter-controls input[name='sort'][value='amount']", count: 1
     assert_select ".line-item-filter-results", text: /#{expected.size} of 52/
-    assert_select "#line_item_list .line-item-filter-controls input[name='sort'][value='amount']"
+    assert_select ".line-items-filter-rail .line-item-filter-controls input[name='sort'][value='amount']"
 
     # Filtering only by time excludes the optional NULL time, even when
     # the item's amount/name would otherwise match.
