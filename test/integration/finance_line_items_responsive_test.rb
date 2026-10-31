@@ -47,6 +47,13 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select "table.data-table.line-item-table", count: 1
     assert_select "table.line-item-table caption.line-item-table-caption", text: /Danh sách khoản chi/
     assert_select "table.line-item-table thead th", count: 6
+    assert_select ".line-items-side-stack", count: 1
+    assert_select ".line-items-side-stack > aside.line-items-filter-rail", count: 1
+    assert_select ".line-items-side-stack > aside.line-items-context-rail", count: 1
+    assert_select "details.line-item-filter-disclosure[open]", count: 1
+    assert_select "table.line-item-table th", text: "Thời gian", count: 1
+    assert_select "table.line-item-table th", text: "Địa điểm", count: 1
+    assert_select "table.line-item-table th", text: /tùy chọn/, count: 0
     assert_select "table.line-item-table tbody tr", count: 25
     assert_select "tr#finance_line_item_#{@transaction.line_items.first.id}", count: 1
     assert_select "table.line-item-table tbody td.line-cell", count: 150
