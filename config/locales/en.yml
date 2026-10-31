@@ -356,7 +356,8 @@ en:
       filter_amount_max: Maximum amount
       filter_apply: Apply filters
       filter_clear: Clear filters
-      filter_hint: Filters combine together. Time and amount ranges include both endpoints; items without a time are excluded when filtering by time. Enter amounts without thousands separators.
+      filter_tags_hint: Only Tags on individual line items are checked. Select multiple Tags to match any of them; each matching item is counted once. Transaction-level Tags do not include unrelated items.
+      filter_hint: Filters combine with AND; selected item Tags match ANY (OR). Time and amount ranges include both endpoints; items without a time are excluded when filtering by time. Enter amounts without thousands separators.
       filter_results: '%{count} of %{total} items matched · Matched item sum %{sum} (full transaction totals above remain unchanged)'
       filter_empty: No items match these filters. Clear or adjust the filters to see more.
       new_item_outside_filters: The new item does not match the current filters.

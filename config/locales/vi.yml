@@ -355,7 +355,8 @@ vi:
       filter_amount_max: Số tiền đến
       filter_apply: Áp dụng bộ lọc
       filter_clear: Xóa bộ lọc
-      filter_hint: Các điều kiện lọc được kết hợp. Khoảng giờ và tiền tính cả hai đầu; khoản chưa có giờ không khớp khi lọc theo giờ. Nhập tiền không dùng dấu phân cách hàng nghìn.
+      filter_tags_hint: Chỉ kiểm tra Tags gắn trực tiếp vào từng khoản. Chọn nhiều Tags để khớp bất kỳ Tag nào; mỗi khoản chỉ tính một lần. Tags ở giao dịch cha không tự làm khớp các khoản khác.
+      filter_hint: Các điều kiện lọc kết hợp AND; nhiều Tags của khoản khớp theo OR. Khoảng giờ và tiền tính cả hai đầu; khoản chưa có giờ không khớp khi lọc theo giờ. Nhập tiền không dùng dấu phân cách hàng nghìn.
       filter_results: '%{count}/%{total} khoản khớp · Tổng các khoản khớp %{sum} (tổng giao dịch phía trên không thay đổi)'
       filter_empty: Không có khoản nào khớp bộ lọc. Hãy thay đổi hoặc xóa bộ lọc.
       new_item_outside_filters: Khoản mới không khớp bộ lọc hiện tại.
