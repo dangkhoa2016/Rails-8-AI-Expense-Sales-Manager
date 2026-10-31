@@ -90,7 +90,12 @@
                 </td>
                 <td><%= human_day(tx.transaction_date) %></td>
                 <td><span class="kind kind-<%= tx.kind %>"><%= ui("shared.#{tx.kind}") %></span></td>
-                <td class="align-right amount-cell"><%= money_vnd(tx.amount) %></td>
+                <td class="align-right amount-cell">
+                  <%= money_vnd(@matched_amounts.fetch(tx.id, tx.amount)) %>
+                  <% if @tag_filter.active? %>
+                    <small class="tag-original-amount"><%= ui("reports.original_transaction_amount", amount: money_vnd(tx.amount)) %></small>
+                  <% end %>
+                </td>
                 <td><span class="status-pill <%= tx.confirmed? ? "is-confirmed" : "is-draft" %>"><%= ui("shared.#{tx.status}") %></span>
                 <% if tx.confirmed? && @superseded_transaction_ids.include?(tx.id) %>
                   <small class="transaction-purpose"><%= ui("correction.revised") %></small>

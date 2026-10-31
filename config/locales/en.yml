@@ -81,7 +81,7 @@ en:
       selected_count: '%{count} selected Tags'
       archived: Archived
       no_tags: This workspace has no Tags.
-      any_hint: Select one or more Tags. A transaction matches any Tag on the transaction or its line items; the full transaction amount is counted only once.
+      any_hint: Select one or more Tags. A direct transaction Tag includes the entire transaction; otherwise only matched item amounts are summed once each.
     date_ranges:
       pending: 'Date selection changed but is not applied yet. Select “Apply filter” to update results.'
       open_history: View history for this range
@@ -101,6 +101,11 @@ en:
         last_30_days: Last 30 days
         custom: Custom dates
     reports:
+      filtered_amount_note: 'Tag-matched amounts: a direct transaction Tag includes its entire amount; otherwise only matching line items count once each. Original stored values remain unchanged.'
+      original_transaction_amount: 'Original: %{amount}'
+      filtered_breakdown:
+        title: Breakdown of Tag-matched amounts
+        subtitle: Only amounts matching selected Tags are allocated; matching one item does not include the entire receipt.
       eyebrow: ANALYTICS & REPORTS
       title: Financial performance
       subtitle: An auditable view of human-confirmed amounts. Drafts and AI proposals are excluded.

@@ -108,6 +108,62 @@ class FinanceMultiTagFilterTest < ActionDispatch::IntegrationTest
     assert_select ".report-kpis .kpi-expense .kpi-foot", text: /5.000/
   end
 
+  test "item-only Tag matches attribute only selected item money, not full receipt" do
+    tx = transaction(date: Date.new(2026, 10, 28), amount: 2_733_000,
+      description: "Large itemized receipt", status: "draft")
+    matching = tx.line_items.create!(description: "Utility item", amount: 16_000,
+      position: 0, entry_source: "manual")
+    matching.tags << @office
+    tx.line_items.create!(description: "Unrelated items", amount: 2_717_000,
+      position: 1, entry_source: "manual")
+    Finance::ConfirmTransaction.call(transaction: tx, actor: @owner, reviewed: true)
+
+    options = {preset: "custom", from: "2026-10-18", to: "2026-10-31",
+      tag_ids: [@office.id, @maintenance.id], locale: "vi"}
+    get finance_reports_path(options)
+    assert_response :success
+    assert_select ".report-kpis .kpi-expense .kpi-value", text: /16.000/
+    assert_select ".report-kpis .kpi-net .kpi-value", text: /-16.000/
+    assert_select ".report-kpis .kpi-drafts .kpi-value", text: "1"
+    assert_select ".tags-panel .tag-row", count: 1
+    assert_select ".tags-panel .tag-row", text: /16.000/
+    assert_select ".daily-panel tbody tr", count: 1
+    assert_select ".daily-panel tbody tr", text: /16.000/
+    assert_select ".recent-panel .recent-entry", text: /16.000/
+    assert_select ".recent-panel .recent-entry", text: /2.733.000/
+    assert_select ".tag-report-scope", count: 1
+
+    get finance_transactions_path(options)
+    assert_response :success
+    assert_select ".kpi-expense .kpi-value", text: /16.000/
+    assert_select ".transactions-panel .amount-cell", text: /16.000/
+    assert_select ".transactions-panel .amount-cell", text: /2.733.000/
+
+    get finance_reports_export_path(options)
+    assert_response :success
+    rows = CSV.parse(response.body, headers: true)
+    assert_equal 1, rows.length
+    assert_equal BigDecimal("2733000"), BigDecimal(rows.first.fetch("Amount"))
+    assert_equal BigDecimal("16000"), BigDecimal(rows.first.fetch("MatchedTagAmount"))
+    assert_equal tx.id, rows.first.fetch("ID").to_i
+  end
+
+  test "direct transaction Tag includes its full amount only once even if matching items" do
+    tx = transaction(date: Date.new(2026, 10, 25), amount: 75_000,
+      description: "Direct tag wins", tags: [@food, @office], status: "draft")
+    item = tx.line_items.create!(description: "Tagged item", amount: 25_000,
+      position: 0, entry_source: "manual")
+    item.tags << @food
+    tx.line_items.create!(description: "Other item", amount: 50_000,
+      position: 1, entry_source: "manual")
+    Finance::ConfirmTransaction.call(transaction: tx, actor: @owner, reviewed: true)
+    get finance_reports_path(month: "2026-10", tag_ids: [@food.id, @office.id])
+    assert_response :success
+    assert_select ".report-kpis .kpi-expense .kpi-value", text: /75.000/
+    assert_select ".tags-panel .tag-row", count: 1
+    assert_select ".tags-panel .tag-row", text: /75.000/
+  end
+
   test "archived Tags are selectable and unknown or cross-workspace IDs are rejected" do
     @food.update!(active: false)
     transaction(date: Date.new(2026, 10, 25), amount: 8000, description: "Archived Tag", tags: [@food])

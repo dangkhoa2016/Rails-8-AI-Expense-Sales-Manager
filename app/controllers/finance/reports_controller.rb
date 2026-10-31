@@ -9,10 +9,13 @@ module Finance
       @tag_filter = Finance::TagFilter.for_params(params, workspace: @finance_workspace)
       confirmed = @tag_filter.apply(finance_scope.effective_confirmed.where(transaction_date: period))
 
-      @totals = confirmed.group(:kind).sum(:amount)
-      @tag_totals = Finance::TagBreakdown.call(
-        transactions: confirmed.where(kind: "expense"), item_level: false)
-      @transactions_count = confirmed.count
+      @tag_projection = Finance::TagAmountProjection.new(
+        transactions: confirmed, tag_filter: @tag_filter) if @tag_filter.active?
+      @matched_amounts = @tag_projection&.amounts_by_id || {}
+      @totals = @tag_projection ? @tag_projection.totals : confirmed.group(:kind).sum(:amount)
+      @tag_totals = @tag_projection ? @tag_projection.breakdown :
+        Finance::TagBreakdown.call(transactions: confirmed.where(kind: "expense"), item_level: false)
+      @transactions_count = @tag_projection ? @tag_projection.rows.size : confirmed.count
       @recent_transactions = confirmed.includes(:active_document_version, :tags)
         .order(transaction_date: :desc, id: :desc).limit(8)
       @draft_count = finance_scope.where(status: "draft").count
@@ -21,10 +24,17 @@ module Finance
       # when the chosen range is a week or arbitrary date span).
       length = (period.end - period.begin).to_i + 1
       previous = (period.begin - length)..(period.begin - 1)
-      @previous_totals = @tag_filter.apply(finance_scope.effective_confirmed
-        .where(transaction_date: previous)).group(:kind).sum(:amount)
+      previous_confirmed = @tag_filter.apply(
+        finance_scope.effective_confirmed.where(transaction_date: previous))
+      @previous_totals = if @tag_filter.active?
+        Finance::TagAmountProjection.new(
+          transactions: previous_confirmed, tag_filter: @tag_filter).totals
+      else
+        previous_confirmed.group(:kind).sum(:amount)
+      end
 
-      monthly = confirmed.group("DATE_TRUNC('month', transaction_date)::date", :kind).sum(:amount)
+      monthly = @tag_projection ? @tag_projection.month_totals :
+        confirmed.group("DATE_TRUNC('month', transaction_date)::date", :kind).sum(:amount)
       start_month = period.begin.beginning_of_month
       end_month = period.end.beginning_of_month
       @trend_months = []
@@ -37,14 +47,15 @@ module Finance
       end
       @trend_max = [@trend_months.flat_map { |row| [row[:income], row[:expense]] }.max || BigDecimal("0"), BigDecimal("1")].max
 
-      daily = confirmed.group(:transaction_date, :kind).sum(:amount)
+      daily = @tag_projection ? @tag_projection.day_totals :
+        confirmed.group(:transaction_date, :kind).sum(:amount)
       @daily_rows = daily.keys.map(&:first).uniq.sort.filter_map do |date|
         income = daily.fetch([date, "income"], BigDecimal("0"))
         expense = daily.fetch([date, "expense"], BigDecimal("0"))
         {date: date, income: income, expense: expense} if income.positive? || expense.positive?
       end
-      @item_tag_totals = Finance::TagBreakdown.call(
-        transactions: confirmed.where(kind: "expense"), item_level: true)
+      @item_tag_totals = @tag_projection ? @tag_projection.breakdown :
+        Finance::TagBreakdown.call(transactions: confirmed.where(kind: "expense"), item_level: true)
       @item_allocation_total = @item_tag_totals.values.sum(BigDecimal("0"))
       @expense_total = @totals.fetch("expense", BigDecimal("0"))
       @income_total = @totals.fetch("income", BigDecimal("0"))
@@ -59,16 +70,23 @@ module Finance
         .where(transaction_date: date_range.range))
         .includes(:context, :active_document_version, :correction_as_replacement, :tags)
         .order(:transaction_date, :id)
+      projection = Finance::TagAmountProjection.new(
+        transactions: rows, tag_filter: tag_filter) if tag_filter.active?
+      matched_amounts = projection&.amounts_by_id || {}
       csv = CSV.generate(headers: true, encoding: "UTF-8") do |sheet|
-        sheet << %w[ID Date Kind Amount Currency Tags Description DocumentSHA256 PurchaseDetails TransactionTime Location CorrectsTransactionID]
+        columns = %w[ID Date Kind Amount Currency Tags Description DocumentSHA256 PurchaseDetails TransactionTime Location CorrectsTransactionID]
+        columns << "MatchedTagAmount" if tag_filter.active?
+        sheet << columns
         rows.each do |tx|
-          sheet << [tx.id, tx.transaction_date.iso8601, tx.kind, tx.amount.to_s("F"),
+          values = [tx.id, tx.transaction_date.iso8601, tx.kind, tx.amount.to_s("F"),
                     tx.currency_code, safe_csv(tx.tags.map(&:key).join(';')), safe_csv(tx.description),
                     tx.active_document_version&.sha256,
                     safe_csv(tx.context&.purchase_details),
                     tx.context&.occurred_time&.strftime("%H:%M"),
                     safe_csv(tx.context&.location_text),
                     tx.correction_as_replacement&.original_transaction_id]
+          values << matched_amounts.fetch(tx.id).to_s("F") if tag_filter.active?
+          sheet << values
         end
       end
       send_data csv, filename: "finance-confirmed-#{date_range.from_date.iso8601}-to-#{date_range.to_date.iso8601}.csv",

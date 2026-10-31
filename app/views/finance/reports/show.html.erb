@@ -28,6 +28,9 @@
       from: human_day(@date_range.from_date), to: human_day(@date_range.to_date)) %></p>
     <p class="date-range-pending" data-date-range-pending-note role="status" aria-live="polite" hidden><%= ui("date_ranges.pending") %></p>
   </div>
+  <% if @tag_filter.active? %>
+    <p class="tag-report-scope" role="status"><%= ui("reports.filtered_amount_note") %></p>
+  <% end %>
   <div class="trust-note"><span>✓</span><%= ui("reports.evidence_note") %></div>
 </section>
 
@@ -62,7 +65,7 @@
   </section>
 
   <section class="panel tags-panel">
-    <div class="panel-heading"><div><h2><%= ui("reports.breakdown.title") %></h2><p><%= ui("reports.breakdown.subtitle") %></p></div></div>
+    <div class="panel-heading"><div><h2><%= @tag_filter.active? ? ui("reports.filtered_breakdown.title") : ui("reports.breakdown.title") %></h2><p><%= @tag_filter.active? ? ui("reports.filtered_breakdown.subtitle") : ui("reports.breakdown.subtitle") %></p></div></div>
     <% if @tag_totals.any? && @expense_total.positive? %>
       <div class="tag-rows">
         <% @tag_totals.sort_by { |(_,amount)| -amount }.each do |(tag_key,amount)| %>
@@ -75,6 +78,7 @@
     <% end %>
   </section>
 
+  <% unless @tag_filter.active? %>
   <section class="panel">
     <div class="panel-heading"><div><h2><%= ui("m6.items_report") %></h2><p><%= ui("m6.items_report_hint") %></p></div></div>
     <% if @item_tag_totals.any? %>
@@ -88,6 +92,7 @@
       <div class="report-bottom-note"><%= ui("m6.unallocated") %>: <strong><%= money_vnd(@item_allocation_difference) %></strong></div>
     <% else %><p class="form-hint"><%= ui("m6.no_items_report") %></p><% end %>
   </section>
+  <% end %>
 
   <section class="panel daily-panel">
     <div class="panel-heading"><div><h2><%= ui("reports.daily.title") %></h2><p><%= ui("reports.daily.subtitle") %></p></div></div>
@@ -110,7 +115,12 @@
           <%= link_to finance_transaction_path(tx), class: "recent-entry" do %>
             <span class="recent-bullet <%= tx.kind %>"><%= tx.kind == "income" ? "↗" : "↙" %></span>
             <span class="recent-name"><strong><%= tx.description.presence || "##{tx.id}" %></strong><small><%= human_day(tx.transaction_date) %> · <%= tags_label(tx.tags) %></small></span>
-            <span class="recent-amount <%= tx.kind == "income" ? "income-text" : "expense-text" %>"><%= money_vnd(tx.amount) %></span>
+            <span class="recent-amount <%= tx.kind == "income" ? "income-text" : "expense-text" %>">
+              <%= money_vnd(@matched_amounts.fetch(tx.id, tx.amount)) %>
+              <% if @tag_filter.active? %>
+                <small class="tag-original-amount"><%= ui("reports.original_transaction_amount", amount: money_vnd(tx.amount)) %></small>
+              <% end %>
+            </span>
           <% end %>
         <% end %>
       </div>
