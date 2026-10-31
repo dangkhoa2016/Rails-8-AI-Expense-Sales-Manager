@@ -24,3 +24,9 @@ Không thay đổi bảng sáu cột, ngày giao dịch cấp cha, vị trí g�
 ## Kiểm thử
 
 Integration tests kiểm tra nhiều Tags theo OR, chống đếm trùng, Tags ngừng sử dụng, từ chối Tags workspace khác, tham số sai, giữ Tags trong liên kết/modal, Turbo edit; đồng thời bao phủ tên khoản không phân biệt hoa/thường, khoảng giờ/tiền bao gồm biên, điều kiện kết hợp, giờ thiếu, sắp xếp/phân trang, kết quả rỗng, dữ liệu đầu vào sai, Turbo modal và phân quyền workspace. Đây không phải chứng nhận production/kế toán.
+
+## Bộ lọc gọn và chuyển ngay đến kết quả
+
+Bộ lọc hiện dùng thẻ `details/summary` có thể mở/đóng bằng chuột hoặc bàn phím. **Mặc định thu gọn** kể cả sau khi áp dụng, và tiêu đề cho biết số điều kiện đang chọn. Nút Xóa bộ lọc luôn nằm cạnh thanh lọc khi có điều kiện được áp dụng. Số khoản khớp và tổng tiền khớp được đưa lên ngay phía trên bảng, không còn một thông báo lớn chiếm diện tích.
+
+Form GET sử dụng điều hướng trình duyệt thông thường (không để Turbo bỏ mất fragment) và chuyển đến neo `#line_item_results`, giúp người dùng thấy ngay các khoản khớp (hoặc thông báo kết quả rỗng), không phải tự cuộn qua ngày giao dịch và các KPI. Liên kết phân trang và sắp xếp trên tiêu đề cột desktop cũng dùng neo kết quả. Quy tắc lọc, phân trang 25 khoản, tổng tiền giao dịch và kiểm tra phân quyền không thay đổi.

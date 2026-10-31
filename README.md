@@ -218,3 +218,5 @@ Item sorting (2026-10-31): itemized transaction pages allow read-only original-o
 The shared transaction date is displayed once above the itemized list instead of repeating in every item table row/card. The six-column table and its sorting behavior remain unchanged.
 
 Item filtering (2026-10-31): the transaction itemized list supports case-insensitive item-name search, inclusive HH:MM time and amount ranges, item-level multi-Tag OR selection, and combined filtering before sorting/pagination; full ledger totals remain unchanged. [Guide](docs/LINE_ITEM_FILTERING.en.md).
+
+Compact item filters (2026-10-31): the filter disclosure stays collapsed after apply, selected criteria remain visible in a small summary, and GET filtering jumps directly to matching rows. [Guide](docs/LINE_ITEM_FILTERING.en.md).

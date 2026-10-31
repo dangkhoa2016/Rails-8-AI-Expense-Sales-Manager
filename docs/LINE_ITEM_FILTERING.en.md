@@ -24,3 +24,9 @@ The original six-column table, shared parent transaction date, original item pos
 ## Validation
 
 Integration tests cover multi-Tag OR semantics, duplicated selected Tags, archived/foreign-workspace Tags, malformed arrays, combined filters, preserved URL/form state, Turbo edits, name literal matching, inclusive time/amount, combined filters, optional missing time, stable sorting and pagination, empty results, invalid query values, Turbo forms and workspace access. This document describes filtering behavior only; no production or accounting acceptance is implied.
+
+## Compact filter layout and direct result navigation
+
+The filter panel is now a native, keyboard-accessible `details/summary` disclosure. It is **collapsed by default**, including after a filter is applied; the summary displays the count of active criteria. The Clear filters action remains visible next to the disclosure whenever a filter is active. The matched-item count and sum appear immediately above the table, not in a separate full-width notification.
+
+Submitting the filter uses a normal GET navigation (not Turbo interception) to preserve the browser fragment, landing at `#line_item_results` on the refreshed page, so the matching rows (or the empty-state message) are immediately in view without manually scrolling past the transaction header and reconciliation summary. Pagination and desktop column-heading sorting use the same results anchor. The original filtering semantics, 25-item pages, parent transaction totals and authorization checks do not change.
