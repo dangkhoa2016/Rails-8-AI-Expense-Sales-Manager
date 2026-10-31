@@ -75,6 +75,13 @@ en:
         one: Create a manual draft, even without a receipt.
         two: Attach receipt images and review available AI suggestions.
         three: Confirm the date and amount before the entry enters reports.
+    tag_filters:
+      title: Filter by multiple Tags
+      all: All Tags
+      selected_count: '%{count} selected Tags'
+      archived: Archived
+      no_tags: This workspace has no Tags.
+      any_hint: Select one or more Tags. A transaction matches any Tag on the transaction or its line items; the full transaction amount is counted only once.
     date_ranges:
       pending: 'Date selection changed but is not applied yet. Select “Apply filter” to update results.'
       open_history: View history for this range

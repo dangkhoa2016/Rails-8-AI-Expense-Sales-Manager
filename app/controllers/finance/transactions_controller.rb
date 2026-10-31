@@ -6,6 +6,8 @@ module Finance
     def index
       scope = finance_scope.where.not(status: "cancelled")
       @date_range = Finance::DateRangeFilter.for_params(params, default: "all")
+      @tag_filter = Finance::TagFilter.for_params(params, workspace: @finance_workspace)
+      scope = @tag_filter.apply(scope)
       @draft_count = scope.where(status: 'draft').count
       today = Time.find_zone!("Asia/Ho_Chi_Minh").today
       kpi_period = @date_range.range || (today.beginning_of_month..today.end_of_month)

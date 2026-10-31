@@ -44,7 +44,7 @@
         <h2><%= ui("dashboard.table.title") %></h2>
         <p><%= ui("dashboard.table.subtitle") %></p>
       </div>
-      <%= link_to ui("dashboard.actions.report"), finance_reports_path(@date_range.active? ? @date_range.query_params : {}), class: "text-action" %>
+      <%= link_to ui("dashboard.actions.report"), finance_reports_path((@date_range.active? ? @date_range.query_params : {}).merge(@tag_filter.query_params)), class: "text-action" %>
     </div>
     <%= form_with url: finance_transactions_path, method: :get, class: "filter-form", local: true,
       data: { controller: "date-range",
@@ -65,6 +65,7 @@
         <%= f.select :kind, [[ui("shared.all"), ""], [ui("shared.income"), "income"], [ui("shared.expense"), "expense"]], { selected: @selected_kind } %>
       </div>
       <%= render "finance/shared/date_range_fields", f: f, date_range: @date_range, reports: false %>
+      <%= render "finance/shared/tag_filter_fields", tag_filter: @tag_filter %>
       <p class="date-range-pending" data-date-range-pending-note role="status" aria-live="polite" hidden><%= ui("date_ranges.pending") %></p>
       <div class="filter-buttons">
         <%= f.submit ui("shared.filter"), class: "btn btn-primary" %>
@@ -103,7 +104,7 @@
       <div class="table-pagination">
         <span><%= ui("dashboard.pagination", page: @page, pages: @pages, count: @filtered_count) %></span>
         <div class="pagination-links">
-          <% base_filters = { status: @selected_status, kind: @selected_kind, q: @query }.merge(@date_range.query_params) %>
+          <% base_filters = { status: @selected_status, kind: @selected_kind, q: @query }.merge(@date_range.query_params).merge(@tag_filter.query_params) %>
           <% if @page > 1 %><%= link_to ui("shared.previous"), finance_transactions_path(base_filters.merge(page: @page-1)), class: "btn btn-minimal" %><% end %>
           <% if @page < @pages %><%= link_to ui("shared.next"), finance_transactions_path(base_filters.merge(page: @page+1)), class: "btn btn-secondary" %><% end %>
         </div>
@@ -127,7 +128,7 @@
       <h2><%= ui("dashboard.actions.title") %></h2>
       <%= link_to "↙  #{ui("dashboard.actions.expense")}", new_finance_transaction_path(kind: "expense"), class: "quick-link" %>
       <%= link_to "↗  #{ui("dashboard.actions.income")}", new_finance_transaction_path(kind: "income"), class: "quick-link" %>
-      <%= link_to "▤  #{ui("dashboard.actions.report")}", finance_reports_path(@date_range.active? ? @date_range.query_params : {}), class: "quick-link" %>
+      <%= link_to "▤  #{ui("dashboard.actions.report")}", finance_reports_path((@date_range.active? ? @date_range.query_params : {}).merge(@tag_filter.query_params)), class: "quick-link" %>
     </section>
   </aside>
 </div>

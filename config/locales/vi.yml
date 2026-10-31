@@ -75,6 +75,13 @@ vi:
         one: Tạo bản nháp thủ công, kể cả khi không có hóa đơn.
         two: Tải ảnh chứng từ và kiểm tra gợi ý từ AI khi có.
         three: Xác nhận ngày và số tiền trước khi đưa vào báo cáo.
+    tag_filters:
+      title: Lọc theo nhiều Tags
+      all: Tất cả Tags
+      selected_count: '%{count} Tags đã chọn'
+      archived: Ngừng sử dụng
+      no_tags: Chưa có Tags trong không gian này.
+      any_hint: Chọn một hoặc nhiều Tags. Giao dịch khớp bất kỳ Tag nào ở cấp giao dịch hoặc khoản chi tiết; tổng tiền chỉ được tính một lần.
     date_ranges:
       pending: 'Bạn đã đổi khoảng ngày nhưng chưa áp dụng. Nhấn “Áp dụng lọc” để cập nhật dữ liệu.'
       open_history: Xem lịch sử trong khoảng ngày này
