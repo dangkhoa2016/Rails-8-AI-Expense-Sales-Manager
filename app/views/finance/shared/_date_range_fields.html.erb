@@ -1,0 +1,20 @@
+<% available_presets = reports ? Finance::DateRangeFilter::REPORT_PRESETS : Finance::DateRangeFilter::PRESETS %>
+<div class="date-range-fields">
+  <div class="filter-field date-range-preset">
+    <%= f.label :preset, ui("date_ranges.preset") %>
+    <%= f.select :preset,
+      available_presets.map { |key| [ui("date_ranges.presets.#{key}"), key] },
+      { selected: date_range.preset },
+      { data: { date_range_target: "preset", action: "change->date-range#applyPreset" } } %>
+  </div>
+  <div class="filter-field date-range-date">
+    <%= f.label :from, ui("date_ranges.from") %>
+    <%= f.date_field :from, value: date_range.from_date&.iso8601, required: reports,
+      data: { date_range_target: "from", action: "change->date-range#markCustom" } %>
+  </div>
+  <div class="filter-field date-range-date">
+    <%= f.label :to, ui("date_ranges.to") %>
+    <%= f.date_field :to, value: date_range.to_date&.iso8601, required: reports,
+      data: { date_range_target: "to", action: "change->date-range#markCustom" } %>
+  </div>
+</div>

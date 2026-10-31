@@ -75,6 +75,23 @@ en:
         one: Create a manual draft, even without a receipt.
         two: Attach receipt images and review available AI suggestions.
         three: Confirm the date and amount before the entry enters reports.
+    date_ranges:
+      open_history: View history for this range
+      preset: Quick date range
+      from: From date
+      to: To date
+      current: 'Selected range: %{from} – %{to}'
+      presets:
+        all: All dates
+        this_week: This week
+        previous_week: Last week
+        first_two_weeks_this_month: First 2 weeks of this month
+        last_two_weeks_this_month: Last 2 weeks of this month
+        this_month: This month
+        previous_month: Last month
+        last_7_days: Last 7 days
+        last_30_days: Last 30 days
+        custom: Custom dates
     reports:
       eyebrow: ANALYTICS & REPORTS
       title: Financial performance
@@ -88,18 +105,18 @@ en:
         count: Confirmed entries
       compare:
         none: No previous-month entries
-        title: 'Previous month: %{value}'
+        title: 'Previous period: %{value}'
       trend:
-        title: Six-month overview
-        subtitle: Monthly confirmed income and expenses (VND)
+        title: Monthly trend in selected range
+        subtitle: Confirmed monthly income and expenses within the selected range (VND)
         empty: No confirmed entries in this period.
       breakdown:
         title: Spending by primary Tag
-        subtitle: Expense primary Tag allocation for the selected month.
-        empty: No confirmed expenses in this month.
+        subtitle: Primary-Tag allocation for the selected date range.
+        empty: No confirmed expenses in this range.
       daily:
         title: Daily activity
-        subtitle: Income and expense entries on each day of the selected month.
+        subtitle: Income and expenses for each day in the selected date range.
         empty: No confirmed activity.
       latest:
         title: Recently confirmed
