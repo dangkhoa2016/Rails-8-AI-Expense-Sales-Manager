@@ -1,0 +1,27 @@
+<fieldset class="finance-tags-filter">
+  <legend class="form-label"><%= ui("tag_filters.title") %></legend>
+  <details class="finance-tags-disclosure" <%= "open" if tag_filter.active? %>>
+    <summary class="finance-tags-summary">
+      <span><%= tag_filter.active? ?
+        ui("tag_filters.selected_count", count: tag_filter.selected_ids.length) :
+        ui("tag_filters.all") %></span>
+      <span class="finance-tags-chevron" aria-hidden="true">▾</span>
+    </summary>
+    <div class="finance-tags-options">
+      <% if tag_filter.available_tags.any? %>
+        <% tag_filter.available_tags.each do |tag| %>
+          <label class="finance-tag-filter-choice">
+            <%= check_box_tag "tag_ids[]", tag.id, tag_filter.selected_ids.include?(tag.id),
+              id: "filter_tag_#{tag.id}" %>
+            <span><%= tag.label %><% unless tag.active? %>
+              <small>· <%= ui("tag_filters.archived") %></small>
+            <% end %></span>
+          </label>
+        <% end %>
+      <% else %>
+        <span class="form-hint"><%= ui("tag_filters.no_tags") %></span>
+      <% end %>
+    </div>
+    <p class="finance-tags-hint"><%= ui("tag_filters.any_hint") %></p>
+  </details>
+</fieldset>

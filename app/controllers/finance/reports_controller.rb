@@ -6,7 +6,8 @@ module Finance
     def show
       @date_range = Finance::DateRangeFilter.for_params(params, default: "this_month", reports: true)
       period = @date_range.range
-      confirmed = finance_scope.effective_confirmed.where(transaction_date: period)
+      @tag_filter = Finance::TagFilter.for_params(params, workspace: @finance_workspace)
+      confirmed = @tag_filter.apply(finance_scope.effective_confirmed.where(transaction_date: period))
 
       @totals = confirmed.group(:kind).sum(:amount)
       @tag_totals = Finance::TagBreakdown.call(
@@ -20,8 +21,8 @@ module Finance
       # when the chosen range is a week or arbitrary date span).
       length = (period.end - period.begin).to_i + 1
       previous = (period.begin - length)..(period.begin - 1)
-      @previous_totals = finance_scope.effective_confirmed
-        .where(transaction_date: previous).group(:kind).sum(:amount)
+      @previous_totals = @tag_filter.apply(finance_scope.effective_confirmed
+        .where(transaction_date: previous)).group(:kind).sum(:amount)
 
       monthly = confirmed.group("DATE_TRUNC('month', transaction_date)::date", :kind).sum(:amount)
       start_month = period.begin.beginning_of_month
@@ -53,8 +54,9 @@ module Finance
 
     def export
       date_range = Finance::DateRangeFilter.for_params(params, default: "this_month", reports: true)
-      rows = finance_scope.effective_confirmed
-        .where(transaction_date: date_range.range)
+      tag_filter = Finance::TagFilter.for_params(params, workspace: @finance_workspace)
+      rows = tag_filter.apply(finance_scope.effective_confirmed
+        .where(transaction_date: date_range.range))
         .includes(:context, :active_document_version, :correction_as_replacement, :tags)
         .order(:transaction_date, :id)
       csv = CSV.generate(headers: true, encoding: "UTF-8") do |sheet|
