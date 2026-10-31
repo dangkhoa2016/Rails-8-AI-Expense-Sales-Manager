@@ -183,7 +183,7 @@ The Add/Edit receipt-item modal now uses a centered SVG close icon, a consistent
 
 ### Responsive item cards on smaller screens
 
-The receipt-item manager keeps its seven-column table on wide screens but switches to readable, responsive cards below 1,200px: amount, description, tags, date/time/location and full Edit/Delete buttons remain visible without horizontal scrolling. One row retains one stable Turbo Stream DOM ID, so edit updates and pagination remain compatible. See [quick item and tag documentation](docs/QUICK_ITEM_TAGS.en.md).
+The receipt-item manager keeps its six-column table on wide screens but switches to readable, responsive cards below 1,200px: amount, description, tags, date/time/location and full Edit/Delete buttons remain visible without horizontal scrolling. One row retains one stable Turbo Stream DOM ID, so edit updates and pagination remain compatible. See [quick item and tag documentation](docs/QUICK_ITEM_TAGS.en.md).
 
 ## One income/expense intake and revision history
 
@@ -216,3 +216,5 @@ Tag-filtered monetary reports now attribute **only matching line items** when no
 Item sorting (2026-10-31): itemized transaction pages allow read-only original-order, name, amount, time and location sorting in either direction, with responsive controls and stable pagination. [Guide](docs/LINE_ITEM_SORTING.en.md).
 
 The shared transaction date is displayed once above the itemized list instead of repeating in every item table row/card. The six-column table and its sorting behavior remain unchanged.
+
+Item filtering (2026-10-31): the transaction itemized list supports case-insensitive item-name search, inclusive HH:MM time and amount ranges, and combined filtering before sorting/pagination; full ledger totals remain unchanged. [Guide](docs/LINE_ITEM_FILTERING.en.md).
