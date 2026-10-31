@@ -12,13 +12,13 @@
 
 <div class="kpi-grid">
   <article class="kpi-card kpi-income">
-    <div class="kpi-icon">↗</div>
+    <div class="kpi-icon">↙</div>
     <p class="kpi-label"><%= ui("dashboard.kpi.income") %></p>
     <strong class="kpi-value"><%= money_vnd(@month_income) %></strong>
     <span class="kpi-foot"><%= human_month(Date.current) %></span>
   </article>
   <article class="kpi-card kpi-expense">
-    <div class="kpi-icon">↙</div>
+    <div class="kpi-icon">↗</div>
     <p class="kpi-label"><%= ui("dashboard.kpi.expense") %></p>
     <strong class="kpi-value"><%= money_vnd(@month_expense) %></strong>
     <span class="kpi-foot"><%= human_month(Date.current) %></span>

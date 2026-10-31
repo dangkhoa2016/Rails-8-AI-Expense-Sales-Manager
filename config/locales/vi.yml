@@ -633,6 +633,7 @@ vi:
       new: Tạo Tag mới (tùy chọn)
       help: Có thể chọn nhiều Tag hoặc nhập tên mới, ngăn cách bằng dấu phẩy. Tag đầu tiên là nhóm phân loại chính để báo cáo không cộng trùng số tiền.
     quick_item:
+      expense_reason_label: Lý do chi
       name_placeholder: 'Ví dụ: cà phê, giấy in'
       total: Thành tiền (VND)
       total_help: Số lượng × đơn giá được tính ngay khi gõ. Nếu không có đơn giá, hãy nhập thành tiền.

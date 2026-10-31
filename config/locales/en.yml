@@ -638,6 +638,7 @@ en:
       new: Add new Tags (optional)
       help: Choose multiple Tags or enter names separated by commas. The first is the primary report tag; secondary Tags never duplicate amounts.
     quick_item:
+      expense_reason_label: Reason for expense
       name_placeholder: E.g. coffee, paper supplies
       total: Line total (VND)
       total_help: Quantity × unit price updates automatically as you type. Without unit price, enter the total manually.

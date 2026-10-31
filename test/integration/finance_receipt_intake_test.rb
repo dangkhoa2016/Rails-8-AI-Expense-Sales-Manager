@@ -72,6 +72,25 @@ class FinanceReceiptIntakeTest < ActionDispatch::IntegrationTest
     assert_select "a[href='#{review_finance_transaction_path(tx)}']", count: 1
   end
 
+  test "manual draft with attached document does not advertise receipt-first review" do
+    tx = @workspace.finance_transactions.create!(
+      kind: "expense", status: "draft", currency_code: "VND",
+      entry_source: "manual", amount: 4000, description: "Manual draft",
+      created_by_id: @user.id
+    )
+    Finance::UploadDocument.call(transaction: tx, upload: sample_image, actor: @user)
+    assert tx.reload.active_document_version.present?
+    assert_not tx.audit_events.exists?(event_type: "receipt_first_draft_created")
+
+    get finance_transaction_path(tx, locale: "vi")
+    assert_response :success
+    assert_select "a[href='#{review_finance_transaction_path(tx)}']", count: 0
+    assert_select "a[href='#{edit_finance_transaction_path(tx)}']", count: 1
+    assert_select "details#documents", count: 1
+    assert_select "details#documents .evidence-list li", count: 1
+    assert_equal 1, tx.document_versions.count
+  end
+
   test "reviewed edits persist in draft; missing fields remain unknown and cannot auto-confirm" do
     tx = upload_draft
     post finance_transaction_line_items_path(tx), params: {line_item: {

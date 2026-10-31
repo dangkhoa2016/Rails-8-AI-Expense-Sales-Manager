@@ -9,7 +9,7 @@
   </div>
   <div class="heading-actions">
     <% if @transaction.draft? %>
-      <% if @transaction.active_document_version_id.present? %>
+      <% if @transaction.active_document_version_id.present? && @transaction.audit_events.exists?(event_type: "receipt_first_draft_created") %>
         <%= link_to ui("intake.review_title"), review_finance_transaction_path(@transaction),
           class: "btn btn-primary" %>
         <%= link_to ui("detail.edit"), edit_finance_transaction_path(@transaction),
