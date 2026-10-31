@@ -220,3 +220,5 @@ The shared transaction date is displayed once above the itemized list instead of
 Item filtering (2026-10-31): the transaction itemized list supports case-insensitive item-name search, inclusive HH:MM time and amount ranges, item-level multi-Tag OR selection, and combined filtering before sorting/pagination; full ledger totals remain unchanged. [Guide](docs/LINE_ITEM_FILTERING.en.md).
 
 Compact item filters (2026-10-31): the filter disclosure stays collapsed after apply, selected criteria remain visible in a small summary, and GET filtering jumps directly to matching rows. [Guide](docs/LINE_ITEM_FILTERING.en.md).
+
+Line-item workbench (2026-10-31): the six-column item table now starts directly under the page heading, with filters in a left sidebar and transaction context in a right sidebar on wide screens. Tablet and mobile reorganize the rails without document-wide overflow. [Layout guide](docs/LINE_ITEM_WORKBENCH.en.md).
