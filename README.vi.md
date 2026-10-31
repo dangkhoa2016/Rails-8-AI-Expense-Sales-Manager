@@ -216,8 +216,8 @@ Lịch sử và Báo cáo đã bổ sung chọn nhiều Tags theo OR (Tag cấp 
 
 Đã sửa cách tính tiền khi lọc Tags: chỉ cộng **các khoản chi tiết khớp** nếu giao dịch không có Tag cấp trên khớp; số tiền gốc bất biến vẫn hiển thị riêng. CSV bổ sung cột `MatchedTagAmount` để đối chiếu KPI.
 
-Sắp xếp khoản chi tiết (31/10/2026): danh sách các khoản trong giao dịch cho phép chọn thứ tự gốc, tên, số tiền, giờ và địa điểm, tăng/giảm; hỗ trợ mobile và không sửa dữ liệu. [Hướng dẫn](docs/LINE_ITEM_SORTING.vi.md).
+Sắp xếp khoản chi tiết (31/10/2026): danh sách các khoản trong giao dịch cho phép chọn thứ tự gốc, tên, số tiền, giờ và địa điểm, tăng/giảm qua tiêu đề cột trên desktop; đã bỏ khối form chọn sắp xếp riêng và không sửa dữ liệu. [Hướng dẫn](docs/LINE_ITEM_SORTING.vi.md).
 
 Ngày giao dịch (dùng chung) đã được đưa lên đầu trang danh sách khoản chi tiết, không còn lặp lại ở từng dòng hay thẻ mobile. Bảng còn 6 cột và giữ nguyên chức năng sắp xếp.
 
-Lọc khoản chi tiết (31/10/2026): trang danh sách từng giao dịch hỗ trợ tìm tên khoản không phân biệt hoa/thường, lọc khoảng giờ–phút và khoảng tiền bao gồm hai đầu, kết hợp trước khi sắp xếp/phân trang; tổng giao dịch không thay đổi. [Hướng dẫn](docs/LINE_ITEM_FILTERING.vi.md).
+Lọc khoản chi tiết (31/10/2026): trang danh sách từng giao dịch hỗ trợ tìm tên khoản không phân biệt hoa/thường, lọc khoảng giờ–phút và khoảng tiền bao gồm hai đầu, chọn nhiều Tags ở cấp khoản theo OR, kết hợp trước khi sắp xếp/phân trang; tổng giao dịch không thay đổi. [Hướng dẫn](docs/LINE_ITEM_FILTERING.vi.md).
