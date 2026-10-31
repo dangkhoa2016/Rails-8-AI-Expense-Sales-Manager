@@ -33,7 +33,7 @@ class FinanceLineItemSortingTest < ActionDispatch::IntegrationTest
     assert_equal original_ids.first(25), ids_in_table
     assert_select "form.line-item-sort-controls select[name='sort'] option[value='position'][selected]", count: 1
     assert_select "table.line-item-table th[aria-sort='ascending']", count: 1
-    assert_select "table.line-item-table th", count: 7
+    assert_select "table.line-item-table th", count: 6
     assert_select "table.line-item-table th a.line-item-sort-link", count: 5
 
     sorted = @tx.line_items.order(Arel.sql("LOWER(finance_line_items.description) ASC"), :position, :id).pluck(:id)

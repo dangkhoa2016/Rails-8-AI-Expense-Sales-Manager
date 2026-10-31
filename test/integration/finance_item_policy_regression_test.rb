@@ -34,7 +34,8 @@ class FinanceItemPolicyRegressionTest < ActionDispatch::IntegrationTest
     assert_equal Date.new(2026, 10, 30), item.reload.effective_date
     get finance_transaction_line_items_path(@transaction, locale: "vi")
     assert_response :success
-    assert_select "tr#finance_line_item_#{item.id} td.line-cell-date", text: /30\/10\/2026/
+    assert_select ".line-items-date-context time", text: /30\/10\/2026/
+    assert_select "tr#finance_line_item_#{item.id} td.line-cell-date", count: 0
   end
 
   test "time is optional, not auto-guessed, and amount synchronization zeroes the draft after removing the final line" do

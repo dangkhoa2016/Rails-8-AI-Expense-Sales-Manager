@@ -40,15 +40,15 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select ".line-item-table-scroll", count: 1
     assert_select "table.data-table.line-item-table", count: 1
     assert_select "table.line-item-table caption.line-item-table-caption", text: /Danh sách khoản chi/
-    assert_select "table.line-item-table thead th", count: 7
+    assert_select "table.line-item-table thead th", count: 6
     assert_select "table.line-item-table tbody tr", count: 25
     assert_select "tr#finance_line_item_#{@transaction.line_items.first.id}", count: 1
-    assert_select "table.line-item-table tbody td.line-cell", count: 175
-    assert_select "td.line-cell-date[data-label='Ngày']", count: 25
+    assert_select "table.line-item-table tbody td.line-cell", count: 150
+    assert_select ".page-heading + .line-items-date-context time[datetime='2026-10-30']", text: "30/10/2026", count: 1
+    assert_select "table.line-item-table th", text: /Ngày giao dịch/, count: 0
+    assert_select "table.line-item-table td.line-cell-date", count: 0
     assert_select "td.line-cell-time[data-label='Giờ']", count: 25
     assert_select "td.line-cell-place[data-label='Địa điểm']", count: 25
-    assert_select "td.line-cell-date.is-empty", count: 0
-    assert_select "td.line-cell-date", text: /30\/10\/2026/, count: 25
     assert_select "td.line-cell-place.is-empty", count: 12
     assert_select "td.line-cell-amount", count: 25
     assert_select ".line-cell-name .inline-tag-pill", count: 2
@@ -61,7 +61,9 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     item = @transaction.line_items.first
     get finance_transaction_line_items_path(@transaction, locale: "en")
     assert_response :success
-    assert_select "td.line-cell-date[data-label='Date']", count: 25
+    assert_select ".line-items-date-context time[datetime='2026-10-30']", count: 1
+    assert_select ".line-items-date-context", text: /Shared transaction date/
+    assert_select "table.line-item-table td.line-cell-date", count: 0
     assert_select "td.line-cell-time[data-label='Time']", count: 25
     assert_select "td.line-cell-place[data-label='Location']", count: 25
     assert_select ".line-cell-name .inline-tag-pill", text: "Food & drinks"
