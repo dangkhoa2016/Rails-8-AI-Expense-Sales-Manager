@@ -215,3 +215,5 @@ Bộ lọc ngày ở Báo cáo đã responsive trên desktop/tablet/mobile, đ�
 Lịch sử và Báo cáo đã bổ sung chọn nhiều Tags theo OR (Tag cấp giao dịch và từng khoản chi tiết), giữ nguyên bộ lọc ngày khi chuyển trang và xuất CSV. Nút xem lịch sử ở Báo cáo đã cải thiện CSS responsive. Xem [hướng dẫn lọc ngày và Tags](docs/DATE_RANGE_FILTERS.vi.md).
 
 Đã sửa cách tính tiền khi lọc Tags: chỉ cộng **các khoản chi tiết khớp** nếu giao dịch không có Tag cấp trên khớp; số tiền gốc bất biến vẫn hiển thị riêng. CSV bổ sung cột `MatchedTagAmount` để đối chiếu KPI.
+
+Sắp xếp khoản chi tiết (31/10/2026): danh sách các khoản trong giao dịch cho phép chọn thứ tự gốc, tên, số tiền, giờ và địa điểm, tăng/giảm; hỗ trợ mobile và không sửa dữ liệu. [Hướng dẫn](docs/LINE_ITEM_SORTING.vi.md).
