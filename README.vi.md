@@ -225,3 +225,5 @@ Lọc khoản chi tiết (31/10/2026): trang danh sách từng giao dịch hỗ 
 Bộ lọc khoản chi tiết gọn (31/10/2026): bộ lọc thu gọn sau khi áp dụng, hiển thị số điều kiện và chuyển ngay xuống danh sách khoản khớp thay vì phải cuộn thủ công. [Hướng dẫn](docs/LINE_ITEM_FILTERING.vi.md).
 
 Workbench khoản chi tiết (31/10/2026): bảng sáu cột xuất hiện ngay dưới tiêu đề; màn hình rộng có sidebar lọc bên trái, thông tin giao dịch bên phải; tablet và mobile tự chuyển bố cục để ưu tiên danh sách. [Hướng dẫn giao diện](docs/LINE_ITEM_WORKBENCH.vi.md).
+
+Tinh chỉnh sidebar (31/10/2026): màn hình trung bình không còn khoảng trống lớn giữa bộ lọc và thông tin giao dịch; tiêu đề cột là Thời gian/Địa điểm; bộ lọc mặc định mở và giới hạn chiều cao trên mobile. [Hướng dẫn](docs/LINE_ITEM_WORKBENCH.vi.md).
