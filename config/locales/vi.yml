@@ -346,6 +346,19 @@ vi:
       saved: Đã lưu khoản chi tiết.
       removed: Đã xóa khoản chi tiết.
       list_title: Danh sách khoản chi tiết
+      sort_field: Sắp xếp theo
+      sort_direction: Thứ tự
+      sort_ascending: Tăng dần (A–Z / nhỏ đến lớn)
+      sort_descending: Giảm dần (Z–A / lớn đến nhỏ)
+      sort_apply: Áp dụng sắp xếp
+      sort_reset: Thứ tự gốc
+      sort_column: 'Sắp xếp theo %{column}'
+      sort_fields:
+        position: Thứ tự gốc của hóa đơn
+        description: Tên khoản
+        amount: Số tiền
+        occurred_time: Giờ phát sinh
+        location_text: Địa điểm
       page_of: Trang %{page}/%{pages} · 25 dòng/trang
       save_row: Lưu
       delete_row: Xóa

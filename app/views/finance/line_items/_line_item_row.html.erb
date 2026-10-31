@@ -21,13 +21,16 @@
   <td class="line-cell line-cell-actions" data-label="<%= ui("shared.actions") %>">
     <% if transaction.draft? || transaction.correction_as_original.nil? %>
       <div class="line-actions">
-        <%= link_to ui("m6.item_edit"), edit_finance_transaction_line_item_path(transaction,item),
+        <%= link_to ui("m6.item_edit"), edit_finance_transaction_line_item_path(transaction,item,
+            (local_assigns[:sorting] && !local_assigns[:sorting].default? ?
+              local_assigns[:sorting].query_params.merge(page: local_assigns[:page]) : {})),
             class: "btn btn-primary",
             data: { turbo_frame: "line_item_modal" },
             aria: { label: "#{ui('m6.item_edit')}: #{item.description}" } %>
         <% if transaction.draft? %>
           <%= button_to ui("m6.delete_row"), finance_transaction_line_item_path(transaction,item),
-              method: :delete, class: "btn btn-minimal",
+              method: :delete,
+              params: (local_assigns[:sorting]&.query_params || {}), class: "btn btn-minimal",
               form: { data: { turbo_confirm: ui("m6.delete_confirm") } } %>
         <% end %>
       </div>

@@ -1241,3 +1241,57 @@ button.btn.correction-item-diff-trigger:focus-visible,
   font-size:.7rem;font-weight:500;line-height:1.4;
   white-space:normal;
 }
+
+/* Line-item sorting controls stay above responsive cards as table headers
+   become visually hidden at tablet widths. No persisted position is changed. */
+#line_item_list .line-item-sort-controls{
+  display:flex;align-items:flex-end;gap:11px;
+  flex-wrap:wrap;margin:0 0 15px;
+  padding:13px 14px;border:1px solid #e2eaf2;
+  border-radius:11px;background:#f9fbfe;
+  min-width:0;
+}
+#line_item_list .line-item-sort-field{
+  display:flex;flex-direction:column;gap:6px;
+  flex:1 1 210px;min-width:0;
+}
+#line_item_list .line-item-sort-field label{
+  font-size:.77rem;color:#526c83;font-weight:750;
+}
+#line_item_list .line-item-sort-field select{
+  width:100%;min-width:0;min-height:42px;
+  padding:8px 12px;border:1px solid #cddce9;
+  border-radius:8px;background:#fff;color:#24425f;
+  font:inherit;font-size:.84rem;
+}
+#line_item_list .line-item-sort-controls .btn{
+  min-height:42px;white-space:normal;
+  display:inline-flex;justify-content:center;align-items:center;
+  text-align:center;
+}
+#line_item_list .line-item-sort-link{
+  display:inline-flex;align-items:center;gap:5px;
+  color:inherit;text-decoration:none;
+  min-height:35px;padding:4px 2px;
+  white-space:normal;
+}
+#line_item_list .line-item-sort-link:hover{color:#2467aa;text-decoration:underline}
+#line_item_list .line-item-sort-link:focus-visible{
+  outline:3px solid #8cbbea;outline-offset:2px;
+  border-radius:4px;
+}
+#line_item_list .line-item-sort-indicator{color:#728ca5;font-size:.9rem}
+#line_item_list th[aria-sort=ascending] .line-item-sort-indicator,
+#line_item_list th[aria-sort=descending] .line-item-sort-indicator{
+  color:#1a649e;font-weight:850;
+}
+@media(max-width:600px){
+  #line_item_list .line-item-sort-controls{padding:12px;gap:9px}
+  #line_item_list .line-item-sort-field{flex:1 1 100%}
+  #line_item_list .line-item-sort-controls .btn{
+    flex:1 1 125px;width:auto;min-width:0;
+  }
+}
+@media(max-width:420px){
+  #line_item_list .line-item-sort-controls .btn{flex:1 1 100%;width:100%}
+}

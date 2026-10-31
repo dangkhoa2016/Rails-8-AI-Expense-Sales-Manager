@@ -27,6 +27,9 @@
     <%= form_with model: line_item, scope: :line_item,
       url: finance_transaction_line_item_path(transaction, line_item),
       method: :patch, data: { turbo_frame: "line_item_modal" } do |f| %>
+      <%= hidden_field_tag :page, params[:page] %>
+      <%= hidden_field_tag :sort, @sorting.field %>
+      <%= hidden_field_tag :direction, @sorting.direction %>
       <%= render "finance/line_items/item_fields", f: f, item: line_item %>
       <% if requires_correction %>
         <div class="form-field">
