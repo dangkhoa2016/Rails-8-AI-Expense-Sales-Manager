@@ -275,7 +275,7 @@ module Finance
     end
 
     def load_filtering!
-      @filtering = Finance::LineItemFiltering.from_params(params)
+      @filtering = Finance::LineItemFiltering.from_params(params, workspace: @finance_workspace)
     end
 
     def list_query_params

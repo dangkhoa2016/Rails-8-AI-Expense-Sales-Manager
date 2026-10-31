@@ -30,9 +30,7 @@
       <%= hidden_field_tag :page, params[:page] %>
       <%= hidden_field_tag :sort, @sorting.field %>
       <%= hidden_field_tag :direction, @sorting.direction %>
-      <% @filtering.query_params.each do |key, value| %>
-        <%= hidden_field_tag key, value %>
-      <% end %>
+      <%= render "finance/line_items/active_filter_hidden_fields", filtering: @filtering %>
       <%= render "finance/line_items/item_fields", f: f, item: line_item %>
       <% if requires_correction %>
         <div class="form-field">

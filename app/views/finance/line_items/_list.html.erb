@@ -36,6 +36,8 @@
           placeholder: "0", inputmode: "decimal" %>
       </div>
     </div>
+    <%= render "finance/shared/tag_filter_fields", tag_filter: filtering.tag_filter,
+      hint_key: "m6.filter_tags_hint" %>
     <p class="line-item-filter-hint"><%= ui("m6.filter_hint") %></p>
     <div class="line-item-filter-actions">
       <%= submit_tag ui("m6.filter_apply"), class: "btn btn-primary" %>
@@ -50,30 +52,6 @@
       <%= ui("m6.filter_results", count: matched_count, total: total_count,
         sum: money_vnd(matched_sum)) %>
     </p>
-  <% end %>
-  <%= form_with url: finance_transaction_line_items_path(transaction), method: :get,
-    local: true, class: "line-item-sort-controls" do |f| %>
-    <% filtering.query_params.each do |key, value| %>
-      <%= hidden_field_tag key, value %>
-    <% end %>
-    <div class="line-item-sort-field">
-      <%= f.label :sort, ui("m6.sort_field") %>
-      <%= f.select :sort,
-        Finance::LineItemSorting::FIELDS.map { |field| [ui("m6.sort_fields.#{field}"), field] },
-        { selected: sorting.field } %>
-    </div>
-    <div class="line-item-sort-field">
-      <%= f.label :direction, ui("m6.sort_direction") %>
-      <%= f.select :direction,
-        [[ui("m6.sort_ascending"), "asc"], [ui("m6.sort_descending"), "desc"]],
-        { selected: sorting.direction } %>
-    </div>
-    <%= f.submit ui("m6.sort_apply"), class: "btn btn-secondary" %>
-    <% unless sorting.default? %>
-      <%= link_to ui("m6.sort_reset"),
-        finance_transaction_line_items_path(transaction,
-          filtering.query_params.merge(anchor: "line_item_list")), class: "btn btn-minimal" %>
-    <% end %>
   <% end %>
   <% if items.any? %>
     <div class="table-scroll line-item-table-scroll">
