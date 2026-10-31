@@ -347,6 +347,19 @@ en:
       saved: Line item saved.
       removed: Line item removed.
       list_title: Itemized breakdown
+      filter_title: Filter line items
+      filter_name: Item name contains
+      filter_name_placeholder: Search by item name
+      filter_time_from: Time from (HH:MM)
+      filter_time_to: Time to (HH:MM)
+      filter_amount_min: Minimum amount
+      filter_amount_max: Maximum amount
+      filter_apply: Apply filters
+      filter_clear: Clear filters
+      filter_hint: Filters combine together. Time and amount ranges include both endpoints; items without a time are excluded when filtering by time. Enter amounts without thousands separators.
+      filter_results: '%{count} of %{total} items matched · Matched item sum %{sum} (full transaction totals above remain unchanged)'
+      filter_empty: No items match these filters. Clear or adjust the filters to see more.
+      new_item_outside_filters: The new item does not match the current filters.
       sort_field: Sort by
       sort_direction: Direction
       sort_ascending: Ascending (A–Z / lowest first)

@@ -32,7 +32,7 @@
     <% if @count < 500 %>
       <%= link_to "+ #{ui('m6.add_one')}",
         new_finance_transaction_line_item_path(@transaction,
-          @sorting.query_params.merge(page: @page)),
+          @sorting.query_params.merge(@filtering.query_params, page: @page)),
         class: "btn btn-primary", data: { turbo_frame: "line_item_modal" } %>
     <% else %>
       <span class="form-hint"><%= ui("m6.item_limit_reached") %></span>
@@ -45,6 +45,9 @@
           method: :post, multipart: true do |f| %>
           <%= hidden_field_tag :sort, @sorting.field %>
           <%= hidden_field_tag :direction, @sorting.direction %>
+          <% @filtering.query_params.each do |key, value| %>
+            <%= hidden_field_tag key, value %>
+          <% end %>
           <div class="form-field">
             <%= f.label :file, ui("m6.csv_label"), class: "form-label" %>
             <%= f.file_field :file, accept: ".csv,text/csv", required: true %>
@@ -61,6 +64,8 @@
   <%= link_to ui("quick_item.tag_management"), finance_tags_path, class: "btn btn-secondary" %>
 </div>
 <%= render "finance/line_items/list",
-  transaction: @transaction, items: @items, page: @page, pages: @pages, sorting: @sorting %>
+  transaction: @transaction, items: @items, page: @page, pages: @pages,
+  sorting: @sorting, filtering: @filtering, matched_count: @matched_count,
+  matched_sum: @matched_sum, total_count: @count %>
 
 <%= turbo_frame_tag "line_item_modal" %>
