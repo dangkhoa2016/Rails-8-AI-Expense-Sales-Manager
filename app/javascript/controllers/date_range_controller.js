@@ -4,14 +4,55 @@ import { Controller } from "@hotwired/stimulus"
 // The server is authoritative; all preset ranges are recomputed on GET.
 export default class extends Controller {
   static targets = ["preset", "from", "to"]
-  static values = { today: String }
+  static values = {
+    today: String, appliedPreset: String, appliedFrom: String, appliedTo: String
+  }
+
+  connect() {
+    // Browser form restoration / Turbo cache can rehydrate stale input values.
+    // Always initialize the controls from the server-applied query, not the
+    // user's last unsubmitted values. Never calculate a new preset here.
+    this.restoreAppliedState()
+    this.onPageShow = (event) => {
+      if (event.persisted) this.restoreAppliedState()
+    }
+    window.addEventListener("pageshow", this.onPageShow)
+  }
+
+  disconnect() {
+    window.removeEventListener("pageshow", this.onPageShow)
+  }
+
+  restoreAppliedState() {
+    this.presetTarget.value = this.appliedPresetValue
+    this.fromTarget.value = this.appliedFromValue
+    this.toTarget.value = this.appliedToValue
+    this.updatePendingState()
+  }
+
+  pendingNote() {
+    return this.element?.closest(".report-filter")?.querySelector("[data-date-range-pending-note]") ||
+      this.element?.querySelector("[data-date-range-pending-note]")
+  }
+
+  updatePendingState() {
+    const changed = this.presetTarget.value !== this.appliedPresetValue ||
+      this.fromTarget.value !== this.appliedFromValue ||
+      this.toTarget.value !== this.appliedToValue
+    const note = this.pendingNote()
+    if (note) note.hidden = !changed
+  }
 
   applyPreset() {
     const preset = this.presetTarget.value
-    if (preset === "custom") return
+    if (preset === "custom") {
+      this.updatePendingState()
+      return
+    }
     if (preset === "all") {
       this.fromTarget.value = ""
       this.toTarget.value = ""
+      this.updatePendingState()
       return
     }
 
@@ -40,9 +81,11 @@ export default class extends Controller {
     }
     this.fromTarget.value = iso(from)
     this.toTarget.value = iso(to)
+    this.updatePendingState()
   }
 
   markCustom() {
     this.presetTarget.value = "custom"
+    this.updatePendingState()
   }
 }

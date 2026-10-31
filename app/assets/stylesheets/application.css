@@ -99,10 +99,10 @@ button:disabled {opacity:.55;cursor:not-allowed}
 .quick-link:last-child{padding-bottom:3px}
 .empty-state{text-align:center;padding:40px 15px;color:#8090a1}.empty-state h3{margin:6px}.empty-state p{margin-bottom:20px}.empty-icon{font-size:2rem;color:#a4bad0}
 .empty-state.compact{padding:30px 10px}
-.report-controls{display:flex;align-items:center;justify-content:space-between;gap:25px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 20px;margin:0 0 22px}
+.report-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin:0 0 22px}
 .report-filter form{margin:0}.report-filter-row{display:flex;align-items:center;gap:8px}
 .report-filter-row input{min-width:155px}.report-filter-row input[type=submit]{min-width:90px}
-.trust-note{max-width:530px;display:flex;gap:10px;color:#647d90;font-size:.76rem;line-height:1.5}
+.trust-note{width:100%;max-width:none;min-width:0;display:flex;align-items:flex-start;gap:10px;color:#647d90;font-size:.76rem;line-height:1.5;border-top:1px solid #edf1f6;padding-top:12px}
 .trust-note span{color:#0a977d;font-weight:800;font-size:1.2rem}
 .report-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:18px;align-items:start}
 .report-grid .panel{margin-bottom:0;min-height:245px}
@@ -1066,13 +1066,54 @@ button.btn.correction-item-diff-trigger:focus-visible,
 .date-range-fields select:focus-visible {
   outline:3px solid #8ebce8;outline-offset:2px;
 }
-.report-controls .report-filter {flex:1 1 670px;min-width:0}
+.report-controls .report-filter {width:100%;min-width:0}
 .report-filter form {
-  display:flex;align-items:flex-end;
-  flex-wrap:wrap;gap:11px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:end;gap:12px;min-width:0;
+}
+.report-filter .date-range-fields {
+  display:grid;grid-template-columns:minmax(180px,1.3fr) repeat(2,minmax(140px,1fr));
+  align-items:end;gap:12px;min-width:0;width:100%;
+}
+.report-filter .date-range-fields .filter-field {
+  min-width:0;width:100%;margin:0;
 }
 .report-filter .report-filter-actions {
-  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+  display:flex;align-items:stretch;flex-wrap:nowrap;
+  gap:8px;min-width:0;
+}
+.report-filter .report-filter-actions .btn,
+.report-filter .report-filter-actions input[type=submit] {
+  display:inline-flex;align-items:center;justify-content:center;
+  flex:0 0 auto;width:auto;min-height:44px;
+  white-space:nowrap;text-align:center;
+}
+.date-range-pending {
+  display:block;margin:8px 0 0;color:#955d1d;font-size:.79rem;
+  line-height:1.45;font-weight:700;
+}
+.date-range-pending[hidden]{display:none!important}
+.filter-form .date-range-pending{flex:1 1 100%;margin:0}
+@media(max-width:1100px) {
+  .report-filter form{grid-template-columns:minmax(0,1fr)}
+  .report-filter .report-filter-actions{justify-content:flex-start}
+}
+@media(max-width:700px) {
+  .report-controls{padding:16px;gap:12px}
+  .report-filter .date-range-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .report-filter .date-range-preset{grid-column:1/-1}
+  .report-filter .report-filter-actions{width:100%}
+  .report-filter .report-filter-actions .btn,
+  .report-filter .report-filter-actions input[type=submit]{flex:1 1 0;min-width:0}
+}
+@media(max-width:460px) {
+  .report-controls{padding:14px}
+  .report-filter .date-range-fields{grid-template-columns:minmax(0,1fr)}
+  .report-filter .date-range-preset{grid-column:auto}
+  .report-filter .report-filter-actions{flex-direction:column;align-items:stretch}
+  .report-filter .report-filter-actions .btn,
+  .report-filter .report-filter-actions input[type=submit]{width:100%;flex:0 0 auto}
+  .trust-note{font-size:.73rem}
 }
 .date-range-current {
   margin:10px 0 0;color:#45637e;font-size:.82rem;font-weight:650;
@@ -1088,6 +1129,4 @@ button.btn.correction-item-diff-trigger:focus-visible,
   .date-range-fields {flex:1 1 100%}
   .date-range-fields .date-range-preset {flex:1 1 100%}
   .date-range-fields .date-range-date {flex:1 1 min(100%,155px)}
-  .report-filter .report-filter-actions {width:100%}
-  .report-filter .report-filter-actions .btn {flex:1 1 125px}
 }
