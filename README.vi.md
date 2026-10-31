@@ -213,3 +213,5 @@ Bộ lọc khoảng ngày (31/10/2026): Lịch sử giao dịch và Báo cáo d�
 Bộ lọc ngày ở Báo cáo đã responsive trên desktop/tablet/mobile, đồng bộ dữ liệu server và cảnh báo khi ngày được chọn nhưng chưa bấm Áp dụng lọc.
 
 Lịch sử và Báo cáo đã bổ sung chọn nhiều Tags theo OR (Tag cấp giao dịch và từng khoản chi tiết), giữ nguyên bộ lọc ngày khi chuyển trang và xuất CSV. Nút xem lịch sử ở Báo cáo đã cải thiện CSS responsive. Xem [hướng dẫn lọc ngày và Tags](docs/DATE_RANGE_FILTERS.vi.md).
+
+Đã sửa cách tính tiền khi lọc Tags: chỉ cộng **các khoản chi tiết khớp** nếu giao dịch không có Tag cấp trên khớp; số tiền gốc bất biến vẫn hiển thị riêng. CSV bổ sung cột `MatchedTagAmount` để đối chiếu KPI.
