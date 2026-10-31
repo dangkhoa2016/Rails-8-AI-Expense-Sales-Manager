@@ -2,6 +2,7 @@
 module Finance
   class LineItemsController < BaseController
     before_action :load_finance_transaction!
+    before_action :load_sorting!, only: %i[index new edit create update destroy import]
     before_action :require_draft!, only: %i[new create destroy import]
     before_action :find_item!, only: %i[edit update destroy]
 
@@ -12,7 +13,7 @@ module Finance
       @pages = [(@count.to_f / 25).ceil, 1].max
       requested = params[:page].to_s.match?(/\A\d{1,5}\z/) ? params[:page].to_i : 1
       @page = requested.clamp(1, @pages)
-      @items = @transaction.line_items.includes(:tags).order(:position, :id).offset((@page - 1) * 25).limit(25)
+      @items = @sorting.apply(@transaction.line_items.includes(:tags)).offset((@page - 1) * 25).limit(25)
       @new_item = Finance::LineItem.new
     end
 
@@ -81,7 +82,7 @@ module Finance
         @difference = @transaction.amount && @transaction.amount - @sum
         @pages = [(@count.to_f / 25).ceil, 1].max
         @page = requested_page(@pages)
-        @items = @transaction.line_items.includes(:tags).order(:position, :id)
+        @items = @sorting.apply(@transaction.line_items.includes(:tags))
           .offset((@page - 1) * 25).limit(25)
 
         item_visible = @items.any? { |item| item.id == @new_item.id }
@@ -92,8 +93,10 @@ module Finance
           helpers.safe_join([
             message, " ",
             helpers.link_to(I18n.t("finance.m6.view_new_item"),
-              finance_transaction_line_items_path(@transaction, page: @pages,
-                                                   anchor: helpers.dom_id(@new_item)))
+              finance_transaction_line_items_path(@transaction,
+                @sorting.query_params.merge(
+                  page: @sorting.page_of(@transaction.line_items, @new_item.id),
+                  anchor: helpers.dom_id(@new_item))))
           ])
         end
 
@@ -101,7 +104,7 @@ module Finance
           turbo_stream.replace("line_item_list",
             partial: "finance/line_items/list",
             locals: { transaction: @transaction, items: @items,
-                      page: @page, pages: @pages }),
+                      page: @page, pages: @pages, sorting: @sorting }),
           turbo_stream.replace("line_items_summary",
             partial: "finance/line_items/summary",
             locals: { transaction: @transaction, count: @count,
@@ -111,7 +114,7 @@ module Finance
         ]
       else
         redirect_to finance_transaction_line_items_path(@transaction,
-          page: params[:page]), notice: I18n.t("finance.m6.saved"),
+          @sorting.query_params.merge(page: params[:page])), notice: I18n.t("finance.m6.saved"),
           status: :see_other
       end
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique, ArgumentError => error
@@ -144,11 +147,31 @@ module Finance
       if request.format.turbo_stream?
         @sum = @transaction.line_items.sum(:amount)
         @difference = @transaction.amount && @transaction.amount - @sum
+        if !@sorting.default? && @transaction.draft?
+          @count = @transaction.line_items.count
+          @pages = [(@count.to_f / 25).ceil, 1].max
+          @page = requested_page(@pages)
+          @items = @sorting.apply(@transaction.line_items.includes(:tags))
+            .offset((@page - 1) * 25).limit(25)
+          return render turbo_stream: [
+            turbo_stream.replace("line_item_list",
+              partial: "finance/line_items/list",
+              locals: { transaction: @transaction, items: @items,
+                        page: @page, pages: @pages, sorting: @sorting }),
+            turbo_stream.replace("line_items_summary",
+              partial: "finance/line_items/summary",
+              locals: { transaction: @transaction, count: @count,
+                        sum: @sum, difference: @difference }),
+            turbo_stream.update("line_item_modal", ""),
+            turbo_stream.update("line_item_feedback", I18n.t("finance.m6.saved"))
+          ]
+        end
         render turbo_stream: [
           turbo_stream.replace(
             helpers.dom_id(@item),
             partial: "finance/line_items/line_item_row",
-            locals: { item: @item.reload, transaction: @transaction }
+            locals: { item: @item.reload, transaction: @transaction,
+                      sorting: @sorting, page: params[:page] }
           ),
           turbo_stream.replace(
             "line_items_summary",
@@ -161,7 +184,8 @@ module Finance
             I18n.t(@transaction.confirmed? ? "finance.m6.correction_draft_created" : "finance.m6.saved"))
         ]
       else
-        redirect_to finance_transaction_line_items_path(@transaction, page: params[:page]),
+        redirect_to finance_transaction_line_items_path(@transaction,
+          @sorting.query_params.merge(page: params[:page])),
           notice: I18n.t("finance.m6.saved"), status: :see_other
       end
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique, ArgumentError => error
@@ -234,20 +258,25 @@ module Finance
         Finance::SyncDraftLineTotal.call(transaction: tx, actor: @finance_actor, reason: "item_deleted")
         audit!("finance_line_item_removed", item_id: item_id)
       end
-      redirect_to finance_transaction_line_items_path(@transaction), notice: I18n.t("finance.m6.removed")
+      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params),
+        notice: I18n.t("finance.m6.removed")
     rescue ActiveRecord::RecordNotDestroyed, ArgumentError => e
-      redirect_to finance_transaction_line_items_path(@transaction), alert: e.message
+      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params), alert: e.message
     end
 
     def import
       result = Finance::ImportLineItems.call(transaction: @transaction, actor: @finance_actor, upload: params[:file])
       notice = result[:status] == :already_imported ? I18n.t("finance.m6.duplicate") : I18n.t("finance.m6.imported", count: result[:rows])
-      redirect_to finance_transaction_line_items_path(@transaction), notice: notice
+      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params), notice: notice
     rescue ArgumentError, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-      redirect_to finance_transaction_line_items_path(@transaction), alert: e.message
+      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params), alert: e.message
     end
 
     private
+
+    def load_sorting!
+      @sorting = Finance::LineItemSorting.from_params(params)
+    end
 
     def requested_page(total_pages)
       requested = params[:page].to_s.match?(/\A\d{1,5}\z/) ? params[:page].to_i : 1

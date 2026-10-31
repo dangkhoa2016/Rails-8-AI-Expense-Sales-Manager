@@ -26,6 +26,8 @@
       url: finance_transaction_line_items_path(transaction), method: :post,
       data: { turbo_frame: "line_item_modal" } do |f| %>
       <%= hidden_field_tag :page, page %>
+      <%= hidden_field_tag :sort, @sorting.field %>
+      <%= hidden_field_tag :direction, @sorting.direction %>
       <%= render "finance/line_items/item_fields", f: f, item: line_item %>
       <div class="form-footer">
         <%= f.submit ui("m6.add_one"), class: "btn btn-primary" %>

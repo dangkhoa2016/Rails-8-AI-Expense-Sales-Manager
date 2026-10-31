@@ -347,6 +347,19 @@ en:
       saved: Line item saved.
       removed: Line item removed.
       list_title: Itemized breakdown
+      sort_field: Sort by
+      sort_direction: Direction
+      sort_ascending: Ascending (A–Z / lowest first)
+      sort_descending: Descending (Z–A / highest first)
+      sort_apply: Apply sorting
+      sort_reset: Original order
+      sort_column: 'Sort by %{column}'
+      sort_fields:
+        position: Original receipt order
+        description: Item name
+        amount: Amount
+        occurred_time: Item time
+        location_text: Location
       page_of: Page %{page} / %{pages} · 25 per page
       save_row: Save
       delete_row: Remove
