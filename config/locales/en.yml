@@ -346,6 +346,7 @@ en:
       unit_price: Unit price (optional)
       saved: Line item saved.
       removed: Line item removed.
+      context_title: Transaction details and actions
       list_title: Itemized breakdown
       filter_title: Filter line items
       filter_all: Not applied

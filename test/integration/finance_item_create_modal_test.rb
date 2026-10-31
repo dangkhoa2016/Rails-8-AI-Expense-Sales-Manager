@@ -23,7 +23,7 @@ class FinanceItemCreateModalTest < ActionDispatch::IntegrationTest
     assert_select "details.item-import-details summary", count: 1
     assert_select "section.panel form[action='#{finance_transaction_line_items_path(@transaction)}'][method='post']", count: 0
     assert_select "section#line_item_list form.line-item-sort-controls", count: 0
-    assert_select "section#line_item_list form.line-item-filter-controls", count: 1
+    assert_select "aside.line-items-filter-rail form.line-item-filter-controls", count: 1
     assert_select "turbo-frame#line_item_modal", count: 1
 
     get new_finance_transaction_line_item_path(@transaction, page: 1),

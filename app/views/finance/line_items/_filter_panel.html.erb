@@ -1,0 +1,58 @@
+<section class="line-items-filter-surface" aria-label="<%= ui("m6.filter_title") %>">
+  <div class="line-item-filter-toolbar">
+    <details class="line-item-filter-disclosure">
+      <summary class="line-item-filter-toggle">
+        <span class="line-item-filter-toggle-label"><%= ui("m6.filter_title") %></span>
+        <% if filtering.active? %>
+          <span class="line-item-filter-count"><%= ui("m6.filter_selected_count",
+            count: filtering.query_params.except(:tag_ids).size + filtering.tag_filter.selected_ids.size) %></span>
+        <% else %>
+          <span class="line-item-filter-count"><%= ui("m6.filter_all") %></span>
+        <% end %>
+        <span class="line-item-filter-chevron" aria-hidden="true">▾</span>
+      </summary>
+      <%= form_with url: finance_transaction_line_items_path(transaction, anchor: "line_item_results"), method: :get,
+        local: true, class: "line-item-filter-controls", role: "search",
+        data: { turbo: false },
+        aria: { label: ui("m6.filter_title") } do %>
+        <%= hidden_field_tag :sort, sorting.field %>
+        <%= hidden_field_tag :direction, sorting.direction %>
+        <div class="line-item-filter-grid">
+          <div class="line-item-filter-field line-item-filter-name">
+            <%= label_tag :name, ui("m6.filter_name") %>
+            <%= text_field_tag :name, filtering.name, placeholder: ui("m6.filter_name_placeholder"),
+              maxlength: 200, autocomplete: "off" %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :time_from, ui("m6.filter_time_from") %>
+            <%= time_field_tag :time_from, filtering.time_from, step: 60 %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :time_to, ui("m6.filter_time_to") %>
+            <%= time_field_tag :time_to, filtering.time_to, step: 60 %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :amount_min, ui("m6.filter_amount_min") %>
+            <%= number_field_tag :amount_min, filtering.amount_min, min: 0, step: "0.01",
+              placeholder: "0", inputmode: "decimal" %>
+          </div>
+          <div class="line-item-filter-field">
+            <%= label_tag :amount_max, ui("m6.filter_amount_max") %>
+            <%= number_field_tag :amount_max, filtering.amount_max, min: 0, step: "0.01",
+              placeholder: "0", inputmode: "decimal" %>
+          </div>
+        </div>
+        <%= render "finance/shared/tag_filter_fields", tag_filter: filtering.tag_filter,
+          hint_key: "m6.filter_tags_hint" %>
+        <p class="line-item-filter-hint"><%= ui("m6.filter_hint") %></p>
+        <div class="line-item-filter-actions">
+          <%= submit_tag ui("m6.filter_apply"), class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </details>
+    <% if filtering.active? %>
+      <%= link_to ui("m6.filter_clear"), finance_transaction_line_items_path(transaction,
+        sorting.query_params.merge(anchor: "line_item_results")), class: "btn btn-secondary line-item-filter-clear" %>
+    <% end %>
+  </div>
+</section>

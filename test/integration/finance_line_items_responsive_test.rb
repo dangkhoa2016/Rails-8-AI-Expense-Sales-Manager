@@ -37,6 +37,12 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
   test "VI responsive item list keeps row identity, multiple tags, concise labels and full buttons" do
     get finance_transaction_line_items_path(@transaction, locale: "vi")
     assert_response :success
+    assert_select ".line-items-workbench", count: 1
+    assert_select ".line-items-filter-rail form.line-item-filter-controls", count: 1
+    assert_select ".line-items-primary > section#line_item_list", count: 1
+    assert_select ".line-items-context-rail #line_items_summary", count: 1
+    assert_select ".line-items-context-rail .item-list-actions", count: 1
+    assert_select "section#line_item_list .line-item-filter-controls", count: 0
     assert_select ".line-item-table-scroll", count: 1
     assert_select "table.data-table.line-item-table", count: 1
     assert_select "table.line-item-table caption.line-item-table-caption", text: /Danh sách khoản chi/
@@ -44,7 +50,7 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select "table.line-item-table tbody tr", count: 25
     assert_select "tr#finance_line_item_#{@transaction.line_items.first.id}", count: 1
     assert_select "table.line-item-table tbody td.line-cell", count: 150
-    assert_select ".page-heading + .line-items-date-context time[datetime='2026-10-30']", text: "30/10/2026", count: 1
+    assert_select ".line-items-context-rail .line-items-date-context time[datetime='2026-10-30']", text: "30/10/2026", count: 1
     assert_select "table.line-item-table th", text: /Ngày giao dịch/, count: 0
     assert_select "table.line-item-table td.line-cell-date", count: 0
     assert_select "td.line-cell-time[data-label='Giờ']", count: 25

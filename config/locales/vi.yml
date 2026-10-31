@@ -345,6 +345,7 @@ vi:
       unit_price: Đơn giá (tùy chọn)
       saved: Đã lưu khoản chi tiết.
       removed: Đã xóa khoản chi tiết.
+      context_title: Thông tin và thao tác giao dịch
       list_title: Danh sách khoản chi tiết
       filter_title: Lọc các khoản chi tiết
       filter_all: Chưa áp dụng

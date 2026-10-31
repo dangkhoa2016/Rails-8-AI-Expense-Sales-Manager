@@ -1,69 +1,78 @@
 <% content_for :title, ui("m6.title") %>
-<div class="page-heading">
+<div class="page-heading line-items-page-heading">
   <div><span class="eyebrow"><%= ui("form.eyebrow") %></span>
     <h1><%= ui("m6.title") %> · #<%= @transaction.id %></h1>
-    <p class="subheading"><%= ui("m6.subtitle") %></p></div>
+  </div>
   <%= link_to ui("detail.back"), finance_transaction_path(@transaction), class: "btn btn-secondary" %>
 </div>
-<div class="line-items-date-context" aria-label="<%= ui("m6.item_on") %>">
-  <span class="line-items-date-label"><%= ui("m6.item_on") %></span>
-  <% if @transaction.transaction_date.present? %>
-    <time class="line-items-date-value" datetime="<%= @transaction.transaction_date.iso8601 %>"><%= human_day(@transaction.transaction_date) %></time>
-  <% else %>
-    <span class="line-items-date-value">—</span>
-  <% end %>
-</div>
-<%= render "finance/line_items/summary", transaction: @transaction,
-  count: @count, sum: @sum, difference: @difference %>
-<div id="line_item_feedback" role="status" aria-live="polite"></div>
-<% if @transaction.confirmed? %>
-  <div class="security-info" style="margin-top:14px">
-    <%= ui("m6.item_confirmed_hint") %>
-    <% if @transaction.correction_as_original %>
-      <p><%= link_to ui("m6.open_replacement"),
-        finance_transaction_line_items_path(@transaction.correction_as_original.replacement_transaction), class:"btn btn-primary" %></p>
-    <% else %>
-      <p class="form-hint"><%= ui("m6.correction_modal_hint") %></p>
-    <% end %>
+<div class="line-items-workbench">
+  <aside class="line-items-filter-rail" aria-label="<%= ui("m6.filter_title") %>">
+    <%= render "finance/line_items/filter_panel", transaction: @transaction,
+      filtering: @filtering, sorting: @sorting %>
+  </aside>
+  <div class="line-items-primary">
+    <div id="line_item_feedback" role="status" aria-live="polite"></div>
+    <%= render "finance/line_items/list",
+      transaction: @transaction, items: @items, page: @page, pages: @pages,
+      sorting: @sorting, filtering: @filtering, matched_count: @matched_count,
+      matched_sum: @matched_sum, total_count: @count %>
   </div>
-<% end %>
-<div class="item-list-actions" aria-label="<%= ui("m6.list_title") %>">
-  <% if @transaction.draft? %>
-    <% if @count < 500 %>
-      <%= link_to "+ #{ui('m6.add_one')}",
-        new_finance_transaction_line_item_path(@transaction,
-          @sorting.query_params.merge(@filtering.query_params, page: @page)),
-        class: "btn btn-primary", data: { turbo_frame: "line_item_modal" } %>
-    <% else %>
-      <span class="form-hint"><%= ui("m6.item_limit_reached") %></span>
-    <% end %>
-    <details class="item-import-details">
-      <summary class="btn btn-secondary"><%= ui("m6.import_title") %></summary>
-      <div class="item-import-body">
-        <p class="form-hint"><%= ui("m6.import_help") %></p>
-        <%= form_with url: import_finance_transaction_line_items_path(@transaction),
-          method: :post, multipart: true do |f| %>
-          <%= hidden_field_tag :sort, @sorting.field %>
-          <%= hidden_field_tag :direction, @sorting.direction %>
-          <%= render "finance/line_items/active_filter_hidden_fields", filtering: @filtering %>
-          <div class="form-field">
-            <%= f.label :file, ui("m6.csv_label"), class: "form-label" %>
-            <%= f.file_field :file, accept: ".csv,text/csv", required: true %>
-          </div>
-          <%= f.submit ui("m6.import_button"), class: "btn btn-primary" %>
+  <aside class="line-items-context-rail" aria-label="<%= ui("m6.context_title") %>">
+    <div class="line-items-date-context" aria-label="<%= ui("m6.item_on") %>">
+      <span class="line-items-date-label"><%= ui("m6.item_on") %></span>
+      <% if @transaction.transaction_date.present? %>
+        <time class="line-items-date-value" datetime="<%= @transaction.transaction_date.iso8601 %>"><%= human_day(@transaction.transaction_date) %></time>
+      <% else %>
+        <span class="line-items-date-value">—</span>
+      <% end %>
+    </div>
+    <%= render "finance/line_items/summary", transaction: @transaction,
+      count: @count, sum: @sum, difference: @difference %>
+    <% if @transaction.confirmed? %>
+      <div class="security-info" style="margin-top:14px">
+        <%= ui("m6.item_confirmed_hint") %>
+        <% if @transaction.correction_as_original %>
+          <p><%= link_to ui("m6.open_replacement"),
+            finance_transaction_line_items_path(@transaction.correction_as_original.replacement_transaction), class:"btn btn-primary" %></p>
+        <% else %>
+          <p class="form-hint"><%= ui("m6.correction_modal_hint") %></p>
         <% end %>
-        <code>description,amount,quantity,unit_price,tags,occurred_time,location_text</code>
-        <p class="form-hint"><%= ui("m6.import_limit") %></p>
       </div>
-    </details>
-  <% end %>
-  <%= link_to ui("m6.ai_title"), proposals_finance_transaction_line_items_path(@transaction),
-    class: "btn btn-secondary" %>
-  <%= link_to ui("quick_item.tag_management"), finance_tags_path, class: "btn btn-secondary" %>
+    <% end %>
+    <div class="item-list-actions" aria-label="<%= ui("m6.list_title") %>">
+      <% if @transaction.draft? %>
+        <% if @count < 500 %>
+          <%= link_to "+ #{ui('m6.add_one')}",
+            new_finance_transaction_line_item_path(@transaction,
+              @sorting.query_params.merge(@filtering.query_params, page: @page)),
+            class: "btn btn-primary", data: { turbo_frame: "line_item_modal" } %>
+        <% else %>
+          <span class="form-hint"><%= ui("m6.item_limit_reached") %></span>
+        <% end %>
+        <details class="item-import-details">
+          <summary class="btn btn-secondary"><%= ui("m6.import_title") %></summary>
+          <div class="item-import-body">
+            <p class="form-hint"><%= ui("m6.import_help") %></p>
+            <%= form_with url: import_finance_transaction_line_items_path(@transaction),
+              method: :post, multipart: true do |f| %>
+              <%= hidden_field_tag :sort, @sorting.field %>
+              <%= hidden_field_tag :direction, @sorting.direction %>
+              <%= render "finance/line_items/active_filter_hidden_fields", filtering: @filtering %>
+              <div class="form-field">
+                <%= f.label :file, ui("m6.csv_label"), class: "form-label" %>
+                <%= f.file_field :file, accept: ".csv,text/csv", required: true %>
+              </div>
+              <%= f.submit ui("m6.import_button"), class: "btn btn-primary" %>
+            <% end %>
+            <code>description,amount,quantity,unit_price,tags,occurred_time,location_text</code>
+            <p class="form-hint"><%= ui("m6.import_limit") %></p>
+          </div>
+        </details>
+      <% end %>
+      <%= link_to ui("m6.ai_title"), proposals_finance_transaction_line_items_path(@transaction),
+        class: "btn btn-secondary" %>
+      <%= link_to ui("quick_item.tag_management"), finance_tags_path, class: "btn btn-secondary" %>
+    </div>
+  </aside>
 </div>
-<%= render "finance/line_items/list",
-  transaction: @transaction, items: @items, page: @page, pages: @pages,
-  sorting: @sorting, filtering: @filtering, matched_count: @matched_count,
-  matched_sum: @matched_sum, total_count: @count %>
-
 <%= turbo_frame_tag "line_item_modal" %>
