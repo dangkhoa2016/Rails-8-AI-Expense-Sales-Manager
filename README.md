@@ -210,3 +210,5 @@ Date-range filters (2026-10-31): both Transactions and Reports support inclusive
 The shared date-range filter now uses a responsive report grid and explicitly distinguishes unsubmitted date selections from the applied server range, including browser history restoration.
 
 Transactions History and Reports additionally support tenant-safe multi-Tag OR filtering across transaction and line-item Tags, preserving date filters in CSV/navigation. The Report-to-History link is now a responsive, styled button. See [date and Tag filtering](docs/DATE_RANGE_FILTERS.en.md).
+
+Tag-filtered monetary reports now attribute **only matching line items** when no direct transaction Tag matches; original transaction amounts remain immutable and are displayed separately. CSV adds `MatchedTagAmount` for exact reconciliation.
