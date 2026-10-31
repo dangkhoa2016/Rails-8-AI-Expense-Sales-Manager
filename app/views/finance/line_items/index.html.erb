@@ -6,17 +6,11 @@
   <%= link_to ui("detail.back"), finance_transaction_path(@transaction), class: "btn btn-secondary" %>
 </div>
 <div class="line-items-workbench">
+  <div class="line-items-side-stack">
   <aside class="line-items-filter-rail" aria-label="<%= ui("m6.filter_title") %>">
     <%= render "finance/line_items/filter_panel", transaction: @transaction,
       filtering: @filtering, sorting: @sorting %>
   </aside>
-  <div class="line-items-primary">
-    <div id="line_item_feedback" role="status" aria-live="polite"></div>
-    <%= render "finance/line_items/list",
-      transaction: @transaction, items: @items, page: @page, pages: @pages,
-      sorting: @sorting, filtering: @filtering, matched_count: @matched_count,
-      matched_sum: @matched_sum, total_count: @count %>
-  </div>
   <aside class="line-items-context-rail" aria-label="<%= ui("m6.context_title") %>">
     <div class="line-items-date-context" aria-label="<%= ui("m6.item_on") %>">
       <span class="line-items-date-label"><%= ui("m6.item_on") %></span>
@@ -74,5 +68,13 @@
       <%= link_to ui("quick_item.tag_management"), finance_tags_path, class: "btn btn-secondary" %>
     </div>
   </aside>
+  </div>
+  <div class="line-items-primary">
+    <div id="line_item_feedback" role="status" aria-live="polite"></div>
+    <%= render "finance/line_items/list",
+      transaction: @transaction, items: @items, page: @page, pages: @pages,
+      sorting: @sorting, filtering: @filtering, matched_count: @matched_count,
+      matched_sum: @matched_sum, total_count: @count %>
+  </div>
 </div>
 <%= turbo_frame_tag "line_item_modal" %>

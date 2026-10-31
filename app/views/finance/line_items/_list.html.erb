@@ -35,8 +35,8 @@
                 </th>
               <% end %>
               <% [
-                ["occurred_time", ui("m6.item_time")],
-                ["location_text", ui("m6.item_place")]
+                ["occurred_time", ui("m6.table_time")],
+                ["location_text", ui("m6.table_place")]
               ].each do |field, heading| %>
                 <th aria-sort="<%= sorting.field == field ? (sorting.direction == "asc" ? "ascending" : "descending") : "none" %>">
                   <%= link_to finance_transaction_line_items_path(transaction,
