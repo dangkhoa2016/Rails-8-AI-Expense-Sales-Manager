@@ -1039,3 +1039,55 @@ button.btn.correction-item-diff-trigger:focus-visible,
   .evidence-preview-list{grid-template-columns:1fr}
   .evidence-preview-image-link{min-height:140px}
 }
+
+/* Shared date range controls for ledger history and report filters. */
+.date-range-fields {
+  display:flex;align-items:flex-end;flex:1 1 550px;
+  flex-wrap:wrap;gap:11px;min-width:0;
+}
+.date-range-fields .filter-field {
+  flex:1 1 145px;min-width:0;
+}
+.date-range-fields .date-range-preset {
+  flex:1.5 1 200px;
+}
+.date-range-fields input[type=date],
+.date-range-fields select {
+  display:block;width:100%;min-width:0;min-height:44px;
+  border:1px solid #d5e0ea;border-radius:8px;
+  background:#fff;color:#263c52;padding:10px;
+  font:inherit;font-size:.86rem;
+}
+.date-range-fields label {
+  display:block;color:#586e83;font-size:.75rem;
+  font-weight:720;margin-bottom:6px;
+}
+.date-range-fields input:focus-visible,
+.date-range-fields select:focus-visible {
+  outline:3px solid #8ebce8;outline-offset:2px;
+}
+.report-controls .report-filter {flex:1 1 670px;min-width:0}
+.report-filter form {
+  display:flex;align-items:flex-end;
+  flex-wrap:wrap;gap:11px;
+}
+.report-filter .report-filter-actions {
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+}
+.date-range-current {
+  margin:10px 0 0;color:#45637e;font-size:.82rem;font-weight:650;
+}
+.trend-scroll {max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.trend-period-inner {
+  min-width:max(100%,calc(var(--trend-count) * 100px));
+}
+.trend-period-inner .trend-col {min-width:0;flex:1 1 0}
+.trend-period-inner .trend-chart {gap:9px}
+.trend-period-inner .trend-values {gap:8px}
+@media(max-width:650px){
+  .date-range-fields {flex:1 1 100%}
+  .date-range-fields .date-range-preset {flex:1 1 100%}
+  .date-range-fields .date-range-date {flex:1 1 min(100%,155px)}
+  .report-filter .report-filter-actions {width:100%}
+  .report-filter .report-filter-actions .btn {flex:1 1 125px}
+}

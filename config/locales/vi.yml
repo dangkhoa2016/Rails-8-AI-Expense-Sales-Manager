@@ -75,6 +75,23 @@ vi:
         one: Tạo bản nháp thủ công, kể cả khi không có hóa đơn.
         two: Tải ảnh chứng từ và kiểm tra gợi ý từ AI khi có.
         three: Xác nhận ngày và số tiền trước khi đưa vào báo cáo.
+    date_ranges:
+      open_history: Xem lịch sử trong khoảng ngày này
+      preset: Chọn khoảng thời gian nhanh
+      from: Từ ngày
+      to: Đến ngày
+      current: 'Khoảng đang xem: %{from} – %{to}'
+      presets:
+        all: Tất cả thời gian
+        this_week: Tuần này
+        previous_week: Tuần trước
+        first_two_weeks_this_month: 2 tuần đầu tháng này
+        last_two_weeks_this_month: 2 tuần cuối tháng này
+        this_month: Tháng này
+        previous_month: Tháng trước
+        last_7_days: 7 ngày gần đây
+        last_30_days: 30 ngày gần đây
+        custom: Tự chọn ngày
     reports:
       eyebrow: PHÂN TÍCH & BÁO CÁO
       title: Tình hình thu chi
@@ -88,18 +105,18 @@ vi:
         count: Giao dịch đã xác nhận
       compare:
         none: Chưa có giao dịch tháng trước
-        title: 'Tháng trước: %{value}'
+        title: 'Kỳ trước: %{value}'
       trend:
-        title: Xu hướng 6 tháng
-        subtitle: Tổng thu và chi đã xác nhận theo tháng (VND)
+        title: Xu hướng theo tháng trong khoảng chọn
+        subtitle: Tổng thu và chi đã xác nhận theo tháng trong khoảng được lọc (VND)
         empty: Chưa có giao dịch xác nhận trong giai đoạn này.
       breakdown:
         title: Cơ cấu chi theo Tag chính
-        subtitle: Tỷ trọng Tags chi trong tháng được chọn.
-        empty: Tháng này chưa có khoản chi đã xác nhận.
+        subtitle: Tỷ trọng chi theo Tag chính trong khoảng ngày được chọn.
+        empty: Không có khoản chi đã xác nhận trong khoảng này.
       daily:
         title: Phát sinh theo ngày
-        subtitle: Khoản thu và chi phát sinh từng ngày trong tháng.
+        subtitle: Các khoản thu và chi theo từng ngày trong khoảng được chọn.
         empty: Chưa có phát sinh đã xác nhận.
       latest:
         title: Giao dịch xác nhận gần đây

@@ -64,7 +64,7 @@ class FinanceUxTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "34,000"
     refute_includes response.body, "9,900,000"
     refute_includes response.body, "8,888,888"
-    assert_select ".trend-col", count: 6
+    assert_select ".trend-col", count: 1 # Selected October-only report, not unrelated months.
     assert_select ".tag-row", count: 1
 
     get finance_reports_export_path(month: "2026-10", locale: "vi")

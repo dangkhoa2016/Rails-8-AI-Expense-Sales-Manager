@@ -5,8 +5,14 @@ module Finance
 
     def index
       scope = finance_scope.where.not(status: "cancelled")
+      @date_range = Finance::DateRangeFilter.for_params(params, default: "all")
       @draft_count = scope.where(status: 'draft').count
-      totals = scope.effective_confirmed.where(transaction_date: Date.current.beginning_of_month..Date.current.end_of_month).group(:kind).sum(:amount)
+      today = Time.find_zone!("Asia/Ho_Chi_Minh").today
+      kpi_period = @date_range.range || (today.beginning_of_month..today.end_of_month)
+      @kpi_period_label = @date_range.active? ?
+        "#{I18n.l(kpi_period.begin, format: :short)} – #{I18n.l(kpi_period.end, format: :short)}" :
+        nil
+      totals = scope.effective_confirmed.where(transaction_date: kpi_period).group(:kind).sum(:amount)
       @month_income = totals.fetch('income', BigDecimal('0'))
       @month_expense = totals.fetch('expense', BigDecimal('0'))
       @month_net = @month_income - @month_expense
@@ -14,6 +20,7 @@ module Finance
       @selected_status = %w[draft confirmed].include?(params[:status]) ? params[:status] : ''
       @selected_kind = %w[income expense].include?(params[:kind]) ? params[:kind] : ''
       @query = params[:q].to_s.strip.slice(0, 80)
+      scope = scope.where(transaction_date: @date_range.range) if @date_range.active?
       scope = scope.where(status: @selected_status) if @selected_status.present?
       scope = scope.where(kind: @selected_kind) if @selected_kind.present?
       scope = scope.where('description ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%") if @query.present?

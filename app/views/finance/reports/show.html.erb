@@ -1,14 +1,23 @@
 <% content_for :title, ui("reports.title") %>
 <div class="page-heading">
   <div><span class="eyebrow"><%= ui("reports.eyebrow") %></span><h1><%= ui("reports.title") %></h1><p class="subheading"><%= ui("reports.subtitle") %></p></div>
-  <div class="heading-actions"><%= link_to "↓ #{ui("reports.export")}", finance_reports_export_path(month: @month.strftime("%Y-%m")), class: "btn btn-secondary" %></div>
+  <div class="heading-actions">
+    <%= link_to ui("date_ranges.open_history"), finance_transactions_path(@date_range.query_params), class: "btn btn-minimal" %>
+    <%= link_to "↓ #{ui("reports.export")}", finance_reports_export_path(@date_range.query_params), class: "btn btn-secondary" %>
+  </div>
 </div>
 <section class="report-controls">
   <div class="report-filter">
-    <%= form_with url: finance_reports_path, method: :get, local: true do |f| %>
-      <%= f.label :month, ui("reports.period") %>
-      <div class="report-filter-row"><%= f.month_field :month, value: @month.strftime("%Y-%m"), required: true %><%= f.submit ui("shared.filter"), class: "btn btn-primary" %></div>
+    <%= form_with url: finance_reports_path, method: :get, local: true,
+      data: { controller: "date-range", date_range_today_value: Time.find_zone!("Asia/Ho_Chi_Minh").today.iso8601 } do |f| %>
+      <%= render "finance/shared/date_range_fields", f: f, date_range: @date_range, reports: true %>
+      <div class="report-filter-actions">
+        <%= f.submit ui("shared.filter"), class: "btn btn-primary" %>
+        <%= link_to ui("shared.clear"), finance_reports_path, class: "btn btn-minimal" %>
+      </div>
     <% end %>
+    <p class="date-range-current"><%= ui("date_ranges.current",
+      from: human_day(@date_range.from_date), to: human_day(@date_range.to_date)) %></p>
   </div>
   <div class="trust-note"><span>✓</span><%= ui("reports.evidence_note") %></div>
 </section>
@@ -17,14 +26,14 @@
   <article class="kpi-card kpi-income"><span class="kpi-icon">↗</span><p class="kpi-label"><%= ui("reports.kpi.income") %></p><strong class="kpi-value"><%= money_vnd(@income_total) %></strong><span class="kpi-foot"><%= ui("reports.compare.title", value: money_vnd(@previous_totals.fetch("income", BigDecimal("0")))) %></span></article>
   <article class="kpi-card kpi-expense"><span class="kpi-icon">↙</span><p class="kpi-label"><%= ui("reports.kpi.expense") %></p><strong class="kpi-value"><%= money_vnd(@expense_total) %></strong><span class="kpi-foot"><%= ui("reports.compare.title", value: money_vnd(@previous_totals.fetch("expense", BigDecimal("0")))) %></span></article>
   <article class="kpi-card kpi-net"><span class="kpi-icon">≈</span><p class="kpi-label"><%= ui("reports.kpi.net") %></p><strong class="kpi-value"><%= money_vnd(@net) %></strong><span class="kpi-foot"><%= ui("reports.balance.#{@net.positive? ? 'positive' : (@net.negative? ? 'negative' : 'zero')}") %></span></article>
-  <article class="kpi-card kpi-drafts"><span class="kpi-icon">✓</span><p class="kpi-label"><%= ui("reports.kpi.count") %></p><strong class="kpi-value"><%= @transactions_count %></strong><span class="kpi-foot"><%= human_month(@month) %></span></article>
+  <article class="kpi-card kpi-drafts"><span class="kpi-icon">✓</span><p class="kpi-label"><%= ui("reports.kpi.count") %></p><strong class="kpi-value"><%= @transactions_count %></strong><span class="kpi-foot"><%= human_day(@date_range.from_date) %> – <%= human_day(@date_range.to_date) %></span></article>
 </div>
 
 <div class="report-grid">
   <section class="panel report-trend">
     <div class="panel-heading"><div><h2><%= ui("reports.trend.title") %></h2><p><%= ui("reports.trend.subtitle") %></p></div><div class="legend"><span class="legend-income"></span><%= ui("reports.legend.income") %><span class="legend-expense"></span><%= ui("reports.legend.expense") %></div></div>
-    <div class="trend-chart" role="img" aria-label="<%= ui("reports.trend.title") %>">
-      <% @six_months.each do |m| %>
+    <div class="trend-scroll"><div class="trend-period-inner" style="--trend-count:<%= @trend_months.length %>"><div class="trend-chart" role="img" aria-label="<%= ui("reports.trend.title") %>">
+      <% @trend_months.each do |m| %>
         <div class="trend-col">
           <div class="trend-bars">
             <% income_pct = (m[:income] / @trend_max * 100).to_f.round(1) %>
@@ -36,11 +45,11 @@
         </div>
       <% end %>
     </div>
-    <div class="trend-values">
-      <% @six_months.each do |m| %>
+    <div class="trend-values" style="grid-template-columns:repeat(<%= @trend_months.length %>,minmax(0,1fr))">
+      <% @trend_months.each do |m| %>
         <div><strong><%= m[:date].strftime("%m/%Y") %></strong><span class="income-text">+ <%= money_vnd(m[:income]) %></span><span class="expense-text">− <%= money_vnd(m[:expense]) %></span></div>
       <% end %>
-    </div>
+    </div></div></div>
   </section>
 
   <section class="panel tags-panel">
