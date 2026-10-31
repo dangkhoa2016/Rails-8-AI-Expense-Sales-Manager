@@ -33,6 +33,8 @@ class FinanceItemCreateModalTest < ActionDispatch::IntegrationTest
     assert_select 'button.item-modal-close svg', count: 1
     assert_select 'button.item-modal-cancel[type="button"]', count: 1
     assert_select "input[name='line_item[description]'][required]", count: 1
+    assert_select "label[for='line_item_description']", text: "Lý do chi"
+
     assert_select "input[name='line_item[amount]'][required]", count: 1
     assert_select "input[name='line_item[occurred_on]']", count: 0
     assert_select "div.quick-item-inherited-date", text: /30\/10\/2026/

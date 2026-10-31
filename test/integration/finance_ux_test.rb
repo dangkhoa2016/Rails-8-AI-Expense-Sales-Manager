@@ -29,6 +29,15 @@ class FinanceUxTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: /Transactions overview/
   end
 
+  test "dashboard income and expense KPI direction icons are swapped in the intended cards" do
+    get finance_transactions_path(locale: "vi")
+    assert_response :success
+    assert_select ".kpi-card.kpi-income .kpi-icon", text: "↙", count: 1
+    assert_select ".kpi-card.kpi-expense .kpi-icon", text: "↗", count: 1
+    assert_select ".kpi-card.kpi-income .kpi-label", text: /Tổng thu đã xác nhận/
+    assert_select ".kpi-card.kpi-expense .kpi-label", text: /Tổng chi đã xác nhận/
+  end
+
   test "reports exclude drafts and other workspaces while giving valid verified totals" do
     owner_income = @owner_workspace.finance_transactions.create!(
       kind: "income", status: "draft", currency_code: "VND", entry_source: "manual",

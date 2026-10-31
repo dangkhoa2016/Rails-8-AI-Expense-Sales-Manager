@@ -1,6 +1,6 @@
 <div class="quick-item-fields" data-controller="line-item-entry">
   <div class="form-field">
-    <%= f.label :description, ui("form.lines.name"), class: "form-label" %>
+    <%= f.label :description, (@transaction.kind == "expense" ? ui("quick_item.expense_reason_label") : ui("form.lines.name")), class: "form-label" %>
     <%= f.text_field :description, required: true, maxlength: 500,
       placeholder: ui("quick_item.name_placeholder") %>
   </div>
