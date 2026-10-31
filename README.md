@@ -200,3 +200,5 @@ The correction draft now offers a read-only original-transaction popup on both e
 The correction comparison banner distinguishes draft, confirmed and cancelled replacements by their actual status, and original-view modal controls have accessible, responsive neutral styling.
 
 Correction item differences now open in a focused read-only modal; the redundant aggregate comparison heading has been removed, while the financial before/after fields remain visible.
+
+Minor UI updates (2026-10-31): expense-item modal labels the description **Reason for expense**, receipt-review action is reserved for receipt-first drafts, and monthly income/expense KPI arrows are swapped. [Details](docs/FINANCE_UI_REFINEMENTS_20261031.en.md).
