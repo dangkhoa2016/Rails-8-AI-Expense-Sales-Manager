@@ -346,6 +346,19 @@ vi:
       saved: Đã lưu khoản chi tiết.
       removed: Đã xóa khoản chi tiết.
       list_title: Danh sách khoản chi tiết
+      filter_title: Lọc các khoản chi tiết
+      filter_name: Tên khoản chứa
+      filter_name_placeholder: Tìm theo tên khoản thu/chi
+      filter_time_from: Giờ từ (HH:MM)
+      filter_time_to: Giờ đến (HH:MM)
+      filter_amount_min: Số tiền từ
+      filter_amount_max: Số tiền đến
+      filter_apply: Áp dụng bộ lọc
+      filter_clear: Xóa bộ lọc
+      filter_hint: Các điều kiện lọc được kết hợp. Khoảng giờ và tiền tính cả hai đầu; khoản chưa có giờ không khớp khi lọc theo giờ. Nhập tiền không dùng dấu phân cách hàng nghìn.
+      filter_results: '%{count}/%{total} khoản khớp · Tổng các khoản khớp %{sum} (tổng giao dịch phía trên không thay đổi)'
+      filter_empty: Không có khoản nào khớp bộ lọc. Hãy thay đổi hoặc xóa bộ lọc.
+      new_item_outside_filters: Khoản mới không khớp bộ lọc hiện tại.
       sort_field: Sắp xếp theo
       sort_direction: Thứ tự
       sort_ascending: Tăng dần (A–Z / nhỏ đến lớn)

@@ -3,6 +3,7 @@ module Finance
   class LineItemsController < BaseController
     before_action :load_finance_transaction!
     before_action :load_sorting!, only: %i[index new edit create update destroy import]
+    before_action :load_filtering!, only: %i[index new edit create update destroy import]
     before_action :require_draft!, only: %i[new create destroy import]
     before_action :find_item!, only: %i[edit update destroy]
 
@@ -10,10 +11,7 @@ module Finance
       @count = @transaction.line_items.count
       @sum = @transaction.line_items.sum(:amount)
       @difference = @transaction.amount && @transaction.amount - @sum
-      @pages = [(@count.to_f / 25).ceil, 1].max
-      requested = params[:page].to_s.match?(/\A\d{1,5}\z/) ? params[:page].to_i : 1
-      @page = requested.clamp(1, @pages)
-      @items = @sorting.apply(@transaction.line_items.includes(:tags)).offset((@page - 1) * 25).limit(25)
+      load_filtered_items!
       @new_item = Finance::LineItem.new
     end
 
@@ -51,8 +49,7 @@ module Finance
     def new
       @new_item = Finance::LineItem.new(entry_source: "manual", quantity: 1)
       prepare_tags!(@new_item)
-      total_pages = [(@transaction.line_items.count.to_f / 25).ceil, 1].max
-      @page = requested_page(total_pages)
+      @page = requested_page(filtered_pages)
     end
 
     def create
@@ -80,31 +77,32 @@ module Finance
         @count = @transaction.line_items.count
         @sum = @transaction.line_items.sum(:amount)
         @difference = @transaction.amount && @transaction.amount - @sum
-        @pages = [(@count.to_f / 25).ceil, 1].max
-        @page = requested_page(@pages)
-        @items = @sorting.apply(@transaction.line_items.includes(:tags))
-          .offset((@page - 1) * 25).limit(25)
+        load_filtered_items!
 
         item_visible = @items.any? { |item| item.id == @new_item.id }
+        item_matches = @filtering.apply(@transaction.line_items).where(id: @new_item.id).exists?
         message = I18n.t("finance.m6.saved")
         message_content = if item_visible
           message
         else
+          link_scope = item_matches ? @filtering.apply(@transaction.line_items) : @transaction.line_items
+          link_params = (item_matches ? list_query_params : @sorting.query_params)
+            .merge(page: @sorting.page_of(link_scope, @new_item.id), anchor: helpers.dom_id(@new_item))
           helpers.safe_join([
             message, " ",
+            (!item_matches && @filtering.active? ? I18n.t("finance.m6.new_item_outside_filters") + " " : nil),
             helpers.link_to(I18n.t("finance.m6.view_new_item"),
-              finance_transaction_line_items_path(@transaction,
-                @sorting.query_params.merge(
-                  page: @sorting.page_of(@transaction.line_items, @new_item.id),
-                  anchor: helpers.dom_id(@new_item))))
-          ])
+              finance_transaction_line_items_path(@transaction, link_params))
+          ].compact)
         end
 
         render turbo_stream: [
           turbo_stream.replace("line_item_list",
             partial: "finance/line_items/list",
             locals: { transaction: @transaction, items: @items,
-                      page: @page, pages: @pages, sorting: @sorting }),
+                      page: @page, pages: @pages, sorting: @sorting, filtering: @filtering,
+                      matched_count: @matched_count, matched_sum: @matched_sum,
+                      total_count: @count }),
           turbo_stream.replace("line_items_summary",
             partial: "finance/line_items/summary",
             locals: { transaction: @transaction, count: @count,
@@ -114,15 +112,14 @@ module Finance
         ]
       else
         redirect_to finance_transaction_line_items_path(@transaction,
-          @sorting.query_params.merge(page: params[:page])), notice: I18n.t("finance.m6.saved"),
+          list_query_params.merge(page: params[:page])), notice: I18n.t("finance.m6.saved"),
           status: :see_other
       end
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique, ArgumentError => error
       @new_item ||= Finance::LineItem.new
       @modal_error = error.message
       prepare_tags!(@new_item)
-      total_pages = [(@transaction.line_items.count.to_f / 25).ceil, 1].max
-      @page = requested_page(total_pages)
+      @page = requested_page(filtered_pages)
       if request.format.turbo_stream?
         render turbo_stream: turbo_stream.update(
           "line_item_modal", partial: "finance/line_items/new_modal",
@@ -147,17 +144,16 @@ module Finance
       if request.format.turbo_stream?
         @sum = @transaction.line_items.sum(:amount)
         @difference = @transaction.amount && @transaction.amount - @sum
-        if !@sorting.default? && @transaction.draft?
+        if (!@sorting.default? || @filtering.active?) && @transaction.draft?
           @count = @transaction.line_items.count
-          @pages = [(@count.to_f / 25).ceil, 1].max
-          @page = requested_page(@pages)
-          @items = @sorting.apply(@transaction.line_items.includes(:tags))
-            .offset((@page - 1) * 25).limit(25)
+          load_filtered_items!
           return render turbo_stream: [
             turbo_stream.replace("line_item_list",
               partial: "finance/line_items/list",
               locals: { transaction: @transaction, items: @items,
-                        page: @page, pages: @pages, sorting: @sorting }),
+                        page: @page, pages: @pages, sorting: @sorting, filtering: @filtering,
+                      matched_count: @matched_count, matched_sum: @matched_sum,
+                      total_count: @count }),
             turbo_stream.replace("line_items_summary",
               partial: "finance/line_items/summary",
               locals: { transaction: @transaction, count: @count,
@@ -171,7 +167,7 @@ module Finance
             helpers.dom_id(@item),
             partial: "finance/line_items/line_item_row",
             locals: { item: @item.reload, transaction: @transaction,
-                      sorting: @sorting, page: params[:page] }
+                      sorting: @sorting, filtering: @filtering, page: params[:page] }
           ),
           turbo_stream.replace(
             "line_items_summary",
@@ -185,7 +181,7 @@ module Finance
         ]
       else
         redirect_to finance_transaction_line_items_path(@transaction,
-          @sorting.query_params.merge(page: params[:page])),
+          list_query_params.merge(page: params[:page])),
           notice: I18n.t("finance.m6.saved"), status: :see_other
       end
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique, ArgumentError => error
@@ -258,24 +254,45 @@ module Finance
         Finance::SyncDraftLineTotal.call(transaction: tx, actor: @finance_actor, reason: "item_deleted")
         audit!("finance_line_item_removed", item_id: item_id)
       end
-      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params),
+      redirect_to finance_transaction_line_items_path(@transaction, list_query_params),
         notice: I18n.t("finance.m6.removed")
     rescue ActiveRecord::RecordNotDestroyed, ArgumentError => e
-      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params), alert: e.message
+      redirect_to finance_transaction_line_items_path(@transaction, list_query_params), alert: e.message
     end
 
     def import
       result = Finance::ImportLineItems.call(transaction: @transaction, actor: @finance_actor, upload: params[:file])
       notice = result[:status] == :already_imported ? I18n.t("finance.m6.duplicate") : I18n.t("finance.m6.imported", count: result[:rows])
-      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params), notice: notice
+      redirect_to finance_transaction_line_items_path(@transaction, list_query_params), notice: notice
     rescue ArgumentError, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-      redirect_to finance_transaction_line_items_path(@transaction, @sorting.query_params), alert: e.message
+      redirect_to finance_transaction_line_items_path(@transaction, list_query_params), alert: e.message
     end
 
     private
 
     def load_sorting!
       @sorting = Finance::LineItemSorting.from_params(params)
+    end
+
+    def load_filtering!
+      @filtering = Finance::LineItemFiltering.from_params(params)
+    end
+
+    def list_query_params
+      @sorting.query_params.merge(@filtering.query_params)
+    end
+
+    def filtered_pages
+      [(@filtering.apply(@transaction.line_items).count.to_f / 25).ceil, 1].max
+    end
+
+    def load_filtered_items!
+      scoped = @filtering.apply(@transaction.line_items)
+      @matched_count = scoped.count
+      @matched_sum = scoped.sum(:amount)
+      @pages = [(@matched_count.to_f / 25).ceil, 1].max
+      @page = requested_page(@pages)
+      @items = @sorting.apply(scoped.includes(:tags)).offset((@page - 1) * 25).limit(25)
     end
 
     def requested_page(total_pages)

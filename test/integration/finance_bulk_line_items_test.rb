@@ -129,6 +129,9 @@ class FinanceBulkLineItemsTest < ActionDispatch::IntegrationTest
     post session_path, params: {email_address: @other.email_address, password: "ExamplePass-2026!"}
     get finance_transaction_line_items_path(tx)
     assert_response :not_found
+    get finance_transaction_line_items_path(tx, name: "Sample", time_from: "09:00",
+      amount_min: "1")
+    assert_response :not_found
     assert_no_difference "Finance::LineItem.count" do
       post import_finance_transaction_line_items_path(tx), params: {file: upload(sample_csv(10))}
       assert_response :not_found
