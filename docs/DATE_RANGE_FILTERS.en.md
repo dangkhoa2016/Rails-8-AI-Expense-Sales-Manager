@@ -27,3 +27,11 @@ Choosing a preset fills the date fields in the browser; changing either date swi
 - Switching from the filtered history page to Reports, or from Reports to History, preserves the date selection. Results follow the existing confirmed-correction rule and never count an original and its confirmed replacement twice.
 
 No migration, accounting ledger changes or OCR inference are involved. Unit/integration tests cover month/year boundaries, leap days, invalid ranges, tenant isolation, pagination and CSV; the browser preset logic has an independent JavaScript regression test.
+
+## Responsive filter and browser-restored form state (2026-10-31)
+
+The Reports filter uses a dedicated responsive grid: on wide screens the preset, date fields and actions form one balanced row; on tablets the action buttons move below the fields; on small phones all controls stack vertically with full-width buttons. The audit note is always displayed on its own line beneath the applied date range. The ledger history retains its existing responsive form with the same server-state safeguard.
+
+The selected preset and date values in the URL represent the **applied** query. Browsers may retain unsubmitted form edits after page navigation, so the Stimulus controller restores these three controls from server-rendered applied values upon connection and on browser back/forward cache restoration. It **never recalculates or overwrites dates on initial page load**. After an intentional preset/date change, the form shows a localized **not yet applied** notice until the user submits the filter. The financial summary and CSV remain based on the applied server range, not unsubmitted fields.
+
+Authenticated Chromium checks cover both pages at viewport widths 375, 414, 768, 1024, 1366 and 1472px, including applied-value consistency, responsive overflow/overlap checks and the pending-selection state. These are presentation-only changes: no schema, financial record or reporting calculation modifications.

@@ -27,3 +27,11 @@ Chọn mẫu sẽ tự điền ngày vào hai trường; tự thay đổi ngày 
 - Chuyển từ Lịch sử sang Báo cáo hoặc ngược lại sẽ giữ nguyên khoảng ngày. Quy tắc correction vẫn bảo đảm không tính đồng thời giao dịch gốc đã bị thay thế và bản corrected confirmed.
 
 Không có migration, không chỉnh sửa dữ liệu tiền, lịch sử hoặc OCR. Các regression tests kiểm tra tháng/năm, năm nhuận, tham số sai, cách ly tenant, phân trang, CSV và logic chọn nhanh bằng JavaScript.
+
+## Responsive và đồng bộ trạng thái bộ lọc với server (31/10/2026)
+
+Bộ lọc trang Báo cáo có bố cục grid responsive: trên desktop rộng, mẫu, hai trường ngày và nút thao tác được canh trên một hàng gọn; ở tablet, các nút xuống hàng riêng; ở điện thoại nhỏ, các thành phần xếp dọc và nút chiếm đủ chiều rộng. Dòng ghi chú kiểm toán luôn nằm ở hàng riêng bên dưới khoảng ngày đang áp dụng. Trang Lịch sử giữ bố cục responsive của nó, nhưng cùng dùng cơ chế bảo vệ trạng thái.
+
+Preset và hai ngày trong URL là **khoảng ngày đã áp dụng** ở server. Trình duyệt có thể tự phục hồi nội dung form chưa gửi sau khi chuyển trang. Vì vậy, Stimulus đồng bộ lại ba điều khiển từ giá trị **server đã render** khi kết nối và khi khôi phục trang từ back/forward cache. Không tự động tính một preset khác lúc tải trang. Nếu người dùng chủ động đổi preset hoặc ngày nhưng chưa bấm **Áp dụng lọc**, form hiển thị thông báo **chưa áp dụng**, trong khi KPI, báo cáo và CSV vẫn tính theo khoảng server đã xác nhận.
+
+Đã kiểm tra bằng Chromium có đăng nhập ở các viewport 375, 414, 768, 1024, 1366 và 1472px trên cả hai trang, bao gồm đồng nhất giá trị, tràn/đè CSS và thông báo chưa áp dụng. Không có migration, không sửa khoản tiền, và không thay đổi cách tính báo cáo.
