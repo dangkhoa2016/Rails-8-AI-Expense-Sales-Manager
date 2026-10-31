@@ -490,7 +490,7 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
 .line-item-table .line-cell-actions{min-width:112px}
 .line-item-table .line-cell-actions .line-actions{gap:6px}
 
-/* Convert ONLY this 7-column grid to cards before it becomes cramped.
+/* Convert ONLY this 6-column grid to cards before it becomes cramped.
    Use the same <tr id> per item, preserving Turbo Stream row replacement. */
 @media(max-width:1199px){
   .line-item-table-scroll{overflow:visible;max-width:100%;min-width:0}
@@ -559,22 +559,18 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
     padding-top:2px;white-space:nowrap;text-align:right;
     color:#1e5c98;font-size:.92rem;font-weight:850;
   }
-  .line-item-table .line-cell-date,
   .line-item-table .line-cell-time,
   .line-item-table .line-cell-place{
     font-size:.81rem;line-height:1.55;color:#3e5b76;
   }
-  .line-item-table .line-cell-date{grid-column:1/3;grid-row:2}
-  .line-item-table .line-cell-time{grid-column:3;grid-row:2}
+  .line-item-table .line-cell-time{grid-column:1/-1;grid-row:2}
   .line-item-table .line-cell-place{grid-column:1/-1;grid-row:3}
-  .line-item-table .line-cell-date::before,
   .line-item-table .line-cell-time::before,
   .line-item-table .line-cell-place::before{
     content:attr(data-label);display:block;
     margin:0 0 3px;font-size:.66rem;font-weight:750;
     letter-spacing:.035em;text-transform:uppercase;color:#8396aa;
   }
-  .line-item-table .line-cell-date.is-empty,
   .line-item-table .line-cell-time.is-empty,
   .line-item-table .line-cell-place.is-empty{display:none}
   .line-item-table tbody>tr>.line-cell-actions{
@@ -613,10 +609,9 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
     justify-self:start;text-align:left;
     font-size:1.06rem;
   }
-  .line-item-table .line-cell-date{grid-column:1/-1;grid-row:3}
-  .line-item-table .line-cell-time{grid-column:1/-1;grid-row:4}
-  .line-item-table .line-cell-place{grid-column:1/-1;grid-row:5}
-  .line-item-table tbody>tr>.line-cell-actions{grid-column:1/-1;grid-row:6}
+  .line-item-table .line-cell-time{grid-column:1/-1;grid-row:3}
+  .line-item-table .line-cell-place{grid-column:1/-1;grid-row:4}
+  .line-item-table tbody>tr>.line-cell-actions{grid-column:1/-1;grid-row:5}
 }
 
 
@@ -1294,4 +1289,24 @@ button.btn.correction-item-diff-trigger:focus-visible,
 }
 @media(max-width:420px){
   #line_item_list .line-item-sort-controls .btn{flex:1 1 100%;width:100%}
+}
+
+
+/* One transaction date per item-list page, never repeated in each item row. */
+.line-items-date-context {
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;
+  min-width:0;margin:0 0 16px;padding:12px 18px;
+  border:1px solid #d5e6f1;border-radius:11px;
+  background:#f0f7fd;color:#31526d;
+}
+.line-items-date-label {
+  font-size:.82rem;font-weight:680;
+}
+.line-items-date-value {
+  font-size:1rem;font-weight:820;color:#123e67;
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:480px) {
+  .line-items-date-context {padding:12px 14px;gap:5px}
+  .line-items-date-label,.line-items-date-value {flex:1 1 100%}
 }

@@ -50,7 +50,8 @@ class FinanceItemContextTest < ActionDispatch::IntegrationTest
 
     get finance_transaction_line_items_path(@tx,locale:"vi")
     assert_response :success
-    assert_select "tr#finance_line_item_#{item.id} td.line-cell-date", text: /26\/04\/2026/
+    assert_select ".line-items-date-context time", text: /26\/04\/2026/
+    assert_select "tr#finance_line_item_#{item.id} td.line-cell-date", count: 0
   end
 
   test "CSV inherits one transaction date and preserves time and location when supplied" do
