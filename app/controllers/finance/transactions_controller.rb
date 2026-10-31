@@ -14,7 +14,13 @@ module Finance
       @kpi_period_label = @date_range.active? ?
         "#{I18n.l(kpi_period.begin, format: :short)} – #{I18n.l(kpi_period.end, format: :short)}" :
         nil
-      totals = scope.effective_confirmed.where(transaction_date: kpi_period).group(:kind).sum(:amount)
+      totals = if @tag_filter.active?
+        Finance::TagAmountProjection.new(
+          transactions: scope.effective_confirmed.where(transaction_date: kpi_period),
+          tag_filter: @tag_filter).totals
+      else
+        scope.effective_confirmed.where(transaction_date: kpi_period).group(:kind).sum(:amount)
+      end
       @month_income = totals.fetch('income', BigDecimal('0'))
       @month_expense = totals.fetch('expense', BigDecimal('0'))
       @month_net = @month_income - @month_expense
@@ -33,6 +39,13 @@ module Finance
       @page = requested_page.clamp(1, @pages)
       @transactions = scope.includes(:document_versions, :context, :tags).order(created_at: :desc, id: :desc)
                            .offset((@page - 1) * @per_page).limit(@per_page)
+      @matched_amounts = if @tag_filter.active? && @transactions.any?
+        Finance::TagAmountProjection.new(
+          transactions: scope.where(id: @transactions.map(&:id)),
+          tag_filter: @tag_filter).amounts_by_id
+      else
+        {}
+      end
       @superseded_transaction_ids = Finance::Correction.confirmed
         .where(original_transaction_id: @transactions.map(&:id)).pluck(:original_transaction_id).to_set
     end

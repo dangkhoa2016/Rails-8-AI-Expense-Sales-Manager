@@ -1230,3 +1230,14 @@ button.btn.correction-item-diff-trigger:focus-visible,
   .finance-tag-filter-choice{max-width:100%}
   .finance-tag-filter-choice span{font-size:.78rem;padding:8px 10px}
 }
+
+/* Distinguish Tag-matched amounts from stored full-transaction totals. */
+.tag-report-scope {
+  margin:2px 0 0;color:#3f637f;
+  font-size:.79rem;line-height:1.55;font-weight:650;
+}
+.tag-original-amount {
+  display:block;margin-top:4px;color:#758ba0;
+  font-size:.7rem;font-weight:500;line-height:1.4;
+  white-space:normal;
+}

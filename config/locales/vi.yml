@@ -81,7 +81,7 @@ vi:
       selected_count: '%{count} Tags đã chọn'
       archived: Ngừng sử dụng
       no_tags: Chưa có Tags trong không gian này.
-      any_hint: Chọn một hoặc nhiều Tags. Giao dịch khớp bất kỳ Tag nào ở cấp giao dịch hoặc khoản chi tiết; tổng tiền chỉ được tính một lần.
+      any_hint: Chọn một hoặc nhiều Tags. Tag cấp giao dịch khớp thì tính cả giao dịch; nếu chỉ Tag của khoản chi tiết khớp, chỉ tính số tiền các khoản đó (mỗi khoản một lần).
     date_ranges:
       pending: 'Bạn đã đổi khoảng ngày nhưng chưa áp dụng. Nhấn “Áp dụng lọc” để cập nhật dữ liệu.'
       open_history: Xem lịch sử trong khoảng ngày này
@@ -101,6 +101,11 @@ vi:
         last_30_days: 30 ngày gần đây
         custom: Tự chọn ngày
     reports:
+      filtered_amount_note: 'Số tiền khớp Tags: nếu Tag gắn trực tiếp vào giao dịch thì tính toàn bộ; nếu chỉ gắn vào khoản chi tiết thì chỉ cộng những khoản khớp. Mỗi khoản được tính một lần. Số tiền gốc không đổi.'
+      original_transaction_amount: 'Gốc: %{amount}'
+      filtered_breakdown:
+        title: Phân bổ số tiền khớp Tags
+        subtitle: Chỉ phân bổ tiền thuộc Tags đã chọn; một khoản chi tiết khớp không kéo theo toàn bộ hóa đơn.
       eyebrow: PHÂN TÍCH & BÁO CÁO
       title: Tình hình thu chi
       subtitle: Tổng hợp khoản tiền đã được xác nhận. Không tính bản nháp và gợi ý AI chưa duyệt.
