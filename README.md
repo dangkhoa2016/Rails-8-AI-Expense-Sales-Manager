@@ -213,8 +213,8 @@ Transactions History and Reports additionally support tenant-safe multi-Tag OR f
 
 Tag-filtered monetary reports now attribute **only matching line items** when no direct transaction Tag matches; original transaction amounts remain immutable and are displayed separately. CSV adds `MatchedTagAmount` for exact reconciliation.
 
-Item sorting (2026-10-31): itemized transaction pages allow read-only original-order, name, amount, time and location sorting in either direction, with responsive controls and stable pagination. [Guide](docs/LINE_ITEM_SORTING.en.md).
+Item sorting (2026-10-31): itemized transaction pages allow read-only original-order, name, amount, time and location sorting in either direction, through clickable desktop table headings and stable pagination (no separate sorting control panel). [Guide](docs/LINE_ITEM_SORTING.en.md).
 
 The shared transaction date is displayed once above the itemized list instead of repeating in every item table row/card. The six-column table and its sorting behavior remain unchanged.
 
-Item filtering (2026-10-31): the transaction itemized list supports case-insensitive item-name search, inclusive HH:MM time and amount ranges, and combined filtering before sorting/pagination; full ledger totals remain unchanged. [Guide](docs/LINE_ITEM_FILTERING.en.md).
+Item filtering (2026-10-31): the transaction itemized list supports case-insensitive item-name search, inclusive HH:MM time and amount ranges, item-level multi-Tag OR selection, and combined filtering before sorting/pagination; full ledger totals remain unchanged. [Guide](docs/LINE_ITEM_FILTERING.en.md).

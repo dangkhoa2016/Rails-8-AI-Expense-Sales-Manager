@@ -12,7 +12,7 @@ Trang Danh sách khoản chi tiết (/finance/transactions/:id/line_items) đã 
 | Giờ phát sinh | Theo thời gian; khoản chưa nhập giờ luôn ở cuối |
 | Địa điểm | Theo chữ cái, không phân biệt hoa/thường; khoản không có địa điểm ở cuối |
 
-Các trường đều có hai chiều Tăng dần / Giảm dần. Trên desktop, bấm tiêu đề cột để đổi chiều; mũi tên và thuộc tính aria-sort thể hiện trạng thái. Trên desktop, tablet và mobile đều có bộ chọn Sắp xếp theo / Thứ tự ngay phía trên danh sách cùng nút Áp dụng sắp xếp. Thứ tự gốc đưa danh sách về mặc định.
+Các trường đều có hai chiều Tăng dần / Giảm dần. Trên desktop, bấm tiêu đề cột để đổi chiều; mũi tên và thuộc tính aria-sort thể hiện trạng thái. Đã bỏ khối chọn Sắp xếp theo / Thứ tự. Trên desktop rộng vẫn bấm tiêu đề cột để sắp xếp; bấm cột # để chọn thứ tự gốc mặc định.
 
 Cột Ngày không có lựa chọn sắp xếp vì mọi khoản dùng chung ngày của giao dịch. Số thứ tự hiển thị trên khoản (ví dụ #9) luôn là vị trí gốc trong hóa đơn, kể cả khi danh sách đang xem theo tiền hoặc tên.
 
