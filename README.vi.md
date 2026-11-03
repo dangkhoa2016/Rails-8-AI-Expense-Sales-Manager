@@ -233,3 +233,5 @@ Nghiệm thu (03/11/2026): PASS 136 Rails tests và kiểm tra Chromium ở 13 �
 Tinh gọn sidebar (03/11/2026): bỏ KPI chênh lệch hiển thị thường trực; chỉ hiện ghi chú đối chiếu khi có khoản tiền ngoài danh sách khoản chi tiết. Giữ nguyên kiểm tra số tiền và tính bất biến của giao dịch đã xác nhận. [Chi tiết](docs/LINE_ITEM_WORKBENCH.vi.md).
 
 Tối ưu tổng tiền và nút thao tác (03/11/2026): khi tổng các khoản bằng tổng giao dịch, chỉ hiển thị một số tiền; nếu có điều chỉnh thì giữ đủ hai tổng. Màn hình đến 1199px dùng thẻ responsive để không ẩn nút Sửa/Xóa. Giao dịch đã xác nhận phải hiệu chỉnh trước khi xóa khoản. [Chi tiết](docs/LINE_ITEM_WORKBENCH.vi.md).
+
+CSS nút khoản chi tiết (03/11/2026): thu gọn padding trên/dưới của nút Sửa/Xóa, căn đều chiều cao theo responsive và dùng màu đỏ rõ ràng cho nút Xóa (chỉ dành cho bản nháp). [Hướng dẫn](docs/LINE_ITEM_WORKBENCH.vi.md).
