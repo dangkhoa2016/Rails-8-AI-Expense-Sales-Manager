@@ -67,6 +67,8 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select ".line-cell-name .inline-tag-pill", count: 2
     assert_select ".line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
     assert_select ".line-cell-actions .line-actions form button", count: 25
+    assert_select ".line-cell-actions .line-actions form button.btn-line-item-delete", count: 25
+    assert_select ".line-cell-actions .line-actions form button.btn-minimal", count: 0
     assert_select ".table-pagination", count: 1
   end
 
@@ -139,6 +141,7 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "#line_item_list .line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
     assert_select "#line_item_list .line-cell-actions .line-actions form[action][method='post'] button", count: 25
+    assert_select "#line_item_list .line-cell-actions .line-actions form button.btn-line-item-delete", count: 25
     assert_select "#line_item_list .line-item-confirmed-action-hint", count: 0
     assert_select "#line_items_summary .kpi-card", count: 3
   end
