@@ -232,3 +232,5 @@ Line-item summary UX (2026-11-03): the always-visible transaction-versus-items d
 Line-item summary and responsive actions (2026-11-03): balanced itemized transactions show one transaction total (no duplicate sum); exceptional totals preserve both values. At widths up to 1199px, full-width item cards keep Edit/Delete visible. Confirmed transactions require correction drafts rather than direct deletion. [Details](docs/LINE_ITEM_WORKBENCH.en.md).
 
 Line-item button styling (2026-11-03): compact vertical padding for Edit/Delete, aligned responsive heights and a distinct accessible red Delete action restricted to drafts. [Workbench guide](docs/LINE_ITEM_WORKBENCH.en.md).
+
+Desktop item actions (2026-11-03): Edit and Delete share one compact inline row with equal-size buttons and localized short labels at widths 1200px and above. [Responsive workbench guide](docs/LINE_ITEM_WORKBENCH.en.md).
