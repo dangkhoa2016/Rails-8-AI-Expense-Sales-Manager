@@ -3,6 +3,9 @@
     <div>
       <h2><%= ui("m6.list_title") %></h2>
       <p><%= ui("m6.page_of", page: page, pages: pages) %></p>
+      <% if transaction.confirmed? && transaction.correction_as_original.nil? %>
+        <p class="line-item-confirmed-action-hint"><%= ui("m6.confirmed_deletion_hint") %></p>
+      <% end %>
     </div>
   </div>
   <div id="line_item_results" class="line-item-results" tabindex="-1">
