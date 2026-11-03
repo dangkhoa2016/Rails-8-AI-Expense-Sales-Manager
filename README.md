@@ -226,3 +226,5 @@ Line-item workbench (2026-10-31): the six-column item table now starts directly 
 Sidebar spacing fix (2026-10-31): medium-width item workbench now stacks filter and transaction context without artificial vertical gaps; table headings are Time and Location; filters start expanded with bounded mobile height. [Guide](docs/LINE_ITEM_WORKBENCH.en.md).
 
 Validation (2026-11-03): 136 Rails tests and 13 Chromium viewport checks passed after the Kaggle restart; UI QA used a restored synthetic snapshot and does not certify full development-data recovery.
+
+Line-item summary UX (2026-11-03): the always-visible transaction-versus-items difference KPI is removed; a compact read-only note appears only for nonzero itemized adjustments. The accounting checks and immutable confirmed records remain intact. [Details](docs/LINE_ITEM_WORKBENCH.en.md).

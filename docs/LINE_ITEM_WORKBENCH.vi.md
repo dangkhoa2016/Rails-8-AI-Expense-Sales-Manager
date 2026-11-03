@@ -27,3 +27,11 @@ Bộ lọc **mở sẵn theo mặc định** trên mọi kích thước. Ở mà
 Môi trường Kaggle được khôi phục đã PASS **136 Rails tests / 1.888 assertions** (không có failure, error hoặc skip), cùng kiểm tra tĩnh responsive và JavaScript. Chromium có đăng nhập đã kiểm tra 13 độ rộng (375, 414, 768, 900, 959, 960, 1024, 1122, 1199, 1279, 1280, 1366 và 1472 px). Ở mọi kích thước, bộ lọc mở sẵn, tiêu đề cột là Thời gian/Địa điểm, toàn trang không bị tràn ngang và khoản đầu tiên xuất hiện trong viewport cao 916 px. Ở độ rộng 960–1279 px, khoảng cách giữa bộ lọc và khối thông tin giao dịch ở sidebar khoảng 10 px. Đã kiểm tra lọc nhiều Tags và tự chuyển đến kết quả tại 375, 1122 và 1366 px.
 
 Kiểm tra browser sử dụng database riêng được khôi phục từ một bản sao lưu dữ liệu tổng hợp (14 giao dịch, 282 khoản), không phải nguyên trạng database development trước khi reboot (trước đó ghi nhận 285 khoản). Không khẳng định khôi phục đầy đủ dữ liệu hoặc đã nghiệm thu production.
+
+## Tinh gọn thông tin đối chiếu — 03/11/2026
+
+Sidebar danh sách khoản chi tiết hiện chỉ còn **ba** giá trị: số khoản, tổng các khoản và tổng tiền giao dịch. Đã bỏ ô “Chênh lệch (giao dịch − các dòng)” luôn hiển thị và phần giải thích dài chiếm diện tích. Trên trang chi tiết giao dịch cũng không còn lặp ô chênh lệch ở phần thông tin chính.
+
+Backend vẫn tính toán và đối soát số tiền. Thêm/sửa/xóa/nhập khoản trong bản nháp sẽ đồng bộ tổng theo các khoản, còn bước xác nhận các bản nháp được quản lý theo khoản phải kiểm tra tổng khớp. **Các giao dịch cũ, khoản điều chỉnh hợp lệ hoặc giao dịch không có dòng chi tiết không nhất thiết có chênh lệch bằng 0.** Khi có ít nhất một khoản và tổng giao dịch khác tổng các khoản, giao diện chỉ hiện *thông báo có điều kiện* “Số tiền ngoài danh sách khoản chi tiết”, không phải KPI thường trực. Số tiền đó có thể do phí, thuế, giảm giá hoặc điều chỉnh trước đây, cần đối chiếu chứng từ gốc. Giao dịch chưa có khoản chi tiết không hiện thông báo này. Việc hiển thị không sửa giao dịch đã xác nhận.
+
+Trang chi tiết giao dịch dùng cùng cách thông báo có điều kiện. Turbo Stream vẫn cập nhật đúng phần `line_items_summary` với ba KPI. Phân quyền, sắp xếp, lọc nhiều Tags và dữ liệu kiểm toán lịch sử không thay đổi.
