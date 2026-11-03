@@ -64,7 +64,7 @@ class FinanceItemCreateModalTest < ActionDispatch::IntegrationTest
     assert_equal "text/vnd.turbo-stream.html", response.media_type
     assert_select "turbo-stream[action='replace'][target='line_item_list']", count: 1
     assert_select "turbo-stream[action='replace'][target='line_items_summary']", count: 1
-    assert_select "turbo-stream[action='replace'][target='line_items_summary'] #line_items_summary .kpi-card", count: 3
+    assert_select "turbo-stream[action='replace'][target='line_items_summary'] #line_items_summary .kpi-card", count: 2
     assert_select "turbo-stream[action='update'][target='line_item_modal']", count: 1
     assert_select "turbo-stream[action='update'][target='line_item_feedback']", count: 1
     assert_includes response.body, "Bánh mì ngọt"

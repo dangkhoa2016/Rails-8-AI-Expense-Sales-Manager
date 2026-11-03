@@ -330,6 +330,7 @@ vi:
       count: Số khoản chi tiết
       lines_total: Tổng các dòng chi tiết
       invoice_total: Số tiền giao dịch
+      confirmed_deletion_hint: Khoản đã xác nhận không thể xóa trực tiếp. Chọn Sửa chi tiết khoản để tạo bản hiệu chỉnh, rồi xóa khoản trong bản nháp đó.
       unallocated_item_amount: Số tiền ngoài danh sách khoản chi tiết
       unallocated_item_hint: Có thể do phí, thuế, giảm giá hoặc điều chỉnh trước đây. Hãy đối chiếu chứng từ gốc; giao dịch đã xác nhận không được tự ý sửa.
       import_title: Nhập hàng loạt khoản chi từ CSV
