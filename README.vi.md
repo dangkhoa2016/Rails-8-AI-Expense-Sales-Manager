@@ -231,3 +231,5 @@ Cải thiện sidebar (31/10/2026): bộ lọc và thông tin giao dịch ở m�
 Nghiệm thu (03/11/2026): PASS 136 Rails tests và kiểm tra Chromium ở 13 độ rộng sau khi Kaggle khởi động lại; browser QA dùng snapshot tổng hợp riêng và không khẳng định khôi phục đầy đủ dữ liệu development.
 
 Tinh gọn sidebar (03/11/2026): bỏ KPI chênh lệch hiển thị thường trực; chỉ hiện ghi chú đối chiếu khi có khoản tiền ngoài danh sách khoản chi tiết. Giữ nguyên kiểm tra số tiền và tính bất biến của giao dịch đã xác nhận. [Chi tiết](docs/LINE_ITEM_WORKBENCH.vi.md).
+
+Tối ưu tổng tiền và nút thao tác (03/11/2026): khi tổng các khoản bằng tổng giao dịch, chỉ hiển thị một số tiền; nếu có điều chỉnh thì giữ đủ hai tổng. Màn hình đến 1199px dùng thẻ responsive để không ẩn nút Sửa/Xóa. Giao dịch đã xác nhận phải hiệu chỉnh trước khi xóa khoản. [Chi tiết](docs/LINE_ITEM_WORKBENCH.vi.md).
