@@ -400,6 +400,7 @@ vi:
       ai_empty: Chưa có gợi ý AI cho các dòng của chứng từ này.
       proposals_count: '%{count} nhóm dòng được đề xuất'
       item_edit: Sửa chi tiết khoản
+      item_edit_short: Sửa
       item_edit_hint: Sửa các trường của khoản này. Khi lưu khoản trong bản nháp, tổng tiền giao dịch được đồng bộ từ tổng các dòng.
       item_on: Ngày giao dịch (dùng chung)
       table_time: Thời gian
