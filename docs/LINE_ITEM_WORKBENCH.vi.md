@@ -35,3 +35,13 @@ Sidebar danh sách khoản chi tiết hiện chỉ còn **ba** giá trị: số 
 Backend vẫn tính toán và đối soát số tiền. Thêm/sửa/xóa/nhập khoản trong bản nháp sẽ đồng bộ tổng theo các khoản, còn bước xác nhận các bản nháp được quản lý theo khoản phải kiểm tra tổng khớp. **Các giao dịch cũ, khoản điều chỉnh hợp lệ hoặc giao dịch không có dòng chi tiết không nhất thiết có chênh lệch bằng 0.** Khi có ít nhất một khoản và tổng giao dịch khác tổng các khoản, giao diện chỉ hiện *thông báo có điều kiện* “Số tiền ngoài danh sách khoản chi tiết”, không phải KPI thường trực. Số tiền đó có thể do phí, thuế, giảm giá hoặc điều chỉnh trước đây, cần đối chiếu chứng từ gốc. Giao dịch chưa có khoản chi tiết không hiện thông báo này. Việc hiển thị không sửa giao dịch đã xác nhận.
 
 Trang chi tiết giao dịch dùng cùng cách thông báo có điều kiện. Turbo Stream vẫn cập nhật đúng phần `line_items_summary` với ba KPI. Phân quyền, sắp xếp, lọc nhiều Tags và dữ liệu kiểm toán lịch sử không thay đổi.
+
+## Gộp tổng tiền và luôn hiển thị thao tác khoản — 03/11/2026
+
+Không hiển thị lặp **Tổng các dòng chi tiết** và **Số tiền giao dịch** khi hai giá trị bằng nhau. Với giao dịch đã chia khoản và tổng khớp, sidebar chỉ hiển thị **Số khoản chi tiết** và **Số tiền giao dịch**. Khi có ít nhất một khoản và thực sự tồn tại chênh lệch (ví dụ phí hoặc giảm giá trước đây), vẫn hiển thị cả hai tổng cùng ghi chú điều chỉnh chỉ đọc. Giao dịch chưa có khoản thì không hiển thị tổng khoản bằng 0 dư thừa. Đây chỉ là thay đổi trình bày; tổng tiền trong database, quy tắc đối soát và dữ liệu giao dịch đã xác nhận không đổi.
+
+Trong workbench hai cột ở **960–1559px**, phần giữa có thể không đủ rộng để nhìn toàn bộ sáu cột. Vì vậy từ **1199px trở xuống**, danh sách chuyển sang **thẻ khoản chi tiết responsive**, bảo đảm nút thao tác hiển thị trọn vẹn bên trong thẻ, không bị cắt ở mép phải. Từ **1200px trở lên** giữ bảng; ba cột workbench chỉ xuất hiện từ **1560px** để bảng giữa có đủ không gian. Vẫn giữ nguyên ID dòng, Turbo modal, Tags, bộ lọc, URL sắp xếp và phân trang 25 khoản.
+
+Trong **bản nháp**, mỗi khoản có đủ nút **Sửa chi tiết khoản** và **Xóa**. Với **giao dịch đã xác nhận**, không có xóa trực tiếp vì giao dịch gốc là bất biến; cần tạo bản hiệu chỉnh trước, rồi xóa khoản trong bản nháp hiệu chỉnh đó. Giao diện có ghi chú ngắn ngay phía trên danh sách và vẫn hiển thị nút Sửa để bắt đầu luồng hiệu chỉnh.
+
+QA: full Rails suite và Chromium có đăng nhập tại 15 độ rộng (375, 414, 768, 959, 960, 998, 1024, 1122, 1199, 1200, 1280, 1366, 1472, 1560 và 1600px), gồm số tiền khớp/không khớp và trạng thái nút của giao dịch nháp/đã xác nhận.
