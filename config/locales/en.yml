@@ -331,8 +331,8 @@ en:
       count: Number of items
       lines_total: Sum of item amounts
       invoice_total: Transaction amount
-      difference: Difference (transaction − items)
-      reconciliation: Adding, editing, deleting or importing draft items synchronizes the draft transaction amount to the item sum while items remain. You can still adjust the transaction amount for tax or discounts; reconcile before confirming.
+      unallocated_item_amount: Amount outside itemized list
+      unallocated_item_hint: This may reflect fees, tax, discounts, or a historical adjustment. Check the original document; confirmed transactions are not changed automatically.
       import_title: Import many items from CSV
       import_help: UTF-8 CSV requires description,amount; quantity,unit_price,tags,occurred_time,location_text are optional. Item dates use the transaction date. Older CSV occurred_on values must match that date. No OCR.
       import_limit: Up to 500 rows per file and per transaction, max 512 KiB. Invalid rows roll back the entire

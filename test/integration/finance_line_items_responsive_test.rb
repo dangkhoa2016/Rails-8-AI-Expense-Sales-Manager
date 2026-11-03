@@ -70,12 +70,77 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select ".table-pagination", count: 1
   end
 
+  test "balanced line items show only three summary KPIs and no reconciliation notice" do
+    total = @transaction.line_items.sum(:amount)
+    @transaction.update!(amount: total)
+
+    get finance_transaction_line_items_path(@transaction, locale: "vi")
+    assert_response :success
+    assert_select "#line_items_summary .kpi-card", count: 3
+    assert_select "#line_items_summary .kpi-label", text: /Chênh lệch/, count: 0
+    assert_select "#line_items_summary .line-items-allocation-note", count: 0
+    assert_select "#line_items_summary .kpi-card:first-child .kpi-value", text: "25", count: 1
+    assert_select "#line_items_summary .kpi-card:nth-child(2) .kpi-value", text: /25[,.]300/, count: 1
+    assert_select "#line_items_summary .kpi-card:nth-child(3) .kpi-value", text: /25[,.]300/, count: 1
+
+    get finance_transaction_path(@transaction, locale: "vi")
+    assert_response :success
+    assert_select ".detail-hero-meta > div", count: 3
+    assert_select ".detail-hero-meta", text: /Chênh lệch/, count: 0
+    assert_select ".detail-item-preview .line-items-allocation-note", count: 0
+    assert_select ".detail-primary .line-items-allocation-note", count: 0
+    assert_equal total, @transaction.reload.amount
+  end
+
+  test "legacy itemized adjustment remains visible only as contextual notice" do
+    total = @transaction.line_items.sum(:amount)
+    expected = @transaction.amount - total
+    assert expected.positive?
+
+    get finance_transaction_line_items_path(@transaction, locale: "vi")
+    assert_response :success
+    assert_select "#line_items_summary .kpi-card", count: 3
+    assert_select "#line_items_summary .line-items-allocation-note[role='note']", count: 1
+    assert_select "#line_items_summary .line-items-allocation-note", text: /Số tiền ngoài danh sách khoản chi tiết/
+
+    get finance_transaction_path(@transaction, locale: "vi")
+    assert_response :success
+    assert_select ".detail-hero-meta > div", count: 3
+    assert_select ".detail-primary .line-items-allocation-note[role='note']", count: 1
+
+    get finance_transaction_line_items_path(@transaction, locale: "en")
+    assert_response :success
+    assert_select "#line_items_summary .kpi-card", count: 3
+    assert_select "#line_items_summary .line-items-allocation-note", text: /Amount outside itemized list/
+    assert_equal BigDecimal("200000"), @transaction.reload.amount
+  end
+
+  test "transactions without line items do not display misleading adjustment notices" do
+    empty_transaction = @workspace.finance_transactions.create!(
+      kind: "expense", status: "draft", currency_code: "VND",
+      entry_source: "manual", created_by_id: @user.id,
+      transaction_date: Date.new(2026, 10, 31),
+      amount: 80_000, description: "Legacy transaction without item lines"
+    )
+
+    get finance_transaction_line_items_path(empty_transaction, locale: "vi")
+    assert_response :success
+    assert_select "#line_items_summary .kpi-card", count: 3
+    assert_select "#line_items_summary .line-items-allocation-note", count: 0
+
+    get finance_transaction_path(empty_transaction, locale: "vi")
+    assert_response :success
+    assert_select ".detail-hero-meta > div", count: 3
+    assert_select ".detail-primary .line-items-allocation-note", count: 0
+  end
+
   test "EN localized card labels and edit Turbo Stream replace the same table row" do
     item = @transaction.line_items.first
     get finance_transaction_line_items_path(@transaction, locale: "en")
     assert_response :success
     assert_select ".line-items-date-context time[datetime='2026-10-30']", count: 1
     assert_select ".line-items-date-context", text: /Shared transaction date/
+    assert_select "#line_items_summary .kpi-card", count: 3
     assert_select "table.line-item-table th a.line-item-sort-link > span:first-child", text: "Time", count: 1
     assert_select "table.line-item-table th a.line-item-sort-link > span:first-child", text: "Location", count: 1
     assert_select "table.line-item-table td.line-cell-date", count: 0

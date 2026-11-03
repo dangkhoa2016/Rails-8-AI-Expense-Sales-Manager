@@ -56,7 +56,7 @@
       <%= tags_label(@transaction.tags) %>
     </strong></div>
     <div><span><%= ui("m6.count") %></span><strong><%= @line_items_count %></strong></div>
-    <div><span><%= ui("m6.difference") %></span><strong><%= money_vnd(@line_items_delta) %></strong></div>
+
   </div>
 </section>
 
@@ -70,9 +70,10 @@
         <%= link_to ui("m6.manage", count: @line_items_count),
           finance_transaction_line_items_path(@transaction), class: "btn btn-primary" %>
       </div>
-      <% if @line_items_count.positive? && @line_items_delta != 0 %>
-        <div class="proposal-hint"><strong><%= ui("m6.difference") %>: <%= money_vnd(@line_items_delta) %></strong>
-          <p><%= ui("m6.reconciliation") %></p></div>
+      <% if @line_items_count.positive? && @line_items_delta.present? && @line_items_delta != 0 %>
+        <div class="proposal-hint line-items-allocation-note" role="note">
+          <strong><%= ui("m6.unallocated_item_amount") %>: <%= money_vnd(@line_items_delta) %></strong>
+          <p><%= ui("m6.unallocated_item_hint") %></p></div>
       <% end %>
       <% if @line_items_count.positive? %>
         <div class="recent-list detail-item-preview">

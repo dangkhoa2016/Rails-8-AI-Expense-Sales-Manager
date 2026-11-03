@@ -330,8 +330,8 @@ vi:
       count: Số khoản chi tiết
       lines_total: Tổng các dòng chi tiết
       invoice_total: Số tiền giao dịch
-      difference: Chênh lệch (giao dịch − các dòng)
-      reconciliation: Khi thêm, sửa, xóa hoặc nhập dòng chi tiết trong bản nháp, hệ thống tự đồng bộ số tiền giao dịch theo tổng các dòng nếu còn dòng. Bạn vẫn có thể chỉnh số tiền giao dịch để phản ánh thuế hoặc giảm giá; hãy đối chiếu lại trước khi xác nhận.
+      unallocated_item_amount: Số tiền ngoài danh sách khoản chi tiết
+      unallocated_item_hint: Có thể do phí, thuế, giảm giá hoặc điều chỉnh trước đây. Hãy đối chiếu chứng từ gốc; giao dịch đã xác nhận không được tự ý sửa.
       import_title: Nhập hàng loạt khoản chi từ CSV
       import_help: CSV UTF-8 cần description,amount; các cột quantity,unit_price,tags,occurred_time,location_text là tùy chọn. Ngày lấy từ giao dịch; CSV cũ có occurred_on chỉ hợp lệ khi trùng ngày giao dịch. Không chạy OCR.
       import_limit: Tối đa 500 dòng mỗi tệp và mỗi giao dịch, tối đa 512 KiB. Dòng sai sẽ hủy toàn bộ lượt nhập.
