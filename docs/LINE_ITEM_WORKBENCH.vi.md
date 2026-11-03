@@ -45,3 +45,11 @@ Trong workbench hai cột ở **960–1559px**, phần giữa có thể không �
 Trong **bản nháp**, mỗi khoản có đủ nút **Sửa chi tiết khoản** và **Xóa**. Với **giao dịch đã xác nhận**, không có xóa trực tiếp vì giao dịch gốc là bất biến; cần tạo bản hiệu chỉnh trước, rồi xóa khoản trong bản nháp hiệu chỉnh đó. Giao diện có ghi chú ngắn ngay phía trên danh sách và vẫn hiển thị nút Sửa để bắt đầu luồng hiệu chỉnh.
 
 QA: full Rails suite và Chromium có đăng nhập tại 15 độ rộng (375, 414, 768, 959, 960, 998, 1024, 1122, 1199, 1200, 1280, 1366, 1472, 1560 và 1600px), gồm số tiền khớp/không khớp và trạng thái nút của giao dịch nháp/đã xác nhận.
+
+## Nút Sửa/Xóa gọn và dễ nhận biết — 03/11/2026
+
+Chỉ hai nút **Sửa chi tiết khoản** và **Xóa** trong từng dòng khoản được giảm padding theo chiều dọc. Trên màn hình rộng, padding trên/dưới là 4px (chiều cao tối thiểu 34px); đến 1199px là 5px (tối thiểu 38px); với điện thoại đến 500px là 5px (tối thiểu 40px để dễ chạm). Cả hai nút được căn đều chiều cao và bo góc gọn. Nút Xóa có nền đỏ nhạt, chữ/viền đỏ riêng cùng trạng thái hover và focus bằng bàn phím, thay cho kiểu nút trung tính khó phân biệt.
+
+Thao tác Xóa vẫn dùng form POST với phương thức DELETE qua Rails và hộp thoại xác nhận Turbo hiện có. Nút này chỉ hiển thị cho khoản thuộc **giao dịch nháp**; giao dịch đã xác nhận không cho xóa trực tiếp mà phải tạo bản hiệu chỉnh. CSS chỉ áp dụng trong `#line_item_list`, không tác động nút xóa hoặc form của trang khác.
+
+Nghiệm thu: Rails regression và Chromium kiểm tra padding thực tế, chiều cao, màu nút Xóa, hover/focus, không cắt nút, phân biệt nháp/đã xác nhận tại 375, 414, 768, 960, 998, 1122, 1199, 1200, 1366 và 1560px.
