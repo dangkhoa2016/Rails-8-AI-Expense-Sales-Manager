@@ -229,3 +229,5 @@ Workbench khoản chi tiết (31/10/2026): bảng sáu cột xuất hiện ngay 
 Cải thiện sidebar (31/10/2026): bộ lọc và thông tin giao dịch ở màn hình trung bình xếp sát nhau, không còn khoảng trống lớn; cột đổi thành Thời gian/Địa điểm; bộ lọc mặc định mở và có chiều cao thích ứng trên mobile. [Hướng dẫn](docs/LINE_ITEM_WORKBENCH.vi.md).
 
 Nghiệm thu (03/11/2026): PASS 136 Rails tests và kiểm tra Chromium ở 13 độ rộng sau khi Kaggle khởi động lại; browser QA dùng snapshot tổng hợp riêng và không khẳng định khôi phục đầy đủ dữ liệu development.
+
+Tinh gọn sidebar (03/11/2026): bỏ KPI chênh lệch hiển thị thường trực; chỉ hiện ghi chú đối chiếu khi có khoản tiền ngoài danh sách khoản chi tiết. Giữ nguyên kiểm tra số tiền và tính bất biến của giao dịch đã xác nhận. [Chi tiết](docs/LINE_ITEM_WORKBENCH.vi.md).
