@@ -53,3 +53,9 @@ Only the item-row **Edit item** and **Delete item** buttons have reduced vertica
 The delete action is still a real POST form with Rails' DELETE override and the pre-existing Turbo confirmation dialog. The button only exists for draft line items; confirmed transactions do not expose direct deletion and must use a correction draft. CSS selectors are scoped to `#line_item_list`, so unrelated delete buttons and forms retain their own styles.
 
 Regression: Rails suite and Chromium measurement of actual CSS padding, heights, delete-button color, focus/hover, clipping and draft-versus-confirmed behavior at 375, 414, 768, 960, 998, 1122, 1199, 1200, 1366 and 1560px.
+
+## Desktop inline action buttons — 2026-11-03
+
+On table layouts **1200px and above**, Edit and Delete now appear **side by side on one row**, with equal 66px button widths, 34px heights, and a 5px gap. The table presents the concise **Edit / Delete** labels (instead of the long Edit item details label), while the Edit link retains its full descriptive `aria-label` for assistive technologies and its Turbo modal target. At widths below 1200px, item cards retain the original full **Edit item details** label and existing responsive button behavior. The warning-red Delete style, confirmation dialog, and confirmed-transaction immutability are unchanged.
+
+Chromium measured actual button positions at 998, 1200, 1280, 1366, 1515, 1560, 1600 and 1920px; from 1200px both buttons stay on the same line, with matching widths/heights, and no horizontal document overflow. Rails integration tests verify the localized full/compact labels and accessible name.

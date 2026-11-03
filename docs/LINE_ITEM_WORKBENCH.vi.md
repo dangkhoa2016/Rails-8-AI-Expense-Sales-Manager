@@ -53,3 +53,9 @@ Chỉ hai nút **Sửa chi tiết khoản** và **Xóa** trong từng dòng kho�
 Thao tác Xóa vẫn dùng form POST với phương thức DELETE qua Rails và hộp thoại xác nhận Turbo hiện có. Nút này chỉ hiển thị cho khoản thuộc **giao dịch nháp**; giao dịch đã xác nhận không cho xóa trực tiếp mà phải tạo bản hiệu chỉnh. CSS chỉ áp dụng trong `#line_item_list`, không tác động nút xóa hoặc form của trang khác.
 
 Nghiệm thu: Rails regression và Chromium kiểm tra padding thực tế, chiều cao, màu nút Xóa, hover/focus, không cắt nút, phân biệt nháp/đã xác nhận tại 375, 414, 768, 960, 998, 1122, 1199, 1200, 1366 và 1560px.
+
+## Hai nút thao tác nằm ngang trên desktop — 03/11/2026
+
+Trong bảng ở **màn hình từ 1200px**, nút **Sửa** và **Xóa** nằm **cạnh nhau trên cùng một hàng**, chiều rộng mỗi nút 66px, chiều cao 34px, khoảng cách 5px. Để vừa cột Thao tác, nút Sửa hiển thị nhãn rút gọn **Sửa** (tiếng Anh: Edit), nhưng vẫn giữ `aria-label` mô tả đầy đủ để hỗ trợ trình đọc màn hình, đồng thời giữ nguyên Turbo modal. Dưới 1200px, các thẻ responsive vẫn hiển thị nhãn **Sửa chi tiết khoản** đầy đủ. Màu đỏ cảnh báo, hộp thoại xác nhận Xóa và quy tắc bất biến của giao dịch đã xác nhận không thay đổi.
+
+Chromium đã đo vị trí thực tế tại 998, 1200, 1280, 1366, 1515, 1560, 1600 và 1920px; từ 1200px hai nút luôn cùng hàng, cùng chiều rộng/chiều cao, không tràn ngang trang. Rails integration tests kiểm tra nhãn đầy đủ/rút gọn theo ngôn ngữ và tên hỗ trợ tiếp cận.
