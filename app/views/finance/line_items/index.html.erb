@@ -7,11 +7,11 @@
 </div>
 <div class="line-items-workbench">
   <div class="line-items-side-stack">
-  <aside class="line-items-filter-rail" aria-label="<%= ui("m6.filter_title") %>">
-    <%= render "finance/line_items/filter_panel", transaction: @transaction,
-      filtering: @filtering, sorting: @sorting %>
-  </aside>
-  <aside class="line-items-context-rail" aria-label="<%= ui("m6.context_title") %>">
+    <aside class="line-items-filter-rail" aria-label="<%= ui("m6.filter_title") %>">
+      <%= render "finance/line_items/filter_panel", transaction: @transaction,
+        filtering: @filtering, sorting: @sorting %>
+    </aside>
+    <aside class="line-items-context-rail" aria-label="<%= ui("m6.context_title") %>">
     <div class="line-items-date-context" aria-label="<%= ui("m6.item_on") %>">
       <span class="line-items-date-label"><%= ui("m6.item_on") %></span>
       <% if @transaction.transaction_date.present? %>
@@ -67,7 +67,7 @@
         class: "btn btn-secondary" %>
       <%= link_to ui("quick_item.tag_management"), finance_tags_path, class: "btn btn-secondary" %>
     </div>
-  </aside>
+    </aside>
   </div>
   <div class="line-items-primary">
     <div id="line_item_feedback" role="status" aria-live="polite"></div>

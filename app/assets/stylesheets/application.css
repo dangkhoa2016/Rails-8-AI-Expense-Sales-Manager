@@ -1483,6 +1483,7 @@ button.btn.correction-item-diff-trigger:focus-visible,
   }
   .line-items-side-stack{display:contents}
   .line-items-filter-rail,.line-items-primary,.line-items-context-rail{width:100%}
+  /* Keep the filter expanded but bound its height to preserve first-screen rows. */
   .line-items-filter-rail .line-item-filter-disclosure[open] .line-item-filter-controls{
     max-height:min(32vh,230px);overflow-y:auto;
     overscroll-behavior:contain;
