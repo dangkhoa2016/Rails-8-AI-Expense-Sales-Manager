@@ -45,3 +45,11 @@ A 2-column workbench at **960–1559px** leaves insufficient horizontal room for
 In a **draft**, every item card exposes both **Edit item** and **Delete item**. In a **confirmed** transaction, direct delete is not offered: immutable originals can be corrected only through an explicitly created correction draft. A short notice above the list explains this, and the Edit item action remains visible for initiating the correction workflow.
 
 QA: full Rails suite and authenticated Chromium at 15 widths (375, 414, 768, 959, 960, 998, 1024, 1122, 1199, 1200, 1280, 1366, 1472, 1560 and 1600px). Verify balanced and exceptional totals and button visibility on both confirmed and draft transactions.
+
+## Compact Edit/Delete controls — 2026-11-03
+
+Only the item-row **Edit item** and **Delete item** buttons have reduced vertical padding. Both use 4px top/bottom on large screens (34px minimum height), 5px at widths up to 1199px (38px minimum), and 5px on phones up to 500px (40px minimum for touch). The buttons share aligned heights and compact rounded corners. The delete button now has a distinct light-red surface, red label and border, plus explicit hover and keyboard-focus states instead of the generic minimal/neutral button style.
+
+The delete action is still a real POST form with Rails' DELETE override and the pre-existing Turbo confirmation dialog. The button only exists for draft line items; confirmed transactions do not expose direct deletion and must use a correction draft. CSS selectors are scoped to `#line_item_list`, so unrelated delete buttons and forms retain their own styles.
+
+Regression: Rails suite and Chromium measurement of actual CSS padding, heights, delete-button color, focus/hover, clipping and draft-versus-confirmed behavior at 375, 414, 768, 960, 998, 1122, 1199, 1200, 1366 and 1560px.
