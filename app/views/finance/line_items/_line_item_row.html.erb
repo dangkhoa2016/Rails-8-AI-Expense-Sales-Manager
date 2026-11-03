@@ -27,16 +27,34 @@
                 local_assigns[:filtering]&.query_params || {}, page: local_assigns[:page]) : {})),
             class: "btn btn-primary line-item-edit-action",
             data: { turbo_frame: "line_item_modal" },
-            aria: { label: "#{ui('m6.item_edit')}: #{item.description}" } do %>
-          <span class="line-item-edit-full"><%= ui("m6.item_edit") %></span>
-          <span class="line-item-edit-compact" aria-hidden="true"><%= ui("m6.item_edit_short") %></span>
+            aria: { label: "#{ui('m6.item_edit_accessible')}: #{item.description}" } do %>
+          <svg class="line-item-action-icon" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
+               stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4Z"/>
+          </svg>
+          <span class="line-item-action-label"><%= ui("m6.item_edit") %></span>
         <% end %>
         <% if transaction.draft? %>
-          <%= button_to ui("m6.delete_row"), finance_transaction_line_item_path(transaction,item),
+          <%= button_to finance_transaction_line_item_path(transaction,item),
               method: :delete,
               params: (local_assigns[:sorting]&.query_params || {}).merge(
-                local_assigns[:filtering]&.query_params || {}), class: "btn btn-line-item-delete",
-              form: { data: { turbo_confirm: ui("m6.delete_confirm") } } %>
+                local_assigns[:filtering]&.query_params || {}),
+              class: "btn btn-line-item-delete",
+              form: { data: { turbo_confirm: ui("m6.delete_confirm") } },
+              aria: { label: "#{ui('m6.delete_row')}: #{item.description}" } do %>
+            <svg class="line-item-action-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M3 6h18"/>
+              <path d="M8 6V4h8v2"/>
+              <path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 10v6"/>
+              <path d="M14 10v6"/>
+            </svg>
+            <span class="line-item-action-label"><%= ui("m6.delete_row") %></span>
+          <% end %>
         <% end %>
       </div>
     <% else %>

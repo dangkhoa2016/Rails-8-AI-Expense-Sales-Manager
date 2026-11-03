@@ -105,7 +105,8 @@ class FinanceItemContextTest < ActionDispatch::IntegrationTest
 
     get finance_transaction_line_items_path(@tx, locale:"vi")
     assert_response :success
-    assert_select "a", text: /Sửa chi tiết khoản/
+    assert_select "a.line-item-edit-action .line-item-action-label", text: "Sửa"
+    assert_select "a.line-item-edit-action[aria-label^='Sửa chi tiết khoản:']", count: 1
     assert_select "a[href*=\'/line_items/#{item.id}/edit\']", minimum: 1
     get edit_finance_transaction_line_item_path(@tx,item)
     assert_response :success
