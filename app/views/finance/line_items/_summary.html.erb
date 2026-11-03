@@ -1,8 +1,9 @@
 <div id="line_items_summary" aria-live="polite">
   <div class="kpi-grid">
-    <% [[ui("m6.count"), count],
-         [ui("m6.lines_total"), money_vnd(sum)],
-         [ui("m6.invoice_total"), money_vnd(transaction.amount)]].each do |label, value| %>
+    <% summary_values = [[ui("m6.count"), count]]
+       summary_values << [ui("m6.lines_total"), money_vnd(sum)] if count.positive? && difference.present? && difference != 0
+       summary_values << [ui("m6.invoice_total"), money_vnd(transaction.amount)] %>
+    <% summary_values.each do |label, value| %>
       <article class="kpi-card"><span class="kpi-label"><%= label %></span>
         <strong class="kpi-value"><%= value %></strong></article>
     <% end %>

@@ -492,7 +492,7 @@ input:focus,textarea:focus,select:focus{outline:3px solid #dceaff;border-color:#
 
 /* Convert ONLY this 6-column grid to cards before it becomes cramped.
    Use the same <tr id> per item, preserving Turbo Stream row replacement. */
-@media(max-width:959px){
+@media(max-width:1199px){
   .line-item-table-scroll{overflow:visible;max-width:100%;min-width:0}
   .line-item-table{display:block;width:100%;min-width:0;border:0}
   .line-item-table thead{
@@ -1410,7 +1410,7 @@ button.btn.correction-item-diff-trigger:focus-visible,
 .line-items-primary #line_item_list .panel-heading h2{font-size:1.02rem}
 .line-items-primary #line_item_list .panel-heading p{margin:0}
 .line-items-primary .line-item-table-scroll{max-width:100%;min-width:0}
-@media(min-width:960px) {
+@media(min-width:1200px) {
   .line-items-primary .line-item-table {min-width:750px}
 }
 .line-items-context-rail .line-items-date-context{
@@ -1466,7 +1466,7 @@ button.btn.correction-item-diff-trigger:focus-visible,
   max-width:100%;padding:10px;overflow-wrap:anywhere;box-shadow:none;
 }
 .line-items-context-rail .item-import-body code{word-break:break-all}
-@media(max-width:1279px) and (min-width:960px){
+@media(max-width:1559px) and (min-width:960px){
   .line-items-workbench{
     grid-template-columns:minmax(205px,245px) minmax(0,1fr);
     grid-template-areas:"side list";
@@ -1519,4 +1519,44 @@ button.btn.correction-item-diff-trigger:focus-visible,
   .line-items-context-rail>*{width:100%}
   .line-items-primary #line_item_list{padding:11px 10px}
   .line-items-workbench .line-item-filter-toolbar .line-item-filter-disclosure{width:100%}
+}
+
+
+/* At medium viewport widths a two-rail workbench leaves insufficient room
+   for six table columns. Use full-width item cards instead of clipping the
+   final actions column; the semantic <tr> and Turbo target ids remain intact. */
+.line-items-primary #line_item_list .line-item-confirmed-action-hint{
+  margin:7px 0 0;max-width:62ch;color:#667e94;
+  line-height:1.45;font-size:.75rem;
+}
+@media(max-width:1199px){
+  .line-items-primary .line-item-table {min-width:0}
+  .line-items-primary .line-item-table-scroll{
+    overflow:visible;min-width:0;width:100%;
+  }
+  .line-items-primary #line_item_list .line-cell-actions{
+    min-width:0;max-width:100%;
+  }
+  .line-items-primary #line_item_list .line-cell-actions .line-actions{
+    display:flex;flex-wrap:wrap;gap:10px;width:100%;
+  }
+  .line-items-primary #line_item_list .line-cell-actions .btn,
+  .line-items-primary #line_item_list .line-cell-actions .line-actions .btn-primary{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:44px;max-width:100%;white-space:normal;
+    overflow-wrap:anywhere;text-align:center;
+  }
+  .line-items-primary #line_item_list .line-cell-actions .line-actions form{
+    max-width:100%;margin:0;
+  }
+}
+@media(max-width:500px){
+  .line-items-primary #line_item_list .line-cell-actions .line-actions{
+    display:grid;grid-template-columns:minmax(0,1fr);
+  }
+  .line-items-primary #line_item_list .line-cell-actions .line-actions>*,
+  .line-items-primary #line_item_list .line-cell-actions .line-actions form,
+  .line-items-primary #line_item_list .line-cell-actions .line-actions .btn{
+    width:100%;max-width:100%;
+  }
 }

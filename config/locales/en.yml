@@ -331,6 +331,7 @@ en:
       count: Number of items
       lines_total: Sum of item amounts
       invoice_total: Transaction amount
+      confirmed_deletion_hint: Confirmed items cannot be deleted directly. Use Edit item to start a correction draft, then remove the item from that draft.
       unallocated_item_amount: Amount outside itemized list
       unallocated_item_hint: This may reflect fees, tax, discounts, or a historical adjustment. Check the original document; confirmed transactions are not changed automatically.
       import_title: Import many items from CSV

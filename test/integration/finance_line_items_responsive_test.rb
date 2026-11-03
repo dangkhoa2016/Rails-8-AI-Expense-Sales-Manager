@@ -70,18 +70,18 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select ".table-pagination", count: 1
   end
 
-  test "balanced line items show only three summary KPIs and no reconciliation notice" do
+  test "balanced line items show one total KPI without duplicated amount and no reconciliation notice" do
     total = @transaction.line_items.sum(:amount)
     @transaction.update!(amount: total)
 
     get finance_transaction_line_items_path(@transaction, locale: "vi")
     assert_response :success
-    assert_select "#line_items_summary .kpi-card", count: 3
+    assert_select "#line_items_summary .kpi-card", count: 2
     assert_select "#line_items_summary .kpi-label", text: /Chênh lệch/, count: 0
     assert_select "#line_items_summary .line-items-allocation-note", count: 0
     assert_select "#line_items_summary .kpi-card:first-child .kpi-value", text: "25", count: 1
     assert_select "#line_items_summary .kpi-card:nth-child(2) .kpi-value", text: /25[,.]300/, count: 1
-    assert_select "#line_items_summary .kpi-card:nth-child(3) .kpi-value", text: /25[,.]300/, count: 1
+    assert_select "#line_items_summary .kpi-label", text: "Tổng các dòng chi tiết", count: 0
 
     get finance_transaction_path(@transaction, locale: "vi")
     assert_response :success
@@ -125,13 +125,38 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
 
     get finance_transaction_line_items_path(empty_transaction, locale: "vi")
     assert_response :success
-    assert_select "#line_items_summary .kpi-card", count: 3
+    assert_select "#line_items_summary .kpi-card", count: 2
     assert_select "#line_items_summary .line-items-allocation-note", count: 0
 
     get finance_transaction_path(empty_transaction, locale: "vi")
     assert_response :success
     assert_select ".detail-hero-meta > div", count: 3
     assert_select ".detail-primary .line-items-allocation-note", count: 0
+  end
+
+  test "draft items expose both visible edit and delete controls" do
+    get finance_transaction_line_items_path(@transaction, locale: "vi")
+    assert_response :success
+    assert_select "#line_item_list .line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
+    assert_select "#line_item_list .line-cell-actions .line-actions form[action][method='post'] button", count: 25
+    assert_select "#line_item_list .line-item-confirmed-action-hint", count: 0
+    assert_select "#line_items_summary .kpi-card", count: 3
+  end
+
+  test "confirmed items show edit-via-correction but never destructive delete" do
+    Finance::ConfirmTransaction.call(transaction: @transaction, actor: @user, reviewed: true)
+    assert @transaction.reload.confirmed?
+    original_amounts = @transaction.line_items.order(:position).pluck(:id, :amount)
+
+    get finance_transaction_line_items_path(@transaction, locale: "vi")
+    assert_response :success
+    assert_select "#line_item_list .line-item-confirmed-action-hint", text: /không thể xóa trực tiếp/
+    assert_select "#line_item_list .line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
+    assert_select "#line_item_list .line-cell-actions .line-actions form button", count: 0
+
+    delete finance_transaction_line_item_path(@transaction, @transaction.line_items.first)
+    assert_response :not_found
+    assert_equal original_amounts, @transaction.line_items.order(:position).pluck(:id, :amount)
   end
 
   test "EN localized card labels and edit Turbo Stream replace the same table row" do
