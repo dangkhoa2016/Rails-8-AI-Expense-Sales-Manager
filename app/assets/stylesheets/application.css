@@ -1560,3 +1560,50 @@ button.btn.correction-item-diff-trigger:focus-visible,
     width:100%;max-width:100%;
   }
 }
+
+
+/* Item actions only: shorter vertical padding and a clear destructive
+   secondary action. Keep selectors scoped to avoid affecting other buttons. */
+.line-items-primary #line_item_list .line-cell-actions .line-actions .btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  min-height:34px;
+  padding:4px 11px;
+  font-size:.77rem;
+  line-height:1.3;
+  border-radius:8px;
+  text-align:center;
+  white-space:normal;
+}
+.line-items-primary #line_item_list .line-cell-actions .line-actions button.btn-line-item-delete {
+  appearance:none;
+  border:1px solid #e5aca6;
+  background:#fff3f2;
+  color:#a32a20;
+  font-weight:750;
+  box-shadow:none;
+  cursor:pointer;
+}
+.line-items-primary #line_item_list .line-cell-actions .line-actions button.btn-line-item-delete:hover {
+  background:#fbe1de;
+  border-color:#ca6a62;
+  color:#842019;
+}
+.line-items-primary #line_item_list .line-cell-actions .line-actions button.btn-line-item-delete:focus-visible {
+  outline:3px solid #efa9a0;
+  outline-offset:2px;
+}
+@media(max-width:1199px){
+  .line-items-primary #line_item_list .line-cell-actions .line-actions .btn {
+    min-height:38px;
+    padding:5px 11px;
+  }
+}
+@media(max-width:500px){
+  .line-items-primary #line_item_list .line-cell-actions .line-actions .btn {
+    min-height:40px;
+    padding:5px 10px;
+  }
+}

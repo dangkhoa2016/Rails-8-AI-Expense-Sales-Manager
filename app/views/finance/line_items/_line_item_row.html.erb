@@ -32,7 +32,7 @@
           <%= button_to ui("m6.delete_row"), finance_transaction_line_item_path(transaction,item),
               method: :delete,
               params: (local_assigns[:sorting]&.query_params || {}).merge(
-                local_assigns[:filtering]&.query_params || {}), class: "btn btn-minimal",
+                local_assigns[:filtering]&.query_params || {}), class: "btn btn-line-item-delete",
               form: { data: { turbo_confirm: ui("m6.delete_confirm") } } %>
         <% end %>
       </div>
