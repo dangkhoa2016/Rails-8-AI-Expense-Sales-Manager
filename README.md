@@ -223,4 +223,6 @@ Compact item filters (2026-10-31): the filter disclosure stays collapsed after a
 
 Line-item workbench (2026-10-31): the six-column item table now starts directly under the page heading, with filters in a left sidebar and transaction context in a right sidebar on wide screens. Tablet and mobile reorganize the rails without document-wide overflow. [Layout guide](docs/LINE_ITEM_WORKBENCH.en.md).
 
-Sidebar spacing update (2026-10-31): medium-width item pages now group filter and transaction context in one sidebar, avoiding large gaps. The table headings are Time and Location; the filter expands by default with a mobile height limit. [Guide](docs/LINE_ITEM_WORKBENCH.en.md).
+Sidebar spacing fix (2026-10-31): medium-width item workbench now stacks filter and transaction context without artificial vertical gaps; table headings are Time and Location; filters start expanded with bounded mobile height. [Guide](docs/LINE_ITEM_WORKBENCH.en.md).
+
+Validation (2026-11-03): 136 Rails tests and 13 Chromium viewport checks passed after the Kaggle restart; UI QA used a restored synthetic snapshot and does not certify full development-data recovery.
