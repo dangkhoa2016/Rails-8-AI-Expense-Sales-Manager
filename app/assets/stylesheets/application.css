@@ -1607,3 +1607,34 @@ button.btn.correction-item-diff-trigger:focus-visible,
     padding:5px 10px;
   }
 }
+
+/* Keep the full action text on cards, but shorten the desktop table label.
+   The anchor keeps a detailed aria-label for assistive technologies. */
+.line-items-primary #line_item_list .line-item-edit-compact{display:none}
+
+/* Keep Edit and Delete as one compact horizontal action group in desktop
+   tables. In narrow workbenches (e.g. 1200px and 1560px) the previous
+   intrinsic button widths wrapped the delete control onto a second row. */
+@media(min-width:1200px){
+  .line-items-primary #line_item_list .line-cell-actions .line-actions {
+    display:flex;
+    flex-wrap:nowrap;
+    align-items:center;
+    justify-content:flex-start;
+    gap:5px;
+    width:max-content;
+    max-width:100%;
+  }
+  .line-items-primary #line_item_list .line-cell-actions .line-actions > a,
+  .line-items-primary #line_item_list .line-cell-actions .line-actions > form {
+    flex:0 0 auto;
+  }
+  .line-items-primary #line_item_list .line-cell-actions .line-actions .btn {
+    min-width:66px;
+    padding:4px 8px;
+    font-size:.75rem;
+    white-space:nowrap;
+  }
+  .line-items-primary #line_item_list .line-item-edit-full{display:none}
+  .line-items-primary #line_item_list .line-item-edit-compact{display:inline}
+}

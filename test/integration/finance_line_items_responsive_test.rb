@@ -140,6 +140,9 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     get finance_transaction_line_items_path(@transaction, locale: "vi")
     assert_response :success
     assert_select "#line_item_list .line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action[aria-label]", count: 25
+    assert_select "#line_item_list .line-cell-actions .line-item-edit-full", text: "Sửa chi tiết khoản", count: 25
+    assert_select "#line_item_list .line-cell-actions .line-item-edit-compact[aria-hidden='true']", text: "Sửa", count: 25
     assert_select "#line_item_list .line-cell-actions .line-actions form[action][method='post'] button", count: 25
     assert_select "#line_item_list .line-cell-actions .line-actions form button.btn-line-item-delete", count: 25
     assert_select "#line_item_list .line-item-confirmed-action-hint", count: 0
@@ -156,6 +159,7 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select "#line_item_list .line-item-confirmed-action-hint", text: /không thể xóa trực tiếp/
     assert_select "#line_item_list .line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
     assert_select "#line_item_list .line-cell-actions .line-actions form button", count: 0
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action[aria-label]", count: 25
 
     delete finance_transaction_line_item_path(@transaction, @transaction.line_items.first)
     assert_response :not_found
