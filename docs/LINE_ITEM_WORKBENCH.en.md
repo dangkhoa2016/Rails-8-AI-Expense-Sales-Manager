@@ -56,6 +56,11 @@ Regression: Rails suite and Chromium measurement of actual CSS padding, heights,
 
 ## Desktop inline action buttons — 2026-11-03
 
-On table layouts **1200px and above**, Edit and Delete now appear **side by side on one row**, with equal 66px button widths, 34px heights, and a 5px gap. The table presents the concise **Edit / Delete** labels (instead of the long Edit item details label), while the Edit link retains its full descriptive `aria-label` for assistive technologies and its Turbo modal target. At widths below 1200px, item cards retain the original full **Edit item details** label and existing responsive button behavior. The warning-red Delete style, confirmation dialog, and confirmed-transaction immutability are unchanged.
+On table layouts **1200px and above**, Edit and Delete now appear **side by side on one row**, with equal 66px button widths, 34px heights, and a 5px gap. The table presents the concise **Edit / Delete** labels (instead of the long Edit item details label), while the Edit link retains its full descriptive `aria-label` for assistive technologies and its Turbo modal target. At widths below 1200px, item cards also use the concise **Edit** label, retaining the responsive button layout. The warning-red Delete style, confirmation dialog, and confirmed-transaction immutability are unchanged.
 
 Chromium measured actual button positions at 998, 1200, 1280, 1366, 1515, 1560, 1600 and 1920px; from 1200px both buttons stay on the same line, with matching widths/heights, and no horizontal document overflow. Rails integration tests verify the localized full/compact labels and accessible name.
+
+
+## Inline SVG icons and unified Edit label — 2026-11-03
+
+Both item actions now include inline SVG icons: a pencil for **Edit** and a trash can for **Remove**, inheriting the button text color, without any external icon library, at 14px. The visible Edit label is shortened to **Edit** on desktop and mobile alike. Its accessible label remains descriptive (“Edit item details: [item]”), and both SVGs are hidden from assistive technology and keyboard focus. The original Turbo modal, Rails DELETE override, confirmation dialog, and draft-only deletion policy remain unchanged.

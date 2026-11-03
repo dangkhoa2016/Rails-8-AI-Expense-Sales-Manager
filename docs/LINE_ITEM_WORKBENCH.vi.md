@@ -42,13 +42,13 @@ Không hiển thị lặp **Tổng các dòng chi tiết** và **Số tiền gia
 
 Trong workbench hai cột ở **960–1559px**, phần giữa có thể không đủ rộng để nhìn toàn bộ sáu cột. Vì vậy từ **1199px trở xuống**, danh sách chuyển sang **thẻ khoản chi tiết responsive**, bảo đảm nút thao tác hiển thị trọn vẹn bên trong thẻ, không bị cắt ở mép phải. Từ **1200px trở lên** giữ bảng; ba cột workbench chỉ xuất hiện từ **1560px** để bảng giữa có đủ không gian. Vẫn giữ nguyên ID dòng, Turbo modal, Tags, bộ lọc, URL sắp xếp và phân trang 25 khoản.
 
-Trong **bản nháp**, mỗi khoản có đủ nút **Sửa chi tiết khoản** và **Xóa**. Với **giao dịch đã xác nhận**, không có xóa trực tiếp vì giao dịch gốc là bất biến; cần tạo bản hiệu chỉnh trước, rồi xóa khoản trong bản nháp hiệu chỉnh đó. Giao diện có ghi chú ngắn ngay phía trên danh sách và vẫn hiển thị nút Sửa để bắt đầu luồng hiệu chỉnh.
+Trong **bản nháp**, mỗi khoản có đủ nút **Sửa** và **Xóa**. Với **giao dịch đã xác nhận**, không có xóa trực tiếp vì giao dịch gốc là bất biến; cần tạo bản hiệu chỉnh trước, rồi xóa khoản trong bản nháp hiệu chỉnh đó. Giao diện có ghi chú ngắn ngay phía trên danh sách và vẫn hiển thị nút Sửa để bắt đầu luồng hiệu chỉnh.
 
 QA: full Rails suite và Chromium có đăng nhập tại 15 độ rộng (375, 414, 768, 959, 960, 998, 1024, 1122, 1199, 1200, 1280, 1366, 1472, 1560 và 1600px), gồm số tiền khớp/không khớp và trạng thái nút của giao dịch nháp/đã xác nhận.
 
 ## Nút Sửa/Xóa gọn và dễ nhận biết — 03/11/2026
 
-Chỉ hai nút **Sửa chi tiết khoản** và **Xóa** trong từng dòng khoản được giảm padding theo chiều dọc. Trên màn hình rộng, padding trên/dưới là 4px (chiều cao tối thiểu 34px); đến 1199px là 5px (tối thiểu 38px); với điện thoại đến 500px là 5px (tối thiểu 40px để dễ chạm). Cả hai nút được căn đều chiều cao và bo góc gọn. Nút Xóa có nền đỏ nhạt, chữ/viền đỏ riêng cùng trạng thái hover và focus bằng bàn phím, thay cho kiểu nút trung tính khó phân biệt.
+Chỉ hai nút **Sửa** và **Xóa** trong từng dòng khoản được giảm padding theo chiều dọc. Trên màn hình rộng, padding trên/dưới là 4px (chiều cao tối thiểu 34px); đến 1199px là 5px (tối thiểu 38px); với điện thoại đến 500px là 5px (tối thiểu 40px để dễ chạm). Cả hai nút được căn đều chiều cao và bo góc gọn. Nút Xóa có nền đỏ nhạt, chữ/viền đỏ riêng cùng trạng thái hover và focus bằng bàn phím, thay cho kiểu nút trung tính khó phân biệt.
 
 Thao tác Xóa vẫn dùng form POST với phương thức DELETE qua Rails và hộp thoại xác nhận Turbo hiện có. Nút này chỉ hiển thị cho khoản thuộc **giao dịch nháp**; giao dịch đã xác nhận không cho xóa trực tiếp mà phải tạo bản hiệu chỉnh. CSS chỉ áp dụng trong `#line_item_list`, không tác động nút xóa hoặc form của trang khác.
 
@@ -56,6 +56,11 @@ Nghiệm thu: Rails regression và Chromium kiểm tra padding thực tế, chi�
 
 ## Hai nút thao tác nằm ngang trên desktop — 03/11/2026
 
-Trong bảng ở **màn hình từ 1200px**, nút **Sửa** và **Xóa** nằm **cạnh nhau trên cùng một hàng**, chiều rộng mỗi nút 66px, chiều cao 34px, khoảng cách 5px. Để vừa cột Thao tác, nút Sửa hiển thị nhãn rút gọn **Sửa** (tiếng Anh: Edit), nhưng vẫn giữ `aria-label` mô tả đầy đủ để hỗ trợ trình đọc màn hình, đồng thời giữ nguyên Turbo modal. Dưới 1200px, các thẻ responsive vẫn hiển thị nhãn **Sửa chi tiết khoản** đầy đủ. Màu đỏ cảnh báo, hộp thoại xác nhận Xóa và quy tắc bất biến của giao dịch đã xác nhận không thay đổi.
+Trong bảng ở **màn hình từ 1200px**, nút **Sửa** và **Xóa** nằm **cạnh nhau trên cùng một hàng**, chiều rộng mỗi nút 66px, chiều cao 34px, khoảng cách 5px. Nút Sửa hiển thị thống nhất nhãn **Sửa** ở mọi kích thước (tiếng Anh: Edit), đồng thời vẫn giữ `aria-label` mô tả đầy đủ để hỗ trợ trình đọc màn hình, đồng thời giữ nguyên Turbo modal. Dưới 1200px, các thẻ responsive cũng sử dụng nhãn **Sửa** ngắn gọn. Màu đỏ cảnh báo, hộp thoại xác nhận Xóa và quy tắc bất biến của giao dịch đã xác nhận không thay đổi.
 
 Chromium đã đo vị trí thực tế tại 998, 1200, 1280, 1366, 1515, 1560, 1600 và 1920px; từ 1200px hai nút luôn cùng hàng, cùng chiều rộng/chiều cao, không tràn ngang trang. Rails integration tests kiểm tra nhãn đầy đủ/rút gọn theo ngôn ngữ và tên hỗ trợ tiếp cận.
+
+
+## Hai nút kèm SVG và nhãn Sửa thống nhất — 03/11/2026
+
+Trong danh sách khoản chi tiết, nút **Sửa** có biểu tượng bút chì (SVG), nút **Xóa** có biểu tượng thùng rác (SVG). Cả hai biểu tượng kế thừa màu của nút, không cần thư viện icon hoặc font ngoài. Nhãn hiển thị của nút Sửa là **Sửa** ở cả desktop và mobile; nhãn hỗ trợ trình đọc màn hình vẫn giải thích đầy đủ “Sửa chi tiết khoản: [tên khoản]”. SVG được ẩn khỏi trình đọc màn hình và không nhận focus. Nút Xóa giữ màu đỏ cảnh báo, hộp xác nhận và chỉ có ở giao dịch nháp. Turbo modal Sửa và logic kiểm tra quyền không thay đổi.

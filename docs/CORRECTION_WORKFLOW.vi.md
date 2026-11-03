@@ -11,7 +11,7 @@ Chức năng điều chỉnh tạo **một giao dịch thay thế ở trạng th
 
 ## Cách sử dụng
 
-1. Tại danh sách khoản chi của giao dịch đã xác nhận, chọn **Sửa chi tiết khoản** trên dòng cần chỉnh. Modal yêu cầu nhập lý do (10–2000 ký tự).
+1. Tại danh sách khoản chi của giao dịch đã xác nhận, chọn **Sửa** trên dòng cần chỉnh. Modal yêu cầu nhập lý do (10–2000 ký tự).
 2. Khi lưu modal, hệ thống sao chép ngày, số tiền, loại giao dịch, mô tả, danh mục, giờ/địa điểm tùy chọn và **toàn bộ dòng chi tiết** sang bản nháp mới, chỉ áp dụng thay đổi vào bản sao của dòng được chọn. Ảnh hóa đơn tiếp tục gắn với bản gốc và bản thay thế có liên kết để xem lại.
 3. Chỉnh sửa các dòng khác qua modal Turbo trên bản nháp; hỗ trợ cả hóa đơn 100 dòng.
 4. Kiểm tra rồi chủ động xác nhận. Cả hai bản ghi vẫn được bảo toàn nhưng liên kết điều chỉnh xác định bản có hiệu lực.

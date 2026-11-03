@@ -117,7 +117,7 @@ Xem [tài liệu M6 (Tiếng Việt)](docs/MULTI_LINE_RECEIPT.vi.md).
 
 ## Điều chỉnh giao dịch đã xác nhận (M7)
 
-Khi phát hiện sai một dòng trong hóa đơn đã chốt, **không sửa giao dịch gốc**. Mở danh sách khoản chi rồi chọn **Sửa chi tiết khoản** trên dòng cần chỉnh. Modal yêu cầu lý do rồi tạo bản nháp thay thế. Ngày, số tiền, giờ/địa điểm tùy chọn và toàn bộ dòng chi tiết (kể cả hóa đơn 100 dòng) được sao chép để chỉnh sửa. Ảnh chứng từ gốc luôn nằm trong hồ sơ cũ, có liên kết để mở lại.
+Khi phát hiện sai một dòng trong hóa đơn đã chốt, **không sửa giao dịch gốc**. Mở danh sách khoản chi rồi chọn **Sửa** trên dòng cần chỉnh. Modal yêu cầu lý do rồi tạo bản nháp thay thế. Ngày, số tiền, giờ/địa điểm tùy chọn và toàn bộ dòng chi tiết (kể cả hóa đơn 100 dòng) được sao chép để chỉnh sửa. Ảnh chứng từ gốc luôn nằm trong hồ sơ cũ, có liên kết để mở lại.
 
 Khi người dùng xác nhận bản thay thế, báo cáo và CSV chỉ tính **giao dịch đã chốt đang có hiệu lực**, không cộng cả bản cũ và mới. Mỗi lần điều chỉnh có nguồn gốc và lịch sử kiểm toán bất biến. Bản nháp điều chỉnh không ảnh hưởng tổng thu/chi. Đây là cơ chế thay thế hồ sơ, chưa phải bút toán đảo chuẩn theo quy định kế toán.
 
@@ -134,7 +134,7 @@ Tài liệu: [Quy trình điều chỉnh (Tiếng Việt)](docs/CORRECTION_WORKF
 
 Mọi khoản chi tiết **dùng ngày của transaction**, chỉ giờ (HH:MM) và địa điểm mới có thể nhập riêng, đều tùy chọn. Form khoản chỉ hiển thị ngày chung, không có ô sửa ngày hoặc tự điền giờ hiện tại. Giao dịch nháp được phép thiếu ngày trong lúc nhập khoản nhưng cần xác nhận ngày trước khi chốt. Cột ngày riêng cũ được giữ để audit, không tự backfill hoặc sửa hồ sơ confirmed.
 
-Mở **danh sách khoản chi tiết** của bản nháp và nhấn **Sửa chi tiết khoản** ngay trên mỗi dòng để mở popup Turbo. Lưu thành công sẽ re-render đúng dòng vừa sửa cùng tổng đối chiếu, không refresh cả trang. Với khoản đã chốt, modal yêu cầu lý do rồi tạo bản nháp điều chỉnh có audit và chỉ cập nhật bản sao của dòng được chọn. Giao dịch gốc đã chốt không bị sửa. Nếu đã có correction thì trang dẫn đến bản thay thế. Ngày kế toán lấy trực tiếp từ transaction; số tiền nháp có dòng sẽ được đồng bộ sau khi thay đổi dòng, confirmed vẫn bất biến.
+Mở **danh sách khoản chi tiết** của bản nháp và nhấn **Sửa** ngay trên mỗi dòng để mở popup Turbo. Lưu thành công sẽ re-render đúng dòng vừa sửa cùng tổng đối chiếu, không refresh cả trang. Với khoản đã chốt, modal yêu cầu lý do rồi tạo bản nháp điều chỉnh có audit và chỉ cập nhật bản sao của dòng được chọn. Giao dịch gốc đã chốt không bị sửa. Nếu đã có correction thì trang dẫn đến bản thay thế. Ngày kế toán lấy trực tiếp từ transaction; số tiền nháp có dòng sẽ được đồng bộ sau khi thay đổi dòng, confirmed vẫn bất biến.
 
 CSV mới chỉ cần `description,amount`, có thể thêm `occurred_time` (HH:MM), `location_text`; cột `occurred_on` của CSV cũ chỉ hợp lệ khi trùng ngày giao dịch — xem [CSV mẫu 5 dòng](examples/receipt_lines_with_item_context.csv). Để tạo 5 khoản chi **giả lập, có thể sửa được** trong bản nháp demo development:
 
