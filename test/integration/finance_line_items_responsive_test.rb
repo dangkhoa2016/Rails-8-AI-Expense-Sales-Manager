@@ -51,9 +51,9 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select ".line-items-side-stack > aside.line-items-filter-rail", count: 1
     assert_select ".line-items-side-stack > aside.line-items-context-rail", count: 1
     assert_select "details.line-item-filter-disclosure[open]", count: 1
-    assert_select "table.line-item-table th", text: "Thời gian", count: 1
-    assert_select "table.line-item-table th", text: "Địa điểm", count: 1
-    assert_select "table.line-item-table th", text: /tùy chọn/, count: 0
+    assert_select "table.line-item-table th a.line-item-sort-link > span:first-child", text: "Thời gian", count: 1
+    assert_select "table.line-item-table th a.line-item-sort-link > span:first-child", text: "Địa điểm", count: 1
+    assert_select "table.line-item-table th a.line-item-sort-link > span:first-child", text: /tùy chọn/, count: 0
     assert_select "table.line-item-table tbody tr", count: 25
     assert_select "tr#finance_line_item_#{@transaction.line_items.first.id}", count: 1
     assert_select "table.line-item-table tbody td.line-cell", count: 150
@@ -76,6 +76,8 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".line-items-date-context time[datetime='2026-10-30']", count: 1
     assert_select ".line-items-date-context", text: /Shared transaction date/
+    assert_select "table.line-item-table th a.line-item-sort-link > span:first-child", text: "Time", count: 1
+    assert_select "table.line-item-table th a.line-item-sort-link > span:first-child", text: "Location", count: 1
     assert_select "table.line-item-table td.line-cell-date", count: 0
     assert_select "td.line-cell-time[data-label='Time']", count: 25
     assert_select "td.line-cell-place[data-label='Location']", count: 25
