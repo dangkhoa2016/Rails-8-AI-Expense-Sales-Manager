@@ -136,15 +136,31 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select ".detail-primary .line-items-allocation-note", count: 0
   end
 
+  test "short Edit button keeps full descriptive title in the item modal" do
+    item = @transaction.line_items.first
+    get edit_finance_transaction_line_item_path(@transaction, item, locale: "vi")
+    assert_response :success
+    assert_select "#item-modal-title", text: /Sửa chi tiết khoản/
+
+    get edit_finance_transaction_line_item_path(@transaction, item, locale: "en")
+    assert_response :success
+    assert_select "#item-modal-title", text: /Edit item details/
+  end
+
   test "draft items expose both visible edit and delete controls" do
     get finance_transaction_line_items_path(@transaction, locale: "vi")
     assert_response :success
     assert_select "#line_item_list .line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
-    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action[aria-label]", count: 25
-    assert_select "#line_item_list .line-cell-actions .line-item-edit-full", text: "Sửa chi tiết khoản", count: 25
-    assert_select "#line_item_list .line-cell-actions .line-item-edit-compact[aria-hidden='true']", text: "Sửa", count: 25
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action[aria-label^='Sửa chi tiết khoản:']", count: 25
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action .line-item-action-label", text: "Sửa", count: 25
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action svg.line-item-action-icon[aria-hidden='true'][focusable='false']", count: 25
+    assert_select "#line_item_list .line-cell-actions .line-item-edit-full", count: 0
+    assert_select "#line_item_list .line-cell-actions .line-item-edit-compact", count: 0
     assert_select "#line_item_list .line-cell-actions .line-actions form[action][method='post'] button", count: 25
     assert_select "#line_item_list .line-cell-actions .line-actions form button.btn-line-item-delete", count: 25
+    assert_select "#line_item_list .line-cell-actions button.btn-line-item-delete[aria-label^='Xóa:'] .line-item-action-label", text: "Xóa", count: 25
+    assert_select "#line_item_list .line-cell-actions button.btn-line-item-delete svg.line-item-action-icon[aria-hidden='true'][focusable='false']", count: 25
+    assert_select "#line_item_list .line-cell-actions .line-actions form[data-turbo-confirm]", count: 25
     assert_select "#line_item_list .line-item-confirmed-action-hint", count: 0
     assert_select "#line_items_summary .kpi-card", count: 3
   end
@@ -159,7 +175,9 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select "#line_item_list .line-item-confirmed-action-hint", text: /không thể xóa trực tiếp/
     assert_select "#line_item_list .line-cell-actions .line-actions a[data-turbo-frame='line_item_modal']", count: 25
     assert_select "#line_item_list .line-cell-actions .line-actions form button", count: 0
-    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action[aria-label]", count: 25
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action[aria-label^='Sửa chi tiết khoản:']", count: 25
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action .line-item-action-label", text: "Sửa", count: 25
+    assert_select "#line_item_list .line-cell-actions a.line-item-edit-action svg.line-item-action-icon", count: 25
 
     delete finance_transaction_line_item_path(@transaction, @transaction.line_items.first)
     assert_response :not_found
@@ -179,6 +197,9 @@ class FinanceLineItemsResponsiveTest < ActionDispatch::IntegrationTest
     assert_select "td.line-cell-time[data-label='Time']", count: 25
     assert_select "td.line-cell-place[data-label='Location']", count: 25
     assert_select ".line-cell-name .inline-tag-pill", text: "Food & drinks"
+    assert_select "a.line-item-edit-action .line-item-action-label", text: "Edit", count: 25
+    assert_select "a.line-item-edit-action[aria-label^='Edit item details:']", count: 25
+    assert_select "button.btn-line-item-delete .line-item-action-label", text: "Remove", count: 25
 
     patch finance_transaction_line_item_path(@transaction, item, locale: "en"),
       as: :turbo_stream, params: {

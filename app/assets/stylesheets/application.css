@@ -1608,9 +1608,21 @@ button.btn.correction-item-diff-trigger:focus-visible,
   }
 }
 
-/* Keep the full action text on cards, but shorten the desktop table label.
-   The anchor keeps a detailed aria-label for assistive technologies. */
-.line-items-primary #line_item_list .line-item-edit-compact{display:none}
+/* Compact icon+label controls; SVGs are decorative, the aria-label keeps
+   item details available to assistive technologies. */
+.line-items-primary #line_item_list .line-cell-actions .line-actions .btn {
+  gap:5px;
+}
+.line-items-primary #line_item_list .line-item-action-icon {
+  display:block;
+  width:14px;
+  height:14px;
+  flex:0 0 14px;
+  pointer-events:none;
+}
+.line-items-primary #line_item_list .line-item-action-label {
+  display:inline-block;
+}
 
 /* Keep Edit and Delete as one compact horizontal action group in desktop
    tables. In narrow workbenches (e.g. 1200px and 1560px) the previous
@@ -1635,6 +1647,4 @@ button.btn.correction-item-diff-trigger:focus-visible,
     font-size:.75rem;
     white-space:nowrap;
   }
-  .line-items-primary #line_item_list .line-item-edit-full{display:none}
-  .line-items-primary #line_item_list .line-item-edit-compact{display:inline}
 }
