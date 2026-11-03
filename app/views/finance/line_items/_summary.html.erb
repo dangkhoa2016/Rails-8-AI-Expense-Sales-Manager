@@ -2,11 +2,15 @@
   <div class="kpi-grid">
     <% [[ui("m6.count"), count],
          [ui("m6.lines_total"), money_vnd(sum)],
-         [ui("m6.invoice_total"), money_vnd(transaction.amount)],
-         [ui("m6.difference"), money_vnd(difference)]].each do |label, value| %>
+         [ui("m6.invoice_total"), money_vnd(transaction.amount)]].each do |label, value| %>
       <article class="kpi-card"><span class="kpi-label"><%= label %></span>
         <strong class="kpi-value"><%= value %></strong></article>
     <% end %>
   </div>
-  <div class="security-info"><%= ui("m6.reconciliation") %></div>
+  <% if count.positive? && difference.present? && difference != 0 %>
+    <div class="security-info line-items-allocation-note" role="note">
+      <strong><%= ui("m6.unallocated_item_amount") %>: <%= money_vnd(difference) %></strong>
+      <p><%= ui("m6.unallocated_item_hint") %></p>
+    </div>
+  <% end %>
 </div>
