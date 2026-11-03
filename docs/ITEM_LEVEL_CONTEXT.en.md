@@ -9,7 +9,7 @@ The deprecated `finance_line_items.occurred_on` column is retained **read-only i
 
 ## Item editing and corrections
 
-Open `/finance/transactions/:transaction_id/line_items`. A draft item's **Edit item details** modal edits description, amount, quantity, unit price, category/tags, optional time and location. Draft financial totals synchronize after changes and are audited. Changing the date requires editing the **transaction** rather than the item.
+Open `/finance/transactions/:transaction_id/line_items`. A draft item's **Edit** modal edits description, amount, quantity, unit price, category/tags, optional time and location. Draft financial totals synchronize after changes and are audited. Changing the date requires editing the **transaction** rather than the item.
 
 Confirmed records cannot be overwritten. Their edit action requires a correction reason and creates an editable replacement draft; source data stays intact. The original is superseded in reports only after explicit human confirmation of the replacement. A second correction is prevented when one already exists.
 

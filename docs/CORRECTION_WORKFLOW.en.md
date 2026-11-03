@@ -11,7 +11,7 @@ A correction creates a **separate replacement transaction in draft state** and a
 
 ## User flow
 
-1. On an already confirmed transaction, open its item list and choose **Edit item details** on the affected row. The modal requires a reason (10–2000 characters).
+1. On an already confirmed transaction, open its item list and choose **Edit** on the affected row. The modal requires a reason (10–2000 characters).
 2. Saving the modal copies the original date, amount, type, description, category, optional time/place/context, and all line items into a *new draft*, applying the changed fields only to the selected copied item. Original receipt versions stay attached to the original; the replacement links back to that record for access to evidence.
 3. Review and edit the draft's details and item list through the same per-item Turbo modal. A 100-item receipt is supported.
 4. Explicitly confirm the replacement. The old and replacement entries remain confirmed and immutable, but the correction now says which record is effective.
